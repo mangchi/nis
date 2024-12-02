@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="Label">
+
+  <select id="selectList" parameterType="HashMap" resultType="CmmnMap">
+	     SELECT ROW_NUMBER() OVER(ORDER BY A.CREATE_TS DESC) AS RN
+	          , ROW_NUMBER() OVER(ORDER BY A.CREATE_TS ASC) AS IDX
+	   		  , A.ID
+	   		  , SOURCE_TYPE
+	   		  , COLLECTION_DT
+	   		  , COLLECTION_POS
+	   		  , COLLECTION_DEVICE_CD
+	   		  , SOURCE_CD
+	   		  , DAY_OR_NIGHT
+	   		  , STILL_OR_MOVIE
+	   		  , DATA_TYPE
+	   		  , DATA_COORD_X
+	   		  , DATA_COORD_Y
+	   		  , A.NATION_CD
+	   		  , A.SHIP_CLASS
+   		      , A.SHIP_NM
+	   		  , A.CREATE_USER_ID
+	   		  , B.USER_NM CREATE_USER_NM
+	   		  , A.CREATE_TS 
+	   		  , A.UPDATE_USER_ID
+	   		  , C.USER_NM UPDATE_USER_NM
+	   		  , A.UPDATE_TS 
+	   		  , A.APPROVED_TS
+			  <include refid="Cmmn.pageAppend"></include>
+	    FROM   TB_DATASET_INFO A
+	    INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+	           WHERE UNIT_ID IN (SELECT ID 
+	                            FROM TB_UNIT 
+	                            START WITH ID = #{schUnitId}
+	                            CONNECT BY PRIOR ID = UPPER_ID)) B
+        ON A.CREATE_USER_ID = B.USER_ID
+	    LEFT JOIN TB_USER C
+	    ON A.UPDATE_USER_ID = C.USER_ID
+	    <where>
+	    <if test='frDt != null and !frDt.equals("")'>
+	    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+	    </if>
+	    <if test='toDt != null and !toDt.equals("")'>
+	    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+	    </if>
+	    <if test='schCollection != null and !schCollection.equals("")'>
+	    AND A.COLLECTION_DEVICE_CD = #{schCollection}
+	    </if>
+	    <if test='schStillOrMovie != null and !schStillOrMovie.equals("")'>
+	    AND A.STILL_OR_MOVIE = #{schStillOrMovie}
+	    </if>
+	    <if test='schDayOrNight != null and !schDayOrNight.equals("")'>
+	    AND A.DAY_OR_NIGHT = #{schDayOrNight}
+	    </if>
+	    <if test='schDataCd != null and !schDataCd.equals("")'>
+	    AND A.DATA_CD = #{schDataCd}
+	    </if>
+	    <if test='schWorkerNm != null and !schWorkerNm.equals("")'>
+	    AND ( B.USER_NM LIKE CONCAT('%',CONCAT(TRIM(#{schWorkerNm}),'%')) OR
+	         C.USER_NM LIKE CONCAT('%',CONCAT(TRIM(#{schWorkerNm}),'%')))
+	    </if>
+	    <if test='approvedYn != null and !approvedYn.equals("")'>
+	    <choose>
+	    <when test='approvedYn.equals("Y")'>
+	    AND  NOT A.APPROVED_TS IS NULL
+	    </when>
+	    <otherwise>
+	    AND  A.APPROVED_TS ISNULL
+	    </otherwise>
+	    </choose> 
+	    </if>
+	    </where>
+  </select>
+
+  <select id="selectImgList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  A.ID
+     		, A.STILL_OR_MOVIE
+     		, D.ID FILE_ID
+            , D.SEQ
+            , C.ID IMAGE_ID
+     	    , D.ORIGIN_FILE_NM
+     	    , D.FILE_PATH
+     	    , D.FILE_NM
+     	    , D.FILE_TYPE
+     	    , D.WORK_FILE_PATH
+     	    , D.THUMB_FILE_PATH
+     	FROM TB_DATASET_INFO A
+     	<choose>
+     	<when test='stillOrMovie.equals("001")'>
+     	INNER JOIN TB_IMAGE_INFO C
+     	ON A.ID = C.PARENT_ID
+     	INNER JOIN TB_FILE D
+     	ON A.ID = D.ID
+     	AND C.FILE_SEQ = D.SEQ
+     	</when>
+     	<otherwise>
+     	INNER JOIN TB_MOVIE_INFO B
+     	ON A.ID = B.PARENT_ID
+     	INNER JOIN TB_IMAGE_INFO C
+	    ON B.ID = C.PARENT_ID
+	    INNER JOIN TB_FILE D
+     	ON C.PARENT_ID = D.ID
+     	AND C.FILE_SEQ = D.SEQ
+     	</otherwise>
+     	</choose>
+     	
+     	<where>
+     	AND A.ID = #{id}
+     	AND D.FILE_TYPE != 'text/xml'
+     	</where>
+  </select>
+  
+  <select id="selectVoList" parameterType="HashMap" resultType="DatasetVo">
+     	SELECT
+     		  A.ID
+     		, A.DATA_ID
+     		, A.FILE_ID
+            , B.SEQ
+     	    , B.ORIGIN_FILE_NM
+     	    , B.FILE_PATH
+     	    , B.FILE_NM
+     	FROM TB_IMAGE_INFO A
+     	INNER JOIN TB_FILE B
+     	ON A.FILE_ID = B.ID
+  </select>
+  
+  <select id="selectLabel" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  A.ID
+     		, A.COLLECTION_DEVICE_CD
+     		<choose>
+     	    <when test='stillOrMovie.equals("001")'>
+     	    , C.ID IMAGE_ID
+     	    </when>
+	     	<otherwise>
+	     	, B.ID MOVIE_ID
+	     	, C.ID IMAGE_ID
+	     	</otherwise>
+	     	</choose>
+     		, F.CD_NM AS COLLECTION_DEVICE_NM
+     		, A.DAY_OR_NIGHT
+     		, G.CD_NM AS DAY_OR_NIGHT_NM
+     		, A.CREATE_USER_ID
+	   		, E.USER_NM CREATE_USER_NM
+	   		, A.CREATE_TS 
+     		, D.ID FILE_ID
+            , D.SEQ
+     	    , D.ORIGIN_FILE_NM
+     	    , D.FILE_PATH
+     	    , D.FILE_NM
+     	    , D.WORK_FILE_PATH
+     	    , D.THUMB_FILE_PATH 
+     	FROM TB_DATASET_INFO A
+     	<choose>
+     	<when test='stillOrMovie.equals("001")'>
+     	INNER JOIN TB_IMAGE_INFO C
+     	ON A.ID = C.PARENT_ID
+     	</when>
+     	<otherwise>
+     	INNER JOIN TB_MOVIE_INFO B
+     	ON A.ID = B.PARENT_ID
+     	INNER JOIN TB_IMAGE_INFO C
+     	ON B.ID = C.PARENT_ID
+     	</otherwise>
+     	</choose>
+     	INNER JOIN TB_FILE D
+     	ON C.PARENT_ID = D.ID
+     	AND C.FILE_SEQ = D.SEQ
+     	LEFT JOIN TB_USER E
+	    ON A.CREATE_USER_ID = E.USER_ID  
+	    LEFT JOIN TB_CD F
+	    ON F.GRP_CD = '006'
+	    AND A.COLLECTION_DEVICE_CD = F.CD
+	    LEFT JOIN TB_CD G
+	    ON G.GRP_CD = '002'
+	    AND A.DAY_OR_NIGHT = G.CD
+     	<where>
+     	AND A.ID = #{id}
+     	AND C.ID = #{imageId}
+     	AND D.SEQ = #{seq}
+     	</where>
+  </select>
+  
+  <select id="selectObjectList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  A.ID
+     		, D.CLASS_INFO_ID CLASS_ID
+     		, D.IMAGE_ID
+     		, E.CLASS_NM
+     		, D.X SX
+	   		, D.Y SY
+	   		, D.EX 
+     		, D.EY
+            , D.POSE
+     	    , D.TRUNCATED
+     	    , D.DIFFICULT
+     	    , D.AIS_ID
+     	    , F.MMSI
+     	    , F.IMO_NO
+     	    , F.CALL_SIGN
+     	    , F.NATIONAL
+     	    , F.SHIP_TYPE
+     	FROM TB_DATASET_INFO A
+     	<choose>
+     	<when test='stillOrMovie.equals("001")'>
+     	INNER JOIN TB_IMAGE_INFO C
+     	ON A.ID = C.PARENT_ID
+     	</when>
+     	<otherwise>
+     	INNER JOIN TB_MOVIE_INFO B
+     	ON A.ID = B.PARENT_ID
+     	INNER JOIN TB_IMAGE_INFO C
+     	ON B.ID = C.PARENT_ID
+     	</otherwise>
+     	</choose>
+     	INNER JOIN  TB_OBJECT_INFO D
+     	ON C.ID = D.IMAGE_ID
+     	LEFT JOIN TB_CLASS_INFO E
+     	ON D.CLASS_INFO_ID =E.ID
+     	LEFT JOIN TB_AIS_INFO F
+     	ON D.AIS_ID = F.ID
+     	<where>
+     	AND A.ID = #{id}
+     	AND C.FILE_SEQ = #{seq, jdbcType=INTEGER}
+     	</where>
+  </select>
+  
+  <select id="selectClassWeaponList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT D.CLASS_INFO_ID CLASS_ID
+     	     , E.WEAPON_GRP_ID     
+	         , E.WEAPON_ID    
+             , F.WEAPON_NM	    
+     	FROM TB_DATASET_INFO A
+     	<choose>
+     	<when test='stillOrMovie.equals("001")'>
+     	INNER JOIN TB_IMAGE_INFO C
+     	ON A.ID = C.PARENT_ID
+     	</when>
+     	<otherwise>
+     	INNER JOIN TB_MOVIE_INFO B
+     	ON A.ID = B.PARENT_ID
+     	INNER JOIN TB_IMAGE_INFO C
+     	ON B.ID = C.PARENT_ID
+     	</otherwise>
+     	</choose>
+     	INNER JOIN  TB_OBJECT_INFO D
+     	ON C.ID = D.IMAGE_ID
+     	INNER JOIN TB_CLASS_WEAPHONE_INFO E
+	    ON D.CLASS_INFO_ID = E.ID 
+	    INNER JOIN TB_WEAPON F
+	    ON E.WEAPON_ID = F.ID 
+	    AND E.WEAPON_GRP_ID = F.GRP_ID
+     	<where>
+     	AND A.ID = #{id}
+     	AND C.FILE_SEQ = #{seq, jdbcType=INTEGER}
+     	</where>
+
+  </select>
+  
+  
+  <select id="selectObjectInfo" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  A.ID
+     		, A.CLASS_INFO_ID
+     		, A.IMAGE_ID
+     		, A.X
+	   		, A.Y
+	   		, A.EX 
+     		, A.EY
+            , A.POSE
+     	    , A.TRUNCATED
+     	    , A.DIFFICULT
+     	    , B.ID
+     	    , B.MMSI
+     	    , B.MMSI
+     	    , B.NATIONAL
+     	    , B.CALL_SIGN
+     	    , B.SHIP_TYPE
+     	    , C.RADAR1
+     	    , C.SONAR1
+     	    , C.ANTI_AIRCRAFT1
+     	    , C.ANTI_SUBMARINE1
+     	    , C.ANTI_SHIP1
+     	    , C.ANTI_FLEET1
+     	FROM TB_OBJECT_INFO A
+     	LEFT JOIN TB_AIS_INFO B
+     	ON A.OBJECT_INFO_ID = B.ID
+     	LEFT JOIN TB_WEAPHONE_INFO C
+     	ON A.OBJECT_INFO_ID = C.ID
+     	<where>
+     	AND A.CLASS_INFO_ID = #{id}
+     	AND A.IMAGE_ID = #{id}
+     	</where>
+  </select>
+  
+ 
+  <update id="updateImgLabel" parameterType="hashmap">
+       UPDATE TB_IMAGE_INFO SET LABELING_YN  = 'Y'
+                              , UPDATE_USER_ID = #{updateUserId, jdbcType=VARCHAR}
+                              , UPDATE_TS   = SYSDATE
+       <where>
+         AND ID = #{imageId}
+       </where>
+   </update>
+   
+
+   <update id="insertClassWeapon" parameterType="hashmap">
+	    INSERT INTO TB_CLASS_WEAPHONE_INFO ( ID
+		                                 , SEQ
+		                                 , WEAPON_GRP_ID
+		                                 , WEAPON_ID
+		                                 , CREATE_USER_ID
+		                                 , CREATE_TS
+						              )  
+	   <foreach collection="weaponList" item="row" index="index">
+	     SELECT #{row.classId, jdbcType=VARCHAR} 
+	          , #{row.idx , jdbcType=INTEGER} 
+	          , #{row.weaponGrpId, jdbcType=VARCHAR} 
+	          , #{row.weaponId, jdbcType=VARCHAR} 
+	          , #{createUserId, jdbcType=VARCHAR} 
+	          , SYSDATE
+		FROM DUAL
+		<if test='weaponList.size > index+1'>
+		UNION ALL
+		</if>
+	  </foreach>  
+  </update>
+  
+   
+   
+ 
+   
+   <delete id="deleteObject" parameterType="hashmap">
+       DELETE FROM TB_OBJECT_INFO
+       <where>
+        AND IMAGE_ID = #{imageId, jdbcType=VARCHAR} 
+       </where>
+   </delete>
+   
+   <delete id="deleteClassWeapon" parameterType="HashMap">
+       DELETE FROM TB_CLASS_WEAPHONE_INFO
+       <where>
+       AND ID IN 
+        <foreach collection="weaponList" item="row" open="(" close=")" separator=",">
+	   	   <foreach collection="row" item="col" index="key"  >
+	         <if test='key.equals("classId")'>
+	            #{col} 
+	         </if>
+		   </foreach> 
+	   	</foreach>     
+       </where>
+   </delete>
+</mapper>
+

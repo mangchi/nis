@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 기기 인증 관리</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+<form id="frm" th:action method="post">
+<div class="con-title"><span>기기 인증 관리</span></div>
+<div class="sec-grid1">
+          <div class="g-area3">
+            <div class="pannel">
+              
+              <div class="searchCont p-head3">
+                <div class="searchGrp">
+                  <div class="searchItem">
+                    <input name="frDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value=""> ~ <input name="toDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value="">
+                  </div>
+                  <div class="sel-multi"></div>
+                  
+                  <div class="rightBtnGrp">
+                    <button type="button" class="btn btn-secondary btn-search01" onclick="qryInit();">초기화</button>
+                    <button type="button" class="btn btn-secondary btn-search01" onclick="searchFunc(this);">조회</button>
+                    <button type="button" class="btn btn-secondary btn-search01" onclick="blockFunc();">차단</button>
+                    <button type="button" class="btn btn-secondary btn-search01" onclick="clearFunc();">해제</button>
+                  </div>
+                </div>
+                <div class="calendarModal kor hidden" tabindex="0">
+                </div>       
+              </div>
+              
+              
+              <div class="contWrap">
+                <!--table-->
+                <div class="gridCont03">            
+                </div>
+              </div>
+              
+              
+              <!--pagenavigation-->
+              <div class="page-nav-group">
+              </div>
+              
+            </div>
+          </div>
+        </div>
+</form>
+</div>
+<script th:inline="javascript"> 
+ 
+       dynimicInit = () => {
+    	   searchInit(document.querySelector('.sel-multi'),'2');
+    	   document.getElementsByName('frDt')[0].value = gfn_getDiffDay(nis.diffDay);
+    	   document.getElementsByName('toDt')[0].value = gfn_getDay();
+    	   pageInit(document.querySelector(".page-nav-group"),searchFunc,pagination.doubleRowPerPage);
+           const headColumns =  [{id:"chk",width: "45px"}
+                               ,{id:"id",width: "0px"}
+           	                   ,{id:"userId",width: "80px",label:"사용자ID",sortable:"Y",resizable:"Y"}
+           	                   ,{id:"userNm",width: "80px",label:"사용자명",sortable:"Y"}  
+           	                   ,{id:"blockStatus",width: "80px",label:"기기 상태",sortable:"Y", data_cellType:"tdCCell"}  
+           	                   ,{id:"ipAddr",width: "100px",label:"접속 IP"}
+           	                   ,{id:"createTs",width: "100px",label:"최초 등록일",data_cellType:"tdCCell", data_dateFrmt:"yy-mm-dd"}
+           	                   ,{id:"lastVisitedTs",width: "120px",label:"최근접속일", data_cellType:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+           	                   ,{id:"blockTs",width: "120px",label:"차단일시",data_cellType:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+
+				              ];
+       	   gridInit(document.querySelector(".gridCont03"),headColumns);
+       	   searchFunc();
+       }
+
+       searchFunc = (invoker) => {
+    	   pageSearch(document.getElementById('frm'),"/equipAuthList",document.querySelector('.gridCont03'),document.querySelector('.page-nav-group'),invoker) 
+       }
+       
+       blockFunc = () => {
+    	   let checkedData = gridCheckedData();
+    	   if(Object.keys(checkedData).length === 0){
+    		   msgCall(msg.blockChk,false);
+    		   return;
+    	   }
+    	   checkedData.blockYn = "Y";
+    	   gfn_asyncJsonCall('/updateEquip','POST',checkedData,'searchFunc()');
+       }
+       
+       clearFunc = () => {
+    	   let checkedData = gridCheckedData(document.querySelector(".gridCont03"));
+    	   if(Object.keys(checkedData).length === 0){
+    		   msgCall(msg.clearChk,false);
+    		   return;
+    	   }
+    	   checkedData.blockYn = "N";
+    	   gfn_asyncJsonCall('/updateEquip','POST',checkedData,'searchFunc()');
+       }
+       
+    
+       
+</script>
+</html>
+

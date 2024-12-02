@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 사용자 관리</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+  <div class="pop-wrap unitPop">
+    <div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+        <div class="pop-body" style="padding:0px;">
+          <div class="graph4" style="height:360px;">
+            <div class="gridCont05">
+				<div class="treeBox">
+				</div>
+            </div>
+          </div>
+        </div>
+         <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel btnUnitClose" title="취소">취소</button>
+	            <button type="button" class="btn-m-confirm btnUnitOpen" title="확인하기">확인</button>
+	          </div>
+	     </div>
+      </div>
+    </div>
+  </div>
+<div class="con-title"><span>사용자 관리</span></div>
+<form id="frm" th:action method="post">
+ <div class="sec-grid1">
+   <div class="g-area3">
+     <div class="pannel">
+     <div class="searchCont p-head3">
+     <div class="searchGrp">
+        <div class="sel-multi"></div>
+        <div class="rightBtnGrp">
+           <button type="button" class="btn btn-secondary btn-search01" onclick="qryInit();">초기화</button>
+           <button type="button" class="btn-search01" onclick="searchFunc(this);" title="검색버튼">조회</button>
+           <button type="button" class="btn-upload01 userRegister" title="등록">등록</button>
+           <button type="button" class="btn-delete userDelete" title="삭제" >삭제</button>
+        </div>
+     </div>
+     </div>
+       <div class="contWrap">
+         <div class="gridCont03">
+         </div>
+       </div>
+       <!--pagenavigation-->
+       <div class="page-nav-group">
+       </div>
+       
+     </div>
+   </div>
+ </div>
+ </form>
+</div>
+<script th:inline="javascript"> 
+
+       dynimicInit = () => {
+    	   searchInit(document.querySelector('.sel-multi'),'3');
+    	   document.querySelector('.userRegister').addEventListener('click',(e) => {
+        	   e.preventDefault();
+        	   let params = {};
+        	   dynimicCall(params,'GET','/register', searchFunc);
+        	  
+           });
+           
+           document.querySelector('.userDelete').addEventListener('click',(e) => {
+        	   let checkedData = gridCheckedData();
+        	   deleteCall = (isExec) => {
+        		   if(isExec){
+        			   gfn_asyncJsonCall('/deleteUser','POST',checkedData,'searchFunc()');
+        		   }
+        		  
+        	   }
+        	   if(Object.keys(checkedData).length > 0){
+    	    	   confirmCall(msg.del,this.deleteCall);
+        	   }
+        	   else{
+        		   msgCall(msg.delChk,false);
+        	   }
+           });
+    	   treeInit(document.querySelector('.unitPop').querySelector('.treeBox'));
+	       pageInit(document.querySelector(".page-nav-group"),searchFunc,pagination.rowPerPage);
+	       const headColumns =  [{id:"chk",width: "45px"}
+	          ,{id:"id",width: "0px"}
+              ,{id:"userId",width: "100px",label:"사용자 ID",sortable:"Y"}
+              ,{id:"unitNm",width: "120px",label:"소속부대",sortable:"Y"}
+              ,{id:"deptNm",width: "140px",label:"부서",sortable:"Y"}
+              ,{id:"specNm",width: "140px",label:"직별",sortable:"Y"}
+              ,{id:"userNm",width: "100px",label:"성명",sortable:"Y"}
+              ,{id:"authority",width: "0px"}
+              ,{id:"authNm",width: "100px",label:"권한",sortable:"Y"}
+              ,{id:"createTs",width: "100px",label:"등록일자",sortable:"Y", data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd"}
+              ,{id:"lastVisitedTs",width: "120px",label:"최근접속일",sortable:"Y", data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+              ,{width: "100px",label:"비밀번호",button:"Y",data_url:"pwdInit",data_btnNm:"초기화",openType:"self"}
+              ,{width: "100px",label:"차단해제",button:"Y",data_url:"pwdUnBlock",data_btnNm:"차단해제",openType:"callBack"}
+              ,{id:"pwFailCnt" ,width: "0px"}
+
+          ];
+		  gridInit(document.querySelector(".gridCont03"),headColumns);
+		  searchFunc();		        	 
+       }  
+       
+       searchFunc = (invoker) => {
+    	   pageSearch(document.getElementById('frm'),"/userList",document.querySelector('.gridCont03'),document.querySelector('.page-nav-group'),invoker) 
+       }
+       
+       pwdUnBlock = (data) => {
+    	   gfn_asyncJsonCall('/pwdUnBlock','POST',data).then((data) => {
+	   			for(let key in data) {
+	   				if(key.indexOf('success_msg') > -1){
+	   					msgCall(data[key]);
+	   					searchFunc();
+	   					break;
+	   				}
+	   				if(key.indexOf('fail_msg') > -1){
+	   					msgCall(data[key],false);
+	   					break;
+	   				}
+
+	   			}
+	   	   });
+		  
+	   }
+       
+       
+       rowClick = (item,gridComp,target) => {
+    	    gridComp.querySelectorAll('.overChild').forEach((overChild) => {
+     		   if(overChild.classList.contains('on')){
+     			   overChild.classList.remove('on');
+    			   }
+     	    });
+     	  
+     	   target.classList.add('on');
+    	   let params = {id:item.id};
+    	   console.log("item:",item);
+    	   dynimicCall(params,'GET','/chgUser?userId='+item.userId, searchFunc);
+    	   
+       }
+       
+
+       
+       
+      
+</script>
+</html>
+

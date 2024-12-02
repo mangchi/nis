@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="Bbs">
+  <select id="selectList" parameterType="HashMap" resultType="CmmnMap">
+     <![CDATA[
+       SELECT ROW_NUMBER() OVER(ORDER BY B.CREATE_TS DESC) AS RN
+            , ROW_NUMBER() OVER(ORDER BY B.CREATE_TS ASC) AS IDX
+     		, B.ID ID
+     		, B.BBS_TYPE BBS_TYPE
+     		, A.BBS_NM BBS_NM
+     		, TITLE
+     		, CONTENT
+     		, B.CREATE_USER_ID
+     		, C.USER_NM CREATE_USER_NM
+     		, B.CREATE_TS
+     		, B.UPDATE_USER_ID
+     		, B.UPDATE_TS
+     	FROM TB_BBS_GRP A
+     	INNER JOIN TB_BBS B
+     	ON A.ID = B.GRP_ID
+     	INNER JOIN TB_USER C
+     	ON B.CREATE_USER_ID = C.USER_ID
+
+     ]]>
+  </select>
+  
+  <select id="select" parameterType="HashMap" resultType="BbsVo">
+       SELECT ID
+     		, BBS_TYPE
+     		, TITLE
+     		, CONTENT
+     		, CREATE_USER_ID
+     		, CREATE_TS
+     		, UPDATE_USER_ID
+     		, UPDATE_TS
+     	FROM TB_BBS
+        <where>
+        AND ID = #{id}
+     	</where>
+  </select>
+  
+  <select id="selectNotice" parameterType="HashMap" resultType="CmmnMap">
+       SELECT * 
+       FROM (
+	         SELECT A.ID
+	     		, BBS_TYPE
+	     		, TITLE
+	     		, CONTENT
+	     		, ROW_NUMBER() OVER(ORDER BY A.CREATE_TS) AS RN
+	     	 FROM TB_BBS A
+	     	 LEFT JOIN TB_BBS_READ B
+	         ON A.ID = B.ID
+	         AND B.USER_ID = #{userId}
+	         WHERE DECODE(B.ID,NULL,'N','Y') = 'N')
+	   WHERE RN = 1
+  </select>
+  
+
+  <select id="selectUserReadCount" parameterType="HashMap" resultType="int">
+       SELECT SUM(DECODE(B.ID,NULL,1,0))
+     	FROM TB_BBS A
+     	LEFT JOIN TB_BBS_READ B
+        ON A.ID = B.ID
+        AND B.USER_ID = #{userId}
+  </select>
+  
+    
+  <update id="insertReadBbs" parameterType="HashMap">
+        INSERT INTO TB_BBS_READ(ID,USER_ID)
+                    VALUES(#{id},#{userId})
+  </update>
+  
+  <delete id="deleteReadBbs" parameterType="BbsVo">
+        DELETE FROM  TB_BBS_READ
+        WHERE ID = #{id}
+  </delete>
+  
+  <update id="mergeBbs" parameterType="BbsVo">
+       MERGE INTO TB_BBS A
+       USING DUAL
+       ON  A.ID = #{id, jdbcType=VARCHAR}
+       WHEN MATCHED THEN 
+       UPDATE SET BBS_TYPE = #{bbsType, jdbcType=VARCHAR}
+                , TITLE = #{title, jdbcType=VARCHAR}
+                , CONTENT = #{content, jdbcType=VARCHAR}
+                , UPDATE_USER_ID = #{updateUserId, jdbcType=VARCHAR}
+                , UPDATE_TS   = SYSDATE
+       WHEN NOT MATCHED THEN
+       INSERT  (ID
+              , GRP_ID
+              , BBS_TYPE
+     		  , TITLE
+     		  , CONTENT
+     		  , CREATE_USER_ID
+     		  , CREATE_TS
+              )
+        VALUES( #{id}
+              , #{grpId}
+              , #{bbsType}
+              , #{title}
+              , #{content}
+              , #{createUserId}
+              , SYSDATE
+              )
+   </update>
+   
+   <delete id="deleteBbs" parameterType="hashmap">
+       DELETE FROM TB_BBS
+       <where>
+       AND ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("id")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+       </where>
+   </delete>
+   
+  
+</mapper>
+

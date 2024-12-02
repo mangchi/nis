@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 공지사항</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+	<div class="pop_container">
+		<div class="pop-bg">
+			<div class="pop-head">
+				<div class="pop-title bbsTitle">공지사항 등록</div>
+			</div>
+			<div class="pop-body">
+				<form id="bbsFrm" th:action method="post" th:object="${bbsInfo}">
+				    <input type="hidden" th:field="*{id}">
+				    <input type="hidden" id="bbsUserId" th:value="*{createUserId}">
+					<ul class="basic">
+						<li>
+							<div class="input-group">
+								<div class="input-group">
+									<label class="la_basic03 icon" for="">종류</label>
+									<div class="btn-group-toggle">
+										<input type="radio" id="bbsType1" th:field="*{bbsType}"
+											value="002" checked="checked"> <label for="bbsType1">보통</label>
+										<input type="radio" id="bbsType2" th:field="*{bbsType}"
+											value="001"> <label for="bbsType2">긴급</label> <input
+											type="radio" id="bbsType3" th:field="*{bbsType}" value="003">
+										<label for="bbsType3">상시</label>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="input-group">
+								<label class="la_basic03 icon" for="">제목</label> <input
+									type="text" th:field="*{title}" class="basic18" title="제목" maxlength="50"
+									placeholder="제목을 입력해 주세요."> <span id="valid_title"
+									class="inform3 valid"></span>
+							</div>
+						</li>
+						<li>
+							<div class="input-group">
+								<label class="la_basic03 icon" for="">내용</label>
+								<textarea
+									style="width: 90%; height: 180px; margin-bottom: 20px;"
+									th:field="*{content}" th:value="${content}"
+									th:text="${content}"  maxlength="500"></textarea>
+								<span id="valid_content" class="inform3 valid"></span>
+							</div>
+						</li>
+					</ul>
+				</form>
+			</div>
+			<div class="pop-footer">
+				<div class="pop-btn-group">
+					<button type="button" class="btn-m-cancel" title="닫기">닫기</button>
+					<button type="button" class="btn-m-confirm" title="등록">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script th:inline="javascript"> 
+
+	modalInit = () => {
+		if(document.getElementById('id').value === ''){
+			document.querySelector('.bbsTitle').innerHTML = '공지사항 등록';
+		}
+		else{
+			document.querySelector('.bbsTitle').innerHTML = '공지사항 수정';
+		}
+        if(document.getElementById('bbsUserId').value != '' && document.getElementById('userName').innerHTML != document.getElementById('bbsUserId').value){
+        	document.querySelector('.layer').querySelector('.btn-m-confirm').style.display = "none";
+        	document.getElementsByName('bbsType').forEach((bbsType) => {
+        		bbsType.addEventListener('click',e => {
+        			e.preventDefault();
+        			return false;
+        		});
+        	});
+        	document.getElementById('title').readOnly = true;
+        	document.getElementById('content').readOnly = true;
+        }
+	}
+	
+	document.querySelector('.layer').querySelector('.btn-m-cancel').addEventListener('click', (e) => {
+		e.preventDefault();
+		let popLayer = document.querySelector('.layer');
+		console.log("popLayer:",popLayer);
+		popLayer.style.display = "none";
+	});
+	
+	document.querySelector('.layer').querySelector('.btn-m-confirm').addEventListener('click', (e) => {
+		
+		 e.preventDefault();
+		 gfn_removeValidHtml(document.getElementById('bbsFrm'),'span')
+		 let requiredParams = {title: "제목"
+				             , bbsType: "종류"
+				             , content: "내용"
+				              };
+
+		 gfn_asyncCall('/bbsSave','POST',document.getElementById('bbsFrm'),requiredParams,null,bbsSaveAfterFunc).then((data) => {
+			 for(key in data) {
+				if(key.indexOf('valid') > -1){
+					let valid = document.getElementById(key); 
+					valid.innerHTML = data[key];
+				}
+			 }
+		 }); 
+	});
+	
+	bbsSaveAfterFunc = () => {
+		let popLayer = document.querySelector('.layer');
+		popLayer.style.display = "none";
+		searchFunc();
+	}
+	
+	
+</script>
+</div>
+</html>
+

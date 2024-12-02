@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="Cmmn">
+
+  <sql id="pageAppend">
+      , 1 PAGE_SPLIT
+  </sql>
+  <!-- code -->
+  <select id="selectCode" parameterType="CodeVo" resultType="CodeVo">
+     	SELECT TB_GRP_CD.CD GRP_CD
+     	     , TB_GRP_CD.CD_NM GRP_CD_NM
+     	     , TB_CD.CD CD
+     	     , TB_CD.CD_NM CD_NM
+     	     , TB_GRP_CD.CD_DESC GRP_CD_DESC
+     	     , TB_CD.CD_DESC CD_DESC
+     	     , CD_FILTER
+     	FROM TB_GRP_CD 
+     	LEFT JOIN TB_CD 
+     	ON    TB_GRP_CD.CD = TB_CD.GRP_CD
+       <if test='grpCd !=null  and !grpCd.equals("")'>
+        AND   TB_GRP_CD.CD = #{grpCd}
+       </if>
+  </select>
+ 
+  <select id="selectGrpCode"  resultType="CodeVo">
+     <![CDATA[
+     	SELECT
+     		   CD GRP_CD
+     		 , CD_NM GRP_CD_NN
+     		 , CD_DESC GRP_CD_DESC
+     	FROM TB_GRP_CD
+     ]]>
+  </select>
+  
+   <select id="selectUnit" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  ID
+     		, UPPER_ID
+     		, UNIT_NM CLASS_NM
+     	FROM TB_UNIT 
+     	<if test='schUnitId !=null  and !schUnitId.equals("")'>
+     	START WITH ID = #{schUnitId}
+     	CONNECT BY  UPPER_ID = PRIOR ID 
+     	</if>
+     	ORDER BY ID DESC
+  </select>
+  
+  <select id="selectWeaponAllList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT TB_WEAPON_GRP.ID GRP_ID
+     	     , TB_WEAPON_GRP.GRP_NM 
+     	     , TB_WEAPON.ID WEAPON_ID
+     	     , TB_WEAPON.WEAPON_NM 
+     	FROM TB_WEAPON_GRP 
+     	LEFT JOIN  TB_WEAPON 
+     	ON    TB_WEAPON_GRP.ID = TB_WEAPON.GRP_ID
+
+  </select>
+  
+  
+  <select id="selectWeaponList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT TB_WEAPON_GRP.ID GRP_ID
+     	     , TB_WEAPON_GRP.GRP_NM 
+     	     , TB_WEAPON.ID WEAPON_ID
+     	     , TB_WEAPON.WEAPON_NM 
+     	FROM TB_WEAPON_GRP 
+     	INNER JOIN TB_WEAPON 
+     	ON    TB_WEAPON_GRP.ID = TB_WEAPON.GRP_ID
+     	<where>
+       <if test='grpId !=null  and !grpId.equals("")'>
+           TB_WEAPON_GRP.ID = #{grpId}
+       </if>
+       <if test='weaponNm !=null  and !weaponNm.equals("")'>
+        AND   TB_WEAPON.WEAPON_NM LIKE concat(concat('%',#{weaponNm}),'%')
+       </if>
+       </where>
+  </select>
+  
+  <select id="selectWeaponCnt" parameterType="HashMap" resultType="CmmnMap">
+       SELECT A.ID 
+            , MAX(GRP_NM) AS GRP_NM
+            , COUNT(B.ID) AS CNT
+     	FROM TB_WEAPON_GRP A
+     	LEFT JOIN TB_WEAPON B
+     	ON A.ID = B.GRP_ID
+        GROUP BY A.ID
+  </select>
+  
+  <select id="selectClsWeaponList" parameterType="CodeVo" resultType="CmmnMap">
+     	SELECT A.ID
+     	     , C.CLASS_NM
+     	     , A.SEQ
+     	     , A.WEAPON_GRP_ID
+     	     , A.WEAPON_ID
+     	     , B.WEAPON_NM
+     	FROM TB_CLASS_WEAPHONE_INFO A
+     	LEFT JOIN TB_WEAPON B
+     	ON    A.WEAPON_ID = B.ID
+     	AND   A.WEAPON_GRP_ID = B.GRP_ID
+     	LEFT JOIN TB_CLASS_INFO C
+	    ON A.ID = C.ID
+     	<where>
+        AND A.ID = #{classId}
+       </where>
+        ORDER BY A.WEAPON_GRP_ID,A.WEAPON_ID
+  </select>
+  
+  <select id="selectAisList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT ROW_NUMBER() OVER(ORDER BY A.CREATE_TS DESC) AS RN
+             , ROW_NUMBER() OVER(ORDER BY A.CREATE_TS ASC) AS IDX
+     		 , A.ID
+     		 , A.MMSI
+     		 , A.IMO_NO
+     		 , A.CALL_SIGN
+	   		 , A.VESSEL_NM
+	   		 , A.NATIONAL 
+     		 , A.SPEED_KTS
+             , A.COMPANY
+     	     , A.MANUFACTURE_COUNTRY
+     	     , A.CHANGE_HISTORY
+     	     , A.DEEP_SEA
+     	     , A.HALL_COUNT
+     	     , A.DEST
+     	     , A.SHIP_TYPE
+     	     , A.LENGTH_OVER_ALL
+     	     , A.EXTREME_BREADTH
+     	     , A.SHIP_WEIGHT
+     	     , A.REGISTERED_PORT
+     	     , A.WEIGHT_TONNAGE
+     	     , A.CONSTRUCTION_YEAR
+     	     , A.OPERATING_COMPANY
+     	     , A.SHIP_LOC
+     	     , A.SPOT_TM
+     	     , A.CREW_COUNT
+     	     , A.CARGO_TYPE
+     	     , A.ARRIVAL_TM
+     	FROM TB_AIS_INFO A
+     	<where>
+     	<if test="schStr != null and schStr != ''">
+     	AND A.VESSEL_NM LIKE concat(concat('%',#{schStr}),'%')
+     	</if>
+     	<if test="aisId != null and aisId != ''">
+     	AND A.ID = #{aisId}
+     	</if>
+     	</where>
+  </select>
+  
+  <select id="selectAis" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  A.ID
+     		, A.MMSI
+     		, A.IMO_NO
+     		, A.CALL_SIGN
+	   		, A.VESSEL_NM
+	   		, A.NATIONAL 
+     		, A.SPEED_KTS
+            , A.COMPANY
+     	    , A.MANUFACTURE_COUNTRY
+     	    , A.CHANGE_HISTORY
+     	    , A.DEEP_SEA
+     	    , A.HALL_COUNT
+     	    , A.DEST
+     	    , A.SHIP_TYPE
+     	    , A.LENGTH_OVER_ALL
+     	    , A.EXTREME_BREADTH
+     	    , A.SHIP_WEIGHT
+     	    , A.REGISTERED_PORT
+     	    , A.WEIGHT_TONNAGE
+     	    , A.CONSTRUCTION_YEAR
+     	    , A.OPERATING_COMPANY
+     	    , A.SHIP_LOC
+     	    , A.SPOT_TM
+     	    , A.CREW_COUNT
+     	    , A.CARGO_TYPE
+     	    , A.ARRIVAL_TM
+     	FROM TB_AIS_INFO A
+     	<where>
+     	AND A.ID = #{id}
+     	</where>
+  </select>
+  
+  <select id="selectClassInfo" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     	      ID
+     	    , UPPER_ID
+     	    , CLASS_NM
+     	FROM TB_CLASS_INFO
+     	<where>
+     	AND ID = #{id}
+     	</where>
+  </select>
+  
+  <select id="SelectClasIdByName" parameterType="hashMap" resultType="string">
+      SELECT ID FROM TB_CLASS_INFO 
+      <where>
+      AND CLASS_NM = #{classNm}
+      </where>
+   </select>
+  
+  <select id="selectObjectWeponList" parameterType="HashMap" resultType="CmmnMap">
+       SELECT A.ID
+            , A.SEQ
+            , B.CD 
+            , B.CD_NM
+     	FROM TB_WEAPHONE_INFO A
+     	INNER JOIN TB_CD B
+     	ON A.OBJECT_INFO_ID = B.GRP_CD
+        <where>
+        AND A.ID = #{id}
+        </where>
+  </select>
+  
+  <update id="insertMultiClass" parameterType="DatasetVo">
+       INSERT INTO  TB_CLASS_INFO(ID
+				              , UPPER_ID
+				              , CLASS_NM)
+				        VALUES( #{id}
+				              , #{upperId}
+				              , #{classNm, jdbcType=VARCHAR}
+	
+	   <foreach collection="fileList" item="row" index="index">
+	     SELECT #{id, jdbcType=VARCHAR} 
+	          , '0'
+	          , #{row.filePath, jdbcType=VARCHAR} 
+	          , #{row.fileNm, jdbcType=VARCHAR} 
+	          , #{row.originFileNm, jdbcType=VARCHAR} 
+	          , #{row.fileType, jdbcType=VARCHAR} 
+	          , #{row.fileSize, jdbcType=DECIMAL} 
+	          , #{fileStatus, jdbcType=VARCHAR} 
+	          , #{userId, jdbcType=VARCHAR} 
+	          , SYSDATE
+		FROM DUAL
+		<if test='fileList.size > index+1'>
+		UNION ALL
+		</if>
+	  </foreach>  			              )
+   </update>
+  
+  
+
+  <update id="mergeCode" parameterType="CodeVo">
+       MERGE INTO TB_CD A
+       USING DUAL
+       ON  A.CD = #{cd, jdbcType=VARCHAR}
+       WHEN MATCHED THEN 
+       UPDATE SET CD_NM  = #{cdNm, jdbcType=VARCHAR}
+                , CD_DESC    = #{cdDesc, jdbcType=VARCHAR}
+                , CD_FILTER = #{cdFilter, jdbcType=VARCHAR}
+                , UPDATE_TS   = SYSDATE
+       WHEN NOT MATCHED THEN
+       INSERT  (CD
+              , GRP_CD
+              , CD_NM
+              , CD_DESC
+              , CD_FILTER
+              , CREATE_TS)
+        VALUES( #{cd}
+              , #{grpCd}
+              , #{cdNm}
+              , #{cdDesc}
+              , #{cdFilter}
+              , SYSDATE)
+   </update>
+   
+   <update id="mergeGrpCode" parameterType="CodeVo">
+       MERGE INTO TB_GRP_CD A
+       USING DUAL
+       ON  A.CD = #{grpCd, jdbcType=VARCHAR}
+       WHEN MATCHED THEN 
+       UPDATE SET CD_NM = #{grpCdNm, jdbcType=VARCHAR}
+                , CD_DESC = #{grpCdDesc, jdbcType=VARCHAR}
+                , UPDATE_TS = SYSDATE
+       WHEN NOT MATCHED THEN
+       INSERT  (CD
+              , CD_NM
+              , CD_DESC
+              , CREATE_TS)
+        VALUES( #{grpCd}
+              , #{grpCdNm}
+              , #{grpCdDesc} 
+              , SYSDATE)
+
+   </update>
+   
+   <update id="insertObjectInfo" parameterType="hashmap">
+	   INSERT INTO TB_OBJECT_INFO ( ID
+                                 , IMAGE_ID
+                                 , CLASS_INFO_ID
+                                 , AIS_ID
+                                 , X
+                                 , Y
+                                 , EX
+                                 , EY
+                                 , POSE
+                                 , TRUNCATED
+                                 , DIFFICULT
+                                 , CREATE_USER_ID
+                                 , CREATE_TS      
+						       )  
+	   <foreach collection="objectList" item="row" index="index">
+	     SELECT #{row.id, jdbcType=VARCHAR} 
+	          , #{imageId, jdbcType=VARCHAR} 
+	          , #{row.classInfoId, jdbcType=VARCHAR} 
+	          , #{row.aisId, jdbcType=VARCHAR} 
+	          , #{row.sx, jdbcType=VARCHAR} 
+	          , #{row.sy, jdbcType=VARCHAR} 
+	          , #{row.ex, jdbcType=VARCHAR} 
+	          , #{row.ey, jdbcType=VARCHAR} 
+	          , #{row.pose, jdbcType=VARCHAR}
+	          , #{row.truncated, jdbcType=VARCHAR}
+	          , #{row.difficult, jdbcType=VARCHAR}
+	          , #{createUserId, jdbcType=VARCHAR} 
+	          , SYSDATE
+		FROM DUAL
+		<if test='objectList.size > index+1'>
+		UNION ALL
+		</if>
+	  </foreach>  
+   </update>
+   
+   <update id="mergeAis" parameterType="hashMap">
+       MERGE INTO TB_AIS_INFO A
+       USING DUAL
+       ON  A.ID = #{id}
+       WHEN MATCHED THEN 
+       UPDATE SET MMSI = #{mmsi}
+                , IMO_NO = #{imoNo}
+                , CALL_SIGN = #{callSign}
+                , VESSEL_NM = #{vesselNm}
+                , NATIONAL = #{national}
+                , SPEED_KTS = #{speedKts}
+                , COMPANY = #{company}
+                , MANUFACTURE_COUNTRY = #{manufactureCountry}
+                , CHANGE_HISTORY = #{changeHistory}
+                , DEEP_SEA = #{deepSea}
+                , HALL_COUNT = #{hallCount}
+                , DEST = #{dest}
+                , SHIP_TYPE = #{shipType}
+                , LENGTH_OVER_ALL = #{lengthOverAll}
+                , EXTREME_BREADTH = #{extremeBreadth}
+                , SHIP_WEIGHT = #{shipWeight}
+                , REGISTERED_PORT = #{registeredPort}
+                , WEIGHT_TONNAGE = #{weightTonnage}
+                , CONSTRUCTION_YEAR = #{constructionYear}
+                , OPERATING_COMPANY = #{operatingCompany}
+                , SHIP_LOC = #{shipLoc}
+                , SPOT_TM = #{spotTm}
+                , CREW_COUNT = #{crewCount}
+                , CARGO_TYPE = #{cargoType}
+                , ARRIVAL_TM = #{arrivalTm}
+                , UPDATE_USER_ID = #{updateUserId}
+                , UPDATE_TS = SYSDATE
+       WHEN NOT MATCHED THEN
+       INSERT  (ID
+     		 , MMSI
+     		 , IMO_NO
+     		 , CALL_SIGN
+	   		 , VESSEL_NM
+	   		 , NATIONAL 
+     		 , SPEED_KTS
+             , COMPANY
+     	     , MANUFACTURE_COUNTRY
+     	     , CHANGE_HISTORY
+     	     , DEEP_SEA
+             , HALL_COUNT
+             , DEST
+     	     , SHIP_TYPE
+     	     , LENGTH_OVER_ALL
+     	     , EXTREME_BREADTH
+     	     , SHIP_WEIGHT
+     	     , REGISTERED_PORT
+     	     , WEIGHT_TONNAGE
+     	     , CONSTRUCTION_YEAR
+     	     , OPERATING_COMPANY
+     	     , SHIP_LOC 
+             , SPOT_TM 
+             , CREW_COUNT
+             , CARGO_TYPE 
+             , ARRIVAL_TM 
+     	     , CREATE_USER_ID
+     	     , CREATE_TS)
+        VALUES( #{id}
+              , #{mmsi}
+              , #{imoNo} 
+              , #{callSign}
+              , #{vesselNm} 
+              , #{national} 
+              , #{speedKts}
+              , #{company} 
+              , #{manufactureCountry}
+              , #{changeHistory} 
+              , #{deepSea} 
+              , #{hallCount} 
+              , #{dest} 
+              , #{shipType}
+              , #{lengthOverAll} 
+              , #{extremeBreadth}
+              , #{shipWeight} 
+              , #{registeredPort}
+              , #{weightTonnage} 
+              , #{constructionYear} 
+              , #{operatingCompany} 
+              , #{shipLoc}
+              , #{spotTm}
+              , #{crewCount}
+              , #{cargoType}
+              , #{arrivalTm}
+              , #{createUserId} 
+              , SYSDATE)
+
+   </update>
+   
+   <delete id="deleteAis" parameterType="hashMap">
+      DELETE FROM TB_AIS_INFO
+      <where>
+        AND ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("id")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+      </where>
+   </delete>
+   
+   <delete id="deleteAisObject" parameterType="hashMap">
+      UPDATE TB_OBJECT_INFO
+      SET AIS_ID = NULL
+      <where>
+        AND AIS_ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("id")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+      </where>
+   </delete>
+   
+   <update id="mergeWeapon" parameterType="hashMap">
+       MERGE INTO TB_WEAPON A
+       USING DUAL
+       ON  A.ID = #{weaponId, jdbcType=VARCHAR}
+       WHEN MATCHED THEN 
+       UPDATE SET WEAPON_NM  = #{weaponNm, jdbcType=VARCHAR}
+                , UPDATE_USER_ID = #{updateUserId}
+                , UPDATE_TS   = SYSDATE
+       WHEN NOT MATCHED THEN
+       INSERT  (ID
+              , GRP_ID
+              , WEAPON_NM
+              , CREATE_USER_ID
+              , CREATE_TS)
+        VALUES( #{weaponId}
+              , #{weaponGrpId}
+              , #{weaponNm}
+              , #{createUserId}
+              , SYSDATE)
+   </update>
+   
+   <delete id="deleteWeapon" parameterType="hashMap">
+        DELETE FROM TB_WEAPON
+      <where>
+        AND ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+	   	   <foreach collection="row" item="col" index="key"  >
+	         <if test='key.equals("weaponId")'>
+	            #{col} 
+	         </if>
+		   </foreach> 
+	   	</foreach>     
+      </where>
+   </delete>
+   
+    <delete id="deleteWeaponMapping" parameterType="hashMap">
+      DELETE FROM TB_CLASS_WEAPHONE_INFO
+      <where>
+        AND CONCAT(WEAPON_GRP_ID,WEAPON_ID) IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+	   	   <foreach collection="row" item="col" index="key" open="CONCAT(" close=")"  separator=",">
+	         <if test='key.equals("grpId")'>
+	            #{col} 
+	         </if>
+	         <if test='key.equals("weaponId")'>
+	            #{col} 
+	         </if>
+		   </foreach> 
+	   	</foreach>     
+      </where>
+   </delete>
+   
+   
+</mapper>

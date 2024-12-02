@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<header th:fragment="header">
+	<script type="text/javascript" th:src="@{/js/crypto/ase.js}"></script>
+	<script type="text/javascript" th:src="@{/js/crypto/core-min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/crypto/md5-min.js}"></script>
+	<div id="header">
+		<!-- <a href="" onclick="callMenu('/main','GET');return false;"> -->
+		<div class="mainLogo">
+			<div class="head-logo"></div>
+			<div class="head-tit">
+				<dl class="log-txt">
+					<dt>
+						딥러닝 기반 <span>함정/선박 식별체계 데이터 구축</span> 시스템
+					</dt>
+					<dd>Deep Learning-based Warship/Ship Identification System</dd>
+				</dl>
+			</div>
+		</div>
+
+		<div class="head-menu">
+		   
+			<ul class="head-list">
+			    <li> <!--모드선택 영역 이동:20221015-->
+                <div style="margin-top:24px; margin-right:84px;">
+                  <input type="checkbox" id="dn">
+                  <label for="dn" class="toggle2">
+                    <span class="toggle__handler">   
+                    </span>
+                  </label>
+                </div>
+				</li>
+				<li><div class="set" title="암호변경"></div></li>
+				<li><div class="notice" style="display:none;" title="공지사항">
+						<span></span>
+					</div></li>
+				<li><div class="login" title="로그아웃">
+						<div class="icon"></div>
+						<span>Log-out</span>
+					</div></li>
+			</ul>
+		</div>
+		<div class="pop-wrap bbsHeadLayer">
+		    <div class="pop_container">
+		      <div class="pop-bg">
+		        <div class="pop-head"><div class="pop-title" >공지사항</div></div>
+		        <div class="pop-body">
+		        <ul class="basic">
+		            <li>
+		              <div class="tr-pop-title"></div>
+		            </li>
+		            <li>
+		              <div class="tr-pop-content">
+		              </div>
+		            </li>
+		        </ul>
+		        </div>
+		        <input type="hidden" id="bbsHeadId" name="bbsHeadId">
+		        <div class="pop-footer">
+		          <div class="pop-btn-group">
+		            <button type="button" id="bbsConfirm" name="bbsConfirm" class="btn-m-confirm"  title="닫기">확인</button>
+		            <button type="button" id="bbsClose" name="bbsClose" class="btn-m-cancel"  title="닫기">닫기</button>
+		          </div>
+		        </div>
+		      </div>
+		    </div>
+		  </div> 
+	</div>
+	<script th:inline="javascript">
+	    gfn_codes();
+		window.addEventListener('load', (e) => {
+			let sessionData = /*[[${sessionData}]]*/"";
+			try {
+				if (sessionData != null && sessionData != "") {
+					gfn_setStorage(nis.storageKey, CryptoJS.AES.encrypt(sessionData, nis.cryptKey));
+				}
+				
+				gfn_setStorageItem("curUrl",'/main');
+			
+			} catch (e) {
+				console.error(e);
+			}
+
+			document.querySelector('.mainLogo').style.cursor = "pointer";
+			document.querySelector('.mainLogo').addEventListener('click', (e) => {
+            	e.preventDefault();
+            	const menuList = document.querySelector('.menu-list').querySelectorAll("a");
+            	if(menuList){
+            		menuList.forEach((menu,index) => {
+            		   if(index === 0){
+            			   menu.click();
+            			   
+            		   }
+            	    });
+            	}
+			});
+			
+			const headMenu = document.querySelector('.head-menu');
+            headMenu.querySelector('.set').addEventListener('click', (e) => {
+            	e.preventDefault();
+            	callMenu('/chgPwd','GET');
+			});
+			headMenu.querySelector('.notice').addEventListener('click', (e) => {
+				e.preventDefault();
+				let popLayer = document.querySelector('.bbsHeadLayer');
+				let divHead = document.getElementById('header');
+				gfn_asyncJsonCall("/notice",'GET',{}).then((data) => {
+					let info = data.info;
+					let popTitle = popLayer.querySelector('.tr-pop-title');
+					popTitle.innerHTML = '';
+					popTitle.innerHTML += '<p style="word-wrap: break-word;"> 제목 : '+info.title+'</p>';
+					let popContent = popLayer.querySelector('.tr-pop-content');
+					popContent.innerHTML = '';
+					popContent.innerHTML += '<p style="word-wrap: break-word;">'+info.content+'</p>';
+					
+					document.getElementById("bbsHeadId").value = info.id;
+				});
+				
+				popLayer.style.display = "block";
+
+			});
+			headMenu.querySelector('.login').addEventListener('click', (e) => {
+				e.preventDefault();
+				location.href = "/logout";
+			});
+			
+		});
+		const noticeDisplay = (data) => {
+			if(parseInt(data.count) > 0){
+				document.querySelector('.notice').style.display = 'block';
+			}
+			else{
+				document.querySelector('.notice').style.display = 'none';
+			}
+		}
+		
+		document.querySelector('#bbsConfirm').addEventListener('click', (e) => {
+			console.log("head confirm");
+			e.preventDefault();
+			let param = {"id": document.getElementById('bbsHeadId').value};
+			let popLayer = document.querySelector('.bbsHeadLayer');
+			gfn_asyncJsonCall("/bbsReadSave",'POST',param,null,null,true).then((data) => {
+				let info = data.info;
+				if(info === undefined || info === null){
+					let popLayer = document.querySelector('.bbsHeadLayer');
+					popLayer.style.display = "none";
+					document.querySelector('.notice').style.display = 'none';
+				}
+				else{
+					let popTitle = popLayer.querySelector('.tr-pop-title');
+					popTitle.innerHTML = '';
+					popTitle.innerHTML += '<p style="word-wrap: break-word;"> 제목 : '+info.title+'</p>';
+					let popContent = popLayer.querySelector('.tr-pop-content');
+					popContent.innerHTML = '';
+					popContent.innerHTML += '<p style="word-wrap: break-word;">'+info.content+'</p>';
+					
+					document.getElementById("bbsHeadId").value = info.id;
+				}
+			});
+			
+		});
+		
+		document.querySelector('#bbsClose').addEventListener('click', (e) => {
+			e.preventDefault();
+			let popLayer = document.querySelector('.bbsHeadLayer');
+			popLayer.style.display = "none";
+		});
+		
+		const darkmodeGo = () => {
+			const darkModeToggle = document.getElementById('dn'); // 체크박스 정의
+		    if(darkModeToggle){
+		    	const Realbody = document.querySelector('body');
+			    darkModeToggle.addEventListener('change', (e) => {
+			    	if (!Realbody.classList.contains('darkmode')) {
+			    		Realbody.classList.add('darkmode');
+			            localStorage.setItem('whatMode', darkModeToggle.checked); //whatMode라는 이름의 아이템에 체크박스의 체크 여부를 저장하기     
+			        }
+			        else {
+			        	Realbody.classList.remove('darkmode'); // 다크모드 클래스를 제거
+			            localStorage.setItem('whatMode', darkModeToggle.checked); //whatMode라는 이름의 아이템에 체크박스의 체크 여부를 저장하기     
+			        }
+			    });
+		    }
+		  
+	   }
+	   darkmodeGo();
+	   
+	   document.addEventListener('DOMContentLoaded',() => {
+		   const whatMode = localStorage.getItem('whatMode'); //whatMode 아이템 값 불러오기
+		   if (whatMode === "false") { // 체크 여부가 false라면, 라이트모드입니다. 이 때 false는 문자열 타입이므로 "" 안에 적어야 합니다.
+		    return !1; // 라이트모드이므로 아무런 행동을 할 필요가 없습니다.
+		   }  
+		   else { // 다크모드라면 
+			   const darkModeToggle = document.getElementById('dn'); //체크박스를 획득
+		       darkModeToggle.checked = true; 
+		       document.querySelector('body').classList.add('darkmode');
+		   }
+	   });
+		
+	</script>
+</header>
+</html>

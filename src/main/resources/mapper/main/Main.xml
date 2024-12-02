@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="Main">
+
+  
+  <select id="selectStat" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT (SELECT COUNT(1) FROM TB_DATASET_INFO A
+     	        	                 INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+	                                            WHERE UNIT_ID IN (SELECT ID 
+	                                                              FROM TB_UNIT 
+	                                                              START WITH ID = #{schUnitId}
+	                                                              CONNECT BY PRIOR ID = UPPER_ID)) B
+                                     ON A.CREATE_USER_ID = B.USER_ID
+                                     <where>
+                                        <if test='frDt != null and !frDt.equals("")'>
+									    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+									    </if>
+									    <if test='toDt != null and !toDt.equals("")'>
+									    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+									    </if>
+									    <if test='approvedYn != null and !approvedYn.equals("")'>
+									    <choose>
+									    <when test='approvedYn.equals("Y")'>
+									    AND  NOT A.APPROVED_TS IS NULL
+									    </when>
+									    <otherwise>
+									    AND  A.APPROVED_TS ISNULL
+									    </otherwise>
+									    </choose> 
+									    </if>
+                                     </where>
+     	       ) AS TOTAL_COUNT
+     	       
+		      ,(SELECT COUNT(1) FROM TB_DATASET_INFO A
+     	        	                 INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+	                                            WHERE UNIT_ID IN (SELECT ID 
+	                                                              FROM TB_UNIT 
+	                                                              START WITH ID = #{schUnitId}
+	                                                              CONNECT BY PRIOR ID = UPPER_ID)) B
+                                     ON A.CREATE_USER_ID = B.USER_ID
+		       WHERE A.STILL_OR_MOVIE = '001'
+		       <if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			   </if>
+			   <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+			   ) AS STILL_COUNT 
+		      ,(SELECT COUNT(1) FROM TB_DATASET_INFO A
+     	        	                 INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+	                                            WHERE UNIT_ID IN (SELECT ID 
+	                                                              FROM TB_UNIT 
+	                                                              START WITH ID = #{schUnitId}
+	                                                              CONNECT BY PRIOR ID = UPPER_ID)) B
+                                     ON A.CREATE_USER_ID = B.USER_ID
+		       WHERE A.STILL_OR_MOVIE = '002'
+		        <if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			    </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		       ) AS MOVIE_COUNT
+		      ,(SELECT COUNT(1) FROM TB_DATASET_INFO A
+     	        	                 INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+	                                            WHERE UNIT_ID IN (SELECT ID 
+	                                                              FROM TB_UNIT 
+	                                                              START WITH ID = #{schUnitId}
+	                                                              CONNECT BY PRIOR ID = UPPER_ID)) B
+                                     ON A.CREATE_USER_ID = B.USER_ID
+		       WHERE A.COLLECTION_DEVICE_CD = '001' 
+		        <if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			    </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		       ) AS ISAR_COUNT
+		      ,(SELECT COUNT(1) FROM TB_DATASET_INFO A
+     	        	                 INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+	                                            WHERE UNIT_ID IN (SELECT ID 
+	                                                              FROM TB_UNIT 
+	                                                              START WITH ID = #{schUnitId}
+	                                                              CONNECT BY PRIOR ID = UPPER_ID)) B
+                                     ON A.CREATE_USER_ID = B.USER_ID
+		        WHERE A.COLLECTION_DEVICE_CD = '002' 
+		        <if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			   </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		        ) AS EO_COUNT
+		      ,(SELECT COUNT(1) FROM TB_DATASET_INFO A
+     	        	                 INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+	                                            WHERE UNIT_ID IN (SELECT ID 
+	                                                              FROM TB_UNIT 
+	                                                              START WITH ID = #{schUnitId}
+	                                                              CONNECT BY PRIOR ID = UPPER_ID)) B
+                                     ON A.CREATE_USER_ID = B.USER_ID
+		       WHERE A.COLLECTION_DEVICE_CD = '003' 
+		        <if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			    </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		       ) AS IR_COUNT
+		      ,(SELECT COUNT(1) FROM TB_DATASET_INFO A
+     	        	                 INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+	                                            WHERE UNIT_ID IN (SELECT ID 
+	                                                              FROM TB_UNIT 
+	                                                              START WITH ID = #{schUnitId}
+	                                                              CONNECT BY PRIOR ID = UPPER_ID)) B
+                                     ON A.CREATE_USER_ID = B.USER_ID
+		       WHERE A.COLLECTION_DEVICE_CD = '004' 
+		        <if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			    </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		       ) AS MAD_COUNT
+		      ,(SELECT COUNT(1) 
+				FROM TB_DATASET_INFO A 
+				INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+                            WHERE UNIT_ID IN (SELECT ID 
+                                              FROM TB_UNIT 
+                                              START WITH ID = #{schUnitId}
+                                              CONNECT BY PRIOR ID = UPPER_ID)) C
+                ON A.CREATE_USER_ID = C.USER_ID
+				WHERE A.STILL_OR_MOVIE IN ('001','002')
+				<if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			    </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		       ) AS STILL_MOVIE_COUNT
+		      ,(SELECT COUNT(1) 
+				FROM TB_DATASET_INFO A 
+				INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+                            WHERE UNIT_ID IN (SELECT ID 
+                                              FROM TB_UNIT 
+                                              START WITH ID = #{schUnitId}
+                                              CONNECT BY PRIOR ID = UPPER_ID)) C
+                ON A.CREATE_USER_ID = C.USER_ID
+				WHERE STILL_OR_MOVIE = '001'
+				AND DAY_OR_NIGHT = '001'
+				<if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			    </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		      ) AS STILL_DAY_COUNT
+		      ,(SELECT COUNT(1) 
+				FROM TB_DATASET_INFO A 
+				INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+                            WHERE UNIT_ID IN (SELECT ID 
+                                              FROM TB_UNIT 
+                                              START WITH ID = #{schUnitId}
+                                              CONNECT BY PRIOR ID = UPPER_ID)) C
+                ON A.CREATE_USER_ID = C.USER_ID
+				WHERE STILL_OR_MOVIE = '002'
+				AND DAY_OR_NIGHT = '001'
+				<if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			    </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		      ) AS MOVIE_DAY_COUNT
+		      ,(SELECT COUNT(1) 
+				FROM TB_DATASET_INFO A 
+				INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+                            WHERE UNIT_ID IN (SELECT ID 
+                                              FROM TB_UNIT 
+                                              START WITH ID = #{schUnitId}
+                                              CONNECT BY PRIOR ID = UPPER_ID)) C
+                ON A.CREATE_USER_ID = C.USER_ID
+				WHERE STILL_OR_MOVIE = '001'
+				AND DAY_OR_NIGHT = '002'
+				<if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			   </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		      ) AS STILL_NIGHT_COUNT
+		      ,(SELECT COUNT(1) 
+				FROM TB_DATASET_INFO A 
+				INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+                            WHERE UNIT_ID IN (SELECT ID 
+                                              FROM TB_UNIT 
+                                              START WITH ID = #{schUnitId}
+                                              CONNECT BY PRIOR ID = UPPER_ID)) C
+                ON A.CREATE_USER_ID = C.USER_ID
+				WHERE STILL_OR_MOVIE = '002'
+				AND DAY_OR_NIGHT = '002'
+				<if test='frDt != null and !frDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+			    </if>
+			    <if test='toDt != null and !toDt.equals("")'>
+			    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+			   </if>
+			    <if test='approvedYn != null and !approvedYn.equals("")'>
+			    <choose>
+			    <when test='approvedYn.equals("Y")'>
+			    AND  NOT A.APPROVED_TS IS NULL
+			    </when>
+			    <otherwise>
+			    AND  A.APPROVED_TS ISNULL
+			    </otherwise>
+			    </choose> 
+			    </if>
+		      ) AS MOVIE_NIGHT_COUNT
+		FROM DUAL
+  </select>
+  
+  
+   <select id="selectStatObject" parameterType="HashMap" resultType="CmmnMap">
+   
+        SELECT ID,MAX(CLASS_NM) CLASS_NM
+		      , COUNT(1) CNT 
+		FROM 
+			(SELECT E.ID,E.CLASS_NM
+			FROM TB_DATASET_INFO A
+			INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+                        WHERE UNIT_ID IN (SELECT ID 
+                                              FROM TB_UNIT 
+                                              START WITH ID = #{schUnitId}
+                                              CONNECT BY PRIOR ID = UPPER_ID)) F
+            ON A.CREATE_USER_ID = F.USER_ID
+			INNER JOIN  TB_MOVIE_INFO B
+			ON A.ID = B.PARENT_ID
+			INNER JOIN TB_IMAGE_INFO C
+			ON B.ID = C.PARENT_ID
+			INNER JOIN TB_OBJECT_INFO D
+			ON C.ID = D.IMAGE_ID 
+			INNER JOIN TB_CLASS_INFO E
+			ON D.CLASS_INFO_ID = E.ID 
+			<where>
+			<if test='frDt != null and !frDt.equals("")'>
+		    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+		    </if>
+		    <if test='toDt != null and !toDt.equals("")'>
+		    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+		    </if>
+		    <if test='approvedYn != null and !approvedYn.equals("")'>
+		    <choose>
+		    <when test='approvedYn.equals("Y")'>
+		    AND  NOT A.APPROVED_TS IS NULL
+		    </when>
+		    <otherwise>
+		    AND  A.APPROVED_TS ISNULL
+		    </otherwise>
+		    </choose> 
+		    </if>
+		    AND EXISTS (SELECT 1 FROM TB_USER 
+                        WHERE USER_ID = A.CREATE_USER_ID
+	                    AND EXISTS (SELECT 1 
+                                    FROM TB_UNIT 
+                                    START WITH ID = #{schUnitId}
+                                    CONNECT BY PRIOR ID = UPPER_ID)) 
+		    </where>
+			UNION ALL
+			SELECT  D.ID,D.CLASS_NM
+			FROM TB_DATASET_INFO A
+			INNER JOIN (SELECT USER_ID,USER_NM FROM TB_USER 
+                        WHERE UNIT_ID IN (SELECT ID 
+                                              FROM TB_UNIT 
+                                              START WITH ID = #{schUnitId}
+                                              CONNECT BY PRIOR ID = UPPER_ID)) E
+            ON A.CREATE_USER_ID = E.USER_ID
+			INNER JOIN TB_IMAGE_INFO B
+			ON A.ID = B.PARENT_ID
+			INNER JOIN TB_OBJECT_INFO C
+			ON B.ID = C.IMAGE_ID 
+			INNER JOIN TB_CLASS_INFO D
+			ON C.CLASS_INFO_ID = D.ID
+			<where>
+			<if test='frDt != null and !frDt.equals("")'>
+		    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+		    </if>
+		    <if test='toDt != null and !toDt.equals("")'>
+		    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+		    </if>
+		    <if test='approvedYn != null and !approvedYn.equals("")'>
+		    <choose>
+		    <when test='approvedYn.equals("Y")'>
+		    AND  NOT A.APPROVED_TS IS NULL
+		    </when>
+		    <otherwise>
+		    AND  A.APPROVED_TS ISNULL
+		    </otherwise>
+		    </choose> 
+		    </if>
+		    </where>
+			) 
+		GROUP BY ID
+		ORDER BY CNT DESC 
+  </select>
+  
+
+  
+
+</mapper>
+

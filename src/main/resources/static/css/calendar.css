@@ -1,0 +1,146 @@
+
+/* calendar */
+
+.calendar{
+    padding: 0px;
+    align-items: center;
+}
+.calendar_input{
+	width: 80px;
+ /*  padding: 5px;
+  margin-left: 3px; 
+  width: 80px;
+  text-align: left; 
+  */
+
+} 
+
+.calendarModal {
+	position: absolute;
+	background-color:white;
+    width: 250px;
+    margin: 0 auto;
+    font-family: "NotoSansR";
+    z-index: 99999;
+}
+
+.calendarModal .cal_nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 380;
+    font-size: 18px;
+    line-height: 48px;
+    color: white;
+    height:28px;
+    background-color: #587ca0;
+    
+}
+
+.calendarModal .cal_nav .year_month {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+    width: 180px;
+    text-align: center;
+    line-height: 1;
+    padding : 0px;
+    
+}
+
+.calendarModal .cal_nav .month {
+    width: 60px;
+    text-align: center;
+    color :white;
+    background: #4f6f8f; /* #dbf0fd;  */
+    border: 2px solid #587ca0;    /* #87cefa; */
+    padding : 0px;
+}
+
+.calendarModal .cal_nav .go_prev,
+.calendarModal .cal_nav .go_next {
+    display: block;
+    width: 15px;
+    height: 15px;
+
+}
+
+.calendarModal .cal_nav .go_prev::before,
+.calendarModal .cal_nav .go_next::before {
+    content: "";
+    display: block;
+    width: 15px;
+    height: 15px;
+    border: 5px solid #34495E;
+    border-width: 5px 5px 0 0;
+    transition: border 0.1s;
+}
+
+.calendarModal .cal_nav .go_prev:hover::before,
+.calendarModal .cal_nav .go_next:hover::before {
+    border-color: #ed2a61;
+}
+
+.calendarModal .cal_nav .go_prev::before {
+    transform: rotate(-135deg);
+}
+
+.calendarModal .cal_nav .go_next::before {
+    transform: rotate(45deg);
+}
+
+.calendarModal .cal_wrap {
+    padding-top: 5px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.calendarModal .cal_wrap .days {
+    display: flex;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.calendarModal .cal_wrap::after {
+    top: 368px;
+}
+
+.calendarModal .cal_wrap .day {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% / 7);
+    text-align: left;
+    color: #999;
+    font-size: 10px;
+    text-align: center;
+    border-radius:5px; 
+}
+
+.calendarModal .cal_wrap .day.current{
+	cursor:pointer;
+}
+
+.current.pickDay {
+	background: #d9e2ea; /* #dbf0fd */  
+	color:white;
+}
+
+.calendarModal .cal_wrap .dates {
+    display: flex;
+    flex-flow: wrap;
+    height: 210px;
+}
+
+.calendarModal .cal_wrap .day:nth-child(7n -1) {
+    color: #3c6ffa;
+}
+
+.calendarModal .cal_wrap .day:nth-child(7n) {
+    color: #ed2a61;
+}
+
+.calendarModal .cal_wrap .day.disable {
+    color: #ddd;
+}

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="Work">
+  <select id="selectList" parameterType="HashMap" resultType="CmmnMap">
+    SELECT  ROW_NUMBER() OVER(ORDER BY A.CREATE_TS DESC) AS RN
+          , ROW_NUMBER() OVER(ORDER BY A.CREATE_TS ASC) AS IDX
+   		  , A.ID
+   		  , WORK_NM          
+	      , SCHEDULE_CD      
+	      , SCHEDULE_TERM  
+	      , SCHEDULE_TERM||B.CD_NM AS SCHEDULE_VAL
+	      , GATHER_IP   
+	      , GATHER_PORT   
+	      , GATHER_PATH
+	      , GATHER_EXT         
+	      , SERVER_STATUS          
+	      , WORK_PROCESS 
+	      , DECODE(A.WORK_PROCESS,'001',A.UPDATE_TS,NULL) AS LAST_SUCCESS_TS 
+	      , CASE SCHEDULE_CD WHEN '001' THEN WORK_TS + TO_INT(SCHEDULE_TERM)
+	                         WHEN '002' THEN WORK_TS + TO_INT(SCHEDULE_TERM)*7
+			                 WHEN '003' THEN ADD_MONTHS(WORK_TS,TO_INT(SCHEDULE_TERM))
+			                 WHEN '004' then WORK_TS + 365
+		    END  NEXT_WORK_TS
+	      , (SELECT COUNT(1) FROM TB_WORK_LOG WHERE ID = A.ID AND STILL_OR_MOVIE = '001')  IMG_CNT
+	      , (SELECT COUNT(1) FROM TB_WORK_LOG WHERE ID = A.ID AND STILL_OR_MOVIE = '002')  MOV_CNT
+   		  , A.CREATE_USER_ID
+   		  , A.CREATE_TS 
+   		  , A.UPDATE_USER_ID
+   		  , C.USER_NM UPDATE_USER_NM
+   		  , A.UPDATE_TS 
+   	FROM TB_WORK A
+   	LEFT JOIN TB_CD B
+   	ON B.GRP_CD = '025'
+    AND A.SCHEDULE_CD = B.CD
+   	LEFT JOIN TB_USER C
+    ON A.UPDATE_USER_ID = C.USER_ID
+    <where>
+    <if test='frDt != null and !frDt.equals("")'>
+    AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+    </if>
+    <if test='toDt != null and !toDt.equals("")'>
+    AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+    </if>
+    AND USE_YN = #{useYn}
+    </where>
+  </select>
+  
+  <select id="selectworkJobList" parameterType="HashMap" resultType="CmmnMap">
+    SELECT  A.ID
+   		  , WORK_NM          
+	      , SCHEDULE_CD      
+	      , SCHEDULE_TERM  
+	      , SCHEDULE_TERM||B.CD_NM AS SCHEDULE_VAL
+	      , GATHER_IP   
+	      , GATHER_PORT   
+	      , GATHER_PATH
+	      , GATHER_EXT              
+	      , WORK_PROCESS 
+	      , DECODE(WORK_PROCESS,'001',A.UPDATE_TS,NULL) AS LAST_SUCCESS_TS 
+	      , CASE SCHEDULE_CD WHEN '001' THEN WORK_TS + TO_INT(SCHEDULE_TERM)
+	                         WHEN '002' THEN WORK_TS + TO_INT(SCHEDULE_TERM)*7
+			                 WHEN '003' THEN ADD_MONTHS(WORK_TS,TO_INT(SCHEDULE_TERM))
+			                 WHEN '004' then WORK_TS + 365
+		    END NEXT_WORK_TS
+	      , TO_CHAR(CASE SCHEDULE_CD WHEN '001' THEN WORK_TS + TO_INT(SCHEDULE_TERM)
+	                         WHEN '002' THEN WORK_TS + TO_INT(SCHEDULE_TERM)*7
+			                 WHEN '003' THEN ADD_MONTHS(WORK_TS,TO_INT(SCHEDULE_TERM))
+			                 WHEN '004' then WORK_TS + 365
+		    END,'YYYYMMDDHH24MI') NEXT_WORK_DM
+		  , A.CREATE_USER_ID
+   	FROM TB_WORK  A
+   	LEFT JOIN TB_CD B
+   	ON B.GRP_CD = '025'
+    AND A.SCHEDULE_CD = B.CD
+    <where>
+    <if test='id != null and !id.equals("")'>
+    AND A.ID = #{id}
+    </if>
+    AND USE_YN = 'Y'
+    </where>
+  </select>
+  
+  <select id="selectLogList" parameterType="HashMap" resultType="CmmnMap">
+    SELECT  ROW_NUMBER() OVER(ORDER BY A.CREATE_TS DESC) AS RN
+          , ROW_NUMBER() OVER(ORDER BY A.CREATE_TS ASC) AS IDX
+   		  , A.ID  
+   		  , B.WORK_NM         
+	      , SEQ  
+	      , STILL_OR_MOVIE         
+	    <!--   , CASE WHEN INSTR(A.FILE_TYPE,'video') > 0 then '이미지'
+                 WHEN INSTR(A.FILE_TYPE,'image') > 0 then '영상' 
+                 WHEN INSTR(A.FILE_TYPE,'xml') > 0 then 'xml'  	
+                 ELSE '' END FILE_TYPE	 -->
+	      , FILE_PATH       
+	      , FILE_NM  
+	      , SUBSTR(FILE_NM,INSTR(FILE_NM,'.',-1)+1) FILE_EXT
+	      , A.CREATE_USER_ID       
+	      , A.CREATE_TS           
+   	FROM TB_WORK_LOG A
+   	INNER JOIN TB_WORK B
+   	ON A.ID = B.ID
+    <where>
+    AND A.ID = #{logId} 
+    </where>
+  </select>
+  
+    <select id="select" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT ID          
+	         , WORK_NM          
+	         , SCHEDULE_CD      
+	         , SCHEDULE_TERM      
+	         , GATHER_IP   
+	         , GATHER_PORT   
+	         , GATHER_PATH
+	         , GATHER_EXT         
+	         , SERVER_STATUS          
+	         , WORK_PROCESS    
+	         , CASE SCHEDULE_CD WHEN '001' THEN WORK_TS + TO_INT(SCHEDULE_TERM)
+	                         WHEN '002' THEN WORK_TS + TO_INT(SCHEDULE_TERM)*7
+			                 WHEN '003' THEN ADD_MONTHS(WORK_TS,TO_INT(SCHEDULE_TERM))
+			                 WHEN '004' then WORK_TS + 365
+		       END  NEXT_WORK_TS     
+	         , CREATE_USER_ID       
+	         , CREATE_TS           
+	         , UPDATE_USER_ID        
+	         , UPDATE_TS             
+     	FROM TB_WORK
+     	<where>
+     	AND ID = #{id}
+     	</where>
+  </select>
+  
+  <update id="updateWorkJob" parameterType="CmmnMap">
+       UPDATE TB_WORK SET WORK_PROCESS = '001'
+                     , WORK_TS =  SYSDATE
+       <where>
+       AND ID = #{id}
+       </where>
+  </update>
+  
+  <update id="mergeWork" parameterType="CmmnMap">
+       MERGE INTO TB_WORK A
+       USING DUAL
+       ON  A.ID = #{id, jdbcType=VARCHAR}
+       WHEN MATCHED THEN 
+       UPDATE SET WORK_NM  = #{workNm}
+                , SCHEDULE_CD =  #{scheduleCd}
+                , SCHEDULE_TERM =  #{scheduleTerm}
+                , GATHER_IP =  #{gatherIp}
+                , GATHER_PORT =  #{gatherPort}
+                , GATHER_PATH =  #{gatherPath}
+                <if test='gatherExt != null and !gatherExt.equals("")'>
+                , GATHER_EXT =  #{gatherExt}
+                </if>
+                <if test='serverStatus != null and !serverStatus.equals("")'>
+                , SERVER_STATUS =  #{serverStatus}
+                </if>
+                <if test='workProcess != null and !workProcess.equals("")'>
+                , WORK_PROCESS =  #{workProcess}
+                </if>
+                <if test='workTs != null and !workTs.equals("")'>
+                , WORK_TS =  SYSDATE
+                </if>
+                , UPDATE_USER_ID = #{updateUserId, jdbcType=VARCHAR}
+                , UPDATE_TS   = SYSDATE
+       WHEN NOT MATCHED THEN
+       INSERT  (ID
+              , WORK_NM          
+	          , SCHEDULE_CD      
+	          , SCHEDULE_TERM      
+	          , GATHER_IP   
+	          , GATHER_PORT   
+	          , GATHER_PATH
+	          <if test='gatherExt != null and !gatherExt.equals("")'>
+	          , GATHER_EXT 
+	          </if>
+	          <if test='serverStatus != null and !serverStatus.equals("")'>        
+	          , SERVER_STATUS        
+	          </if>  
+	          <if test='workProcess != null and !workProcess.equals("")'>
+	          , WORK_PROCESS   
+	          </if> 
+	          , WORK_TS 
+	          , USE_YN      
+	          , CREATE_USER_ID       
+	          , CREATE_TS           
+	          , UPDATE_USER_ID        
+	          , UPDATE_TS)           
+        VALUES( #{id}
+              , #{workNm}
+              , #{scheduleCd, jdbcType=VARCHAR}
+              , #{scheduleTerm, jdbcType=VARCHAR}
+              , #{gatherIp, jdbcType=VARCHAR}
+              , #{gatherPort, jdbcType=VARCHAR}
+              , #{gatherPath, jdbcType=VARCHAR}
+              <if test='gatherExt != null and !gatherExt.equals("")'>
+              , #{gatherExt, jdbcType=VARCHAR}
+              </if>
+              <if test='serverStatus != null and !serverStatus.equals("")'>        
+              , #{serverStatus, jdbcType=VARCHAR}
+              </if>
+              <if test='workProcess != null and !workProcess.equals("")'>
+              , #{workProcess, jdbcType=VARCHAR}
+              </if>
+              , SYSDATE
+              , 'Y'
+              , #{createUserId}
+              , SYSDATE
+              , #{updateUserId}
+              , SYSDATE)
+   </update>
+   
+   <delete id="deleteWork" parameterType="hashmap">
+       UPDATE TB_WORK
+       SET USE_YN = 'N'
+       <where>
+       AND ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("id")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+       </where>
+   </delete>
+</mapper>
+

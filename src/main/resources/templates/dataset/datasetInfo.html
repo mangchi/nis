@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 영상/이미지</title>
+</head>
+<div class="content">
+	<form id="regFrm" th:action method="post" >
+		<div class="pop_container07">
+			<div class="pop-bg" style="background: var(- -bg-panh);">
+				<div class="pop-head">
+					<div class="pop-title">영상/이미지 등록</div>
+				</div>
+				<div class="pop-body" style="padding: 0px 30px;">
+					<input type="hidden" id="sourceType">
+					<input type="hidden" id="tranMode" value="I">
+					<input type="hidden" sec:authorize="hasRole('ADMIN')" id="isAdmin">
+					<div class="sec-grid16">
+						<div class="g-area3 item">
+							<div class="pannel">
+								<div class="itmGrp p-head">
+									<div class="p-tit02">파일 업로드</div>
+									<!-- <div class="rightBtnGrp btn-group02">
+										<button type="button" class="btn-upload01" onclick="saveFunc();">파일 등록</button>
+									</div> -->
+								</div>
+								<span id="valid_file" class="inform3 valid"></span>
+								<div class="fileBox"></div>
+							</div>
+						</div>
+                        <input type="hidden" id="id" name="id">
+						<div class="g-area3 item">
+							<div class="pannel">
+								<div class="p-head1">
+									<div class="tabmenu01">
+										<a href="javascript:;" class="btn-tab01 on" style="width: 40%;" title="기본/보조정보">기본/보조정보</a> 
+										<a href="javascript:;" class="btn-tab01"style="width: 59%;" title="항공기 수집영상 분석태그">항공기 수집영상분석태그(Tag)</a>
+									</div>
+								</div>
+								<div class="graph bg">
+									<div class="group-input">
+										<fieldset>
+											<ul class="basic tabPane">
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="collectionDt">임무시간</label>
+														<input type="text" class="basic01" id="collectionDt" name="collectionDt" autocomplete="off"  title="임무시간" placeholder="ex)0000-0000(0000i)" /> 
+														<span id="valid_collectionDt" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="collectionPos">탐지구역</label>
+														<input type="text" class="basic01" id="collectionPos" name="collectionPos" autocomplete="off"  title="탐지구역" placeholder="ex)MP-0 남해동"> 
+														<span id="valid_collectionPos" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="collectionDeviceCd">탐지수단</label>
+														<select class="basic basic01" id="collectionDeviceCd">
+														</select> 
+														<span id="valid_collectionDeviceCd" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="stillOrMovie">자료구분</label>
+														<div class="btn-group-toggle">
+															<input type="radio" id="stillOrMovie1" name="stillOrMovie" checked value='001'> 
+														    <label for="stillOrMovie1">이미지</label> 
+														    <input type="radio" id="stillOrMovie2" name="stillOrMovie"  value='002'> 
+															<label for="stillOrMovie2">영상</label>
+														</div>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="dayOrNight">주/야 구분</label>
+														<div class="btn-group-toggle">
+															<input type="radio" id="dayOrNight1" name="dayOrNight" checked value='001'> 
+															<label for="dayOrNight1">주간</label> 
+															<input type="radio" id="dayOrNight2" name="dayOrNight" value='002'>
+															<label for="dayOrNight2">야간</label>
+														</div>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="sourceCd">데이터 출처</label> 
+														<select id="sourceCd" class="basic basic01" name="sourceCd">
+														</select> <span id="valid_sourceCd" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 " for="dataType">데이터 종류</label> 
+														<select class="basic basic01" id="dataType">
+														</select> 
+														<span id="valid_dataType" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 " for="">데이터 좌표</label> 
+														<input type="text" class="basic02 numComma" name="dataCoordX" autocomplete="off" placeholder="ex)37.1584318">
+														<input type="text" class="basic02 numComma" name="dataCoordY" autocomplete="off" placeholder="ex)127.1548198">
+														<span id="valid_dataCoordX" class="inform3 valid"></span>
+														<span id="valid_dataCoordY" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01" for="etc">설명</label>
+														<textarea style="width: 77%; height: 114px; margin-bottom: 20px;" name="etc" placeholder="ex)기본정보 추가 설명"></textarea>
+														<span id="valid_etc" class="inform3 valid"></span>
+													</div>
+												</li>
+											</ul>
+											<ul class="basic tabPane">
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="collectionDt">임무시간</label>
+														<input type="text" class="basic01" id="collectionDt" name="collectionDt" autocomplete="off" title="임무시간" placeholder="ex)0000-0000(0000i)" /> 
+														<span id="valid_collectionDt" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="collectionPos">탐지구역</label>
+														<input type="text" class="basic01" id="collectionPos" name="collectionPos" autocomplete="off" title="탐지구역" placeholder="ex)MP-0 남해동"> 
+														<span id="valid_collectionPos" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="dataCd">대상</label> 
+														<select class="basic basic01" id="dataCd">
+														</select> 
+														<span id="valid_dataCd" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="nationCd">국적</label> 
+														<select class="basic basic01" id="nationCd">
+														</select> 
+														<span id="valid_nationCd" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="airStillOrMovie">자료구분</label>
+														<div class="btn-group-toggle">
+															<input type="radio" id="airStillOrMovie1" name="airStillOrMovie" checked value='001'> 
+														    <label for="airStillOrMovie1">이미지</label> 
+														    <input type="radio" id="airStillOrMovie2" name="airStillOrMovie"  value='002'> 
+															<label for="airStillOrMovie2">영상</label>
+														</div>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="airDayOrNight">주/야 구분</label>
+														<div class="btn-group-toggle">
+															<input type="radio" id="airDayOrNight1" name="airDayOrNight" checked value='001'> 
+															<label for="airDayOrNight1">주간</label> 
+															<input type="radio" id="airDayOrNight2" name="airDayOrNight" value='002'>
+															<label for="airDayOrNight2">야간</label>
+														</div>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="sourceCd">데이터 출처</label> 
+														<select id="sourceCd" class="basic basic01" name="sourceCd">
+														</select> <span id="valid_sourceCd" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="shipClass">함종/선종</label> 
+														<input type="text" class="basic basic01" name="shipClass" autocomplete="off"  title="함종/선종" placeholder="ex)OO급 FFG"> 
+														<span id="valid_shipClass" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="shipNm">함명/선명</label> 
+														<input type="text" class="basic basic01" name="shipNm" autocomplete="off"  title="함명/선명" placeholder="ex)OO함(FFG-000)"> 
+														<span id="valid_shipNm" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01 icon" for="collectionDeviceCd">탐지수단</label>
+														<select class="basic basic01" id="collectionDeviceCd">
+														</select> 
+														<span id="valid_collectionDeviceCd" class="inform3 valid"></span>
+													</div>
+												</li>
+												<li>
+													<div class="input-group">
+														<label class="la_basic01" for="etc">기타</label>
+														<textarea style="width: 77%; height: 150px; margin-bottom: 20px;" name="etc" placeholder="ex)세부정보  설명"></textarea>
+														<span id="valid_etc" class="inform3 valid"></span>
+													</div>
+												</li>
+											</ul>
+										</fieldset>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="pop-footer">
+		          <div class="pop-btn-group">
+		            <button type="button" class="btn-m-cancel" title="닫기">닫기</button>
+		            <button type="button" class="btn-m-confirm" title="확인">등록</button>
+		          </div>
+		        </div>
+			</div>
+		</div>
+	</form>
+
+
+<script type="text/javascript">
+    modalInit = (param) => {
+    	fileParam = new Array();
+    	fileInit();
+    	if(param != undefined &&  param != null){
+    		document.querySelector('.pop_container07').querySelector('.pop-title').innerHTML = '영상/이미지 수정';
+    		document.querySelector('.pop_container07').querySelector('.btn-m-confirm').innerHTML = '수정';
+    		modalSch(param);
+		}
+    	else{
+    		fileTp = 'img';
+    		document.querySelector('.pop_container07').querySelectorAll('ul')[1].style.display = "none";
+    		document.querySelectorAll("[name=stillOrMovie]")[0].checked = true;	
+    		document.querySelectorAll("[name=dayOrNight]")[0].checked = true;	
+    	}
+    	
+    	gfn_setCodeGrpObj('006',document.querySelector('fieldset').querySelectorAll('#collectionDeviceCd')[0],true);
+    	gfn_setCodeGrpObj('006',document.querySelector('fieldset').querySelectorAll('#collectionDeviceCd')[1],true);
+  	    gfn_setCodeGrpObj('008',document.querySelector('fieldset').querySelectorAll('#sourceCd')[0],true);
+  	    gfn_setCodeGrpObj('008',document.querySelector('fieldset').querySelectorAll('#sourceCd')[1],true);
+  	    gfn_setCodeGrpObj('010',document.querySelector('fieldset').querySelector('#dataCd'),true);
+  	    gfn_setCodeGrpObj('011',document.querySelector('fieldset').querySelector('#nationCd'),true);
+  	    gfn_setCodeGrpObj('033',document.querySelector('fieldset').querySelector('#dataType'),true);
+  	    
+		
+	}	
+    
+    modalSch = (param) => {
+		//let param = {};
+		gfn_asyncJsonCall("/datasetInfo",'POST',param).then((data) => {
+			let info = data['info'];
+			if(info != undefined){
+				document.getElementById('tranMode').value = 'U';
+				document.getElementById('id').value = info.id;
+				let ul = document.querySelector('.pop_container07').querySelectorAll('ul')[0];
+				
+				if(info.sourceType === '001'){
+					document.querySelector('.pop_container07').querySelectorAll('ul')[1].style.display = "none";
+					
+					ul.querySelector('#sourceCd').value = info.sourceCd;
+					document.querySelectorAll('.btn-tab01')[0].classList.add('on');
+	 				document.querySelectorAll('.btn-tab01')[1].classList.remove('on');
+	 				ul.querySelector('#dataType').value = info.dataType;
+					ul.querySelector('[name=dataCoordX]').value = gfn_nullValue(info.dataCoordX);
+					ul.querySelector('[name=dataCoordY]').value = gfn_nullValue(info.dataCoordY);
+					let stillOrMovies = ul.querySelectorAll("[name=stillOrMovie]");
+					stillOrMovies.forEach((stillOrMovie) => {
+						if(stillOrMovie.value === info.stillOrMovie){
+							stillOrMovie.checked = true;
+							if(info.stillOrMovie === '001'){
+				    			fileTp = 'img';
+				    		}
+				    		else{
+				    			fileTp = 'mov';
+				    		}
+						}
+					});
+					let dayOrNights = ul.querySelectorAll("[name=dayOrNight]");
+					dayOrNights.forEach((dayOrNight) => {
+						if(dayOrNight.value === info.dayOrNight){
+							dayOrNight.checked = true;
+						}
+					});
+				}
+				else{
+					ul = document.querySelector('.pop_container07').querySelectorAll('ul')[1];
+					document.querySelectorAll('.btn-tab01')[0].classList.remove('on');
+	 				document.querySelectorAll('.btn-tab01')[1].classList.add('on');
+					document.querySelector('.pop_container07').querySelectorAll('ul')[0].style.display = "none";
+					ul.querySelector('#dataCd').value = info.dataCd;
+					ul.querySelector('#nationCd').value = info.nationCd;
+					ul.querySelector('[name=shipClass]').value = info.shipClass;
+					ul.querySelector('[name=shipNm]').value = info.shipNm;
+					let stillOrMovies = ul.querySelectorAll("[name=airStillOrMovie]");
+					stillOrMovies.forEach((stillOrMovie) => {
+						if(stillOrMovie.value === info.stillOrMovie){
+							stillOrMovie.checked = true;
+							if(info.stillOrMovie === '001'){
+				    			fileTp = 'img';
+				    		}
+				    		else{
+				    			fileTp = 'mov';
+				    		}
+						}
+					});
+					let dayOrNights = ul.querySelectorAll("[name=airDayOrNight]");
+					dayOrNights.forEach((dayOrNight) => {
+						if(dayOrNight.value === info.dayOrNight){
+							dayOrNight.checked = true;
+						}
+					});
+
+				}
+				
+				ul.querySelector('#collectionDt').value = info.collectionDt;
+				ul.querySelector('#collectionPos').value = info.collectionPos;
+				ul.querySelector('#collectionDeviceCd').value = info.collectionDeviceCd;
+				ul.querySelector('#sourceCd').value = info.sourceCd;
+				ul.querySelector('[name=etc]').value = info.etc;
+			}
+			let list = data['fileList'];
+			if(list != undefined){
+				
+				/*
+				let orgFileArr = new Array();
+				for(let key in list){
+					gfn_asyncDownCall('/fileId/'+list[key].id+'/'+list[key].seq,'GET',param).then((data) => {
+						let fileItem = new File([data], list[key].originFileNm
+								               , {type: list[key].fileType,lastModified: new Date(0),});
+						orgFileArr.push(data);
+			    	});
+					
+				}
+				addFiles(orgFileArr);
+                */
+                
+				let fileList = document.querySelector('.fileBox').querySelector('.fileList');
+				let htmlData = '';
+				document.querySelector('.fileBox').querySelector('.helpDiv').style.display = 'none';
+				for(let key in list){
+					console.log("key:",key);
+					let fileItem = new File([key], list[key].fileNm, {
+						          type: list[key].fileType,lastModified: new Date(0), size : parseInt(list[key].fileSize)
+						});
+					filesArr.push(fileItem);
+					let fiObj = {id:list[key].id,seq:list[key].seq,fileNm:list[key].fileNm,filePath:list[key].filePath,fileType:list[key].fileType,size : parseInt(list[key].fileSize),workFilePath:list[key].workFilePath};
+					fileParam.push(fiObj);
+					htmlData += '<div id="file' + key + '" class="fileRow ch-file">';
+					htmlData += "   <div class='name ch-name'><a href='javascript:;' class='link-file' onclick='downFile("+JSON.stringify(list[key])+")'>" + list[key].originFileNm + "</a></div>";
+	                htmlData += '   <div class="length ch-length">' + (parseInt(list[key].fileSize)/1024).toFixed(2) + 'KB</div>';
+	                htmlData += '   <button type="button" class="btn-func01" title="삭제" onclick="deleteFile(' + key + ');"><i class="delete"></i></button>';
+	                htmlData += '</div>';
+	                //fileNo++;
+	                fileTotSize +=parseInt(list[key].fileSize);
+	                
+				}
+                fileList.innerHTML += htmlData;
+                let filesInfo = document.querySelector('.fileBox').querySelector('.filesInfo');
+                filesInfo.innerHTML = '';
+                filesInfo.innerHTML += '파일개수: '+document.querySelectorAll('.fileRow').length + '&nbsp;&nbsp;&nbsp;&nbsp;';
+                filesInfo.innerHTML += '파일크기: '+(fileTotSize/1024).toFixed(2) + 'KB';
+
+			}
+			if(gfn_nullValue(info.approvedTs) != ''){
+				let isAdmin = document.querySelector('#isAdmin');
+				if(!isAdmin){
+					document.querySelector('.pop_container07').querySelector('.btn-m-confirm').style.display = "none";
+					gfn_readOnlyObj(document.getElementById('regFrm'));
+				}
+			}
+			
+		}); 
+    }
+	
+    downFile = (data) => {
+    	console.log("donw id:",data.id);
+    	let param = {};
+    	gfn_asyncDownCall('/fileId/'+data.id+'/'+data.seq,'GET',param).then((data) => {
+    		console.log("data:",data);
+    	});
+
+    }
+    
+    document.getElementsByName("stillOrMovie").forEach((rBtn,index) =>{
+    	rBtn.addEventListener('change',(e) => {
+    		if(document.querySelectorAll('.fileRow').length > 0){
+               confirmCall(msg.stillOrMovie,(isChange)=>{
+            	   if(!isChange){
+	           			if(e.target.value === '001'){
+	           				document.querySelectorAll("[name=stillOrMovie]")[1].checked = true;
+	           				
+	           			}else{
+	           				document.querySelectorAll("[name=stillOrMovie]")[0].checked = true;
+	           			}
+	           			return false;
+	           		}
+            	   deleteFiles();
+               });
+    		}
+    		
+    		if(e.target.value === '001'){
+    			fileTp = 'img';
+    		}
+    		else{
+    			fileTp = 'mov';
+    		}
+    	});
+    });
+    
+    document.getElementsByName("airStillOrMovie").forEach((rBtn,index) =>{
+    	rBtn.addEventListener('change',(e) => {
+    		if(document.querySelectorAll('.fileRow').length > 0){
+               confirmCall(msg.stillOrMovie,(isChange)=>{
+            	   if(!isChange){
+	           			if(e.target.value === '001'){
+	           				document.querySelectorAll("[name=airStillOrMovie]")[1].checked = true;
+	           				
+	           			}else{
+	           				document.querySelectorAll("[name=airStillOrMovie]")[0].checked = true;
+                            
+	           			}
+	           			return false;
+	           		}
+            	   deleteFiles();
+               });
+    		}
+    		
+    		if(e.target.value === '001'){
+    			fileTp = 'img';
+    		}
+    		else{
+    			fileTp = 'mov';
+    		}
+    	});
+    });
+    
+    saveAfterFunc = () => {
+    	let popLayer = document.querySelector('.layer');
+		popLayer.style.display = "none";
+		searchFunc();
+	}
+    
+    document.querySelector('.pop_container07').querySelector('.btn-m-confirm').addEventListener('click',(e)=>{
+    	e.preventDefault();
+    	gfn_removeValidHtml(document.getElementById('regFrm'),'span');
+		let param = {};
+		let url = "/datasetSave";
+		let ul = document.querySelector('.pop_container07').querySelectorAll('ul')[0];
+		param.id = document.getElementById('id').value;
+		console.log(ul.style.display);
+		if(ul.style.display != 'none'){
+			param.sourceType = '001';
+			let stillOrMovies = document.querySelectorAll("[name=stillOrMovie]");
+			stillOrMovies.forEach((stillOrMovie) => {
+				if(stillOrMovie.checked){
+					param.stillOrMovie = stillOrMovie.value;
+				}
+			});
+			let dayOrNights = document.querySelectorAll("[name=dayOrNight]");
+			dayOrNights.forEach((dayOrNight) => {
+	            if(dayOrNight.checked){
+	            	param.dayOrNight = dayOrNight.value;
+				}
+			});
+			
+			
+			param.dataType = ul.querySelector('#dataType').value;
+			param.dataCoordX = ul.querySelector('[name=dataCoordX]').value;
+			param.dataCoordY = ul.querySelector('[name=dataCoordY]').value;
+		}
+		else{
+			url = "/datasetSaveAir";
+			ul = document.querySelector('.pop_container07').querySelectorAll('ul')[1];
+			param.sourceType = '002';
+			let stillOrMovies = document.querySelectorAll("[name=airStillOrMovie]");
+			stillOrMovies.forEach((stillOrMovie) => {
+				if(stillOrMovie.checked){
+					param.stillOrMovie = stillOrMovie.value;
+				}
+			});
+			let dayOrNights = document.querySelectorAll("[name=airDayOrNight]");
+			dayOrNights.forEach((dayOrNight) => {
+	            if(dayOrNight.checked){
+	            	param.dayOrNight = dayOrNight.value;
+				}
+			});
+			
+			param.dataCd = ul.querySelector('#dataCd').value;
+			param.nationCd = ul.querySelector('#nationCd').value;
+			param.shipClass = ul.querySelector('[name=shipClass]').value;
+			param.shipNm = ul.querySelector('[name=shipNm]').value;
+		}
+		param.sourceCd = ul.querySelector('#sourceCd').value;
+		param.collectionDt = ul.querySelector('#collectionDt').value;
+		param.collectionPos = ul.querySelector('#collectionPos').value;
+		param.collectionDeviceCd = ul.querySelector('#collectionDeviceCd').value;
+		console.log("param:",param);
+		param.etc = ul.querySelector('[name=etc]').value;
+		let requiredParams = { collectionDt: "임무시간"
+				             , collectionPos: "탐지 구역"
+				             , collectionDeviceCd: "탐지 수단"
+				             , sourceCd: "데이터 출처"
+						     };
+		if(document.querySelector('.pop_container07').querySelectorAll('ul')[0].style.display != 'none'){
+			//requiredParams.dataType = "데이터 종류";
+			//requiredParams.dataCoordX = "데이터 X좌료";
+			//requiredParams.dataCoordX = "데이터 Y좌료";
+		}
+		else{
+			requiredParams.dataCd = "대상";
+			requiredParams.nationCd = "국적";
+			requiredParams.shipClass = "함종/선종";
+			requiredParams.shipNm = "함명/선명";
+		}
+
+		if(!gfn_validJson(param,requiredParams,true,ul)){
+			return;
+		}
+
+        let isImgMov = false;
+		filesArr.forEach((fileItem) => {
+			console.log(fileItem.name);
+			if(fileItem.name.toLowerCase().indexOf('xml') === -1){
+				isImgMov = true;
+			}	
+		});
+		if(!isImgMov){
+			 msgCall(msg.onlyXml,false);
+			 return;
+		}
+		gfn_asyncJsonCallWithFile(url,'POST',document.getElementById('regFrm'),null,param).then((data) => {
+				for(key in data) {
+					if(key.indexOf('success_msg') > -1){
+						//msgCall(data[key]+"",true);
+						msgCallBack(data[key],true,saveAfterFunc);
+						break;
+					}
+					if(key.indexOf('fail_msg') > -1){
+						msgCall(data[key],false);
+						break;
+					}
+					if(key.indexOf('valid') > -1){
+						let valid = document.getElementById(key); 
+						valid.innerHTML = data[key];
+					}
+				}
+	    });
+	});
+	
+
+	document.querySelectorAll('.btn-tab01').forEach((tabPane,index) => {
+		tabPane.addEventListener('click',(e) => {
+			if(e.target.classList.contains('on')){
+				return false;
+			}
+			if(document.getElementById('tranMode').value === 'U'){
+				return false;
+			}
+			let val = '';
+			let ul = document.querySelector('.pop_container07').querySelectorAll('ul')[1];
+			if(index === 0){
+				val += ul.querySelector('#dataCd').value;
+				val += ul.querySelector('#nationCd').value;
+				val += ul.querySelector('[name=shipClass]').value;
+				val += ul.querySelector('[name=shipNm]').value;
+			}
+			else{
+				ul = document.querySelector('.pop_container07').querySelectorAll('ul')[0];
+				val += ul.querySelector('#sourceCd').value;
+				val += ul.querySelector('#dataType').value;
+				val += ul.querySelector('[name=dataCoordX]').value;
+				val += ul.querySelector('[name=dataCoordY]').value;
+			}
+			val += ul.querySelector('#collectionDt').value;
+			val += ul.querySelector('#collectionPos').value;
+			val += ul.querySelector('#collectionDeviceCd').value;
+			val += ul.querySelector('[name=etc]').value;
+			if(val.trim() != '' || document.querySelectorAll('.fileRow').length > 0){
+				confirmCall(msg.sourceType,(isChange)=>{
+					if(isChange){
+		      	    	gfn_removeValidHtml(document.getElementById('regFrm'),'span');
+		      	    	if(document.querySelectorAll('.fileRow').length > 0){
+		      	    		deleteFiles();
+		      		    }
+		      	    	fileTp = 'img';
+		      	    	document.querySelectorAll("[name=stillOrMovie]")[0].checked = true;		
+		      	    	if(index === 0){
+		      	    		gfn_initObj(document.querySelector('.pop_container07').querySelectorAll('ul')[1]);
+			 					 				
+			 				document.querySelectorAll('.btn-tab01')[0].classList.add('on');
+			 				document.querySelectorAll('.btn-tab01')[1].classList.remove('on');
+			 				document.querySelectorAll('.tabPane')[0].style.display = "block";
+			 				document.querySelectorAll('.tabPane')[1].style.display = "none";
+			 		    }else{
+			 		    	gfn_initObj(document.querySelector('.pop_container07').querySelectorAll('ul')[0]);
+			 				document.querySelectorAll('.btn-tab01')[0].classList.remove('on');
+			 				document.querySelectorAll('.btn-tab01')[1].classList.add('on');
+			 				document.querySelectorAll('.tabPane')[0].style.display = "none";
+			 				document.querySelectorAll('.tabPane')[1].style.display = "block";
+			 		    }
+		            }  
+				});
+			}
+			else{
+				gfn_removeValidHtml(document.getElementById('regFrm'),'span');
+      	    	if(document.querySelectorAll('.fileRow').length > 0){
+      	    		deleteFiles();
+      		    }
+      	    	fileTp = 'img';
+     
+      	    	if(index === 0){
+      	    		gfn_initObj(document.querySelector('.pop_container07').querySelectorAll('ul')[1]);
+      	    		//document.getElementById('authority3').checked = true;
+      	    		document.querySelectorAll("[name=stillOrMovie]")[0].checked = true;	
+      	    		document.querySelectorAll("[name=dayOrNight]")[0].checked = true;	
+	 				document.querySelectorAll('.btn-tab01')[0].classList.add('on');
+	 				document.querySelectorAll('.btn-tab01')[1].classList.remove('on');
+	 				document.querySelectorAll('.tabPane')[0].style.display = "block";
+	 				document.querySelectorAll('.tabPane')[1].style.display = "none";
+	 		    }else{
+	 		    	gfn_initObj(document.querySelector('.pop_container07').querySelectorAll('ul')[0]);
+	 		    	document.querySelectorAll("[name=airStillOrMovie]")[0].checked = true;	
+	 		    	document.querySelectorAll("[name=airDayOrNight]")[0].checked = true;	
+	 				document.querySelectorAll('.btn-tab01')[0].classList.remove('on');
+	 				document.querySelectorAll('.btn-tab01')[1].classList.add('on');
+	 				document.querySelectorAll('.tabPane')[0].style.display = "none";
+	 				document.querySelectorAll('.tabPane')[1].style.display = "block";
+	 		    }
+			}			
+		});
+	});
+	
+	document.querySelector('.pop_container07').querySelector('.btn-m-cancel').addEventListener('click',(e)=>{
+		let popLayer = document.querySelector('.layer');
+		popLayer.style.display = "none";
+	});
+	
+	
+	
+</script>
+</div>
+</html>

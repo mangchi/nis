@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="Img">
+  <select id="selectList" parameterType="HashMap" resultType="CmmnMap">
+     <![CDATA[
+     	SELECT
+     		  ID
+     		, ROW_NUMBER() OVER (ORDER BY CREATE_TS DESC) AS RN
+     		, FILE_ID
+     		, LABELING_YN
+     		, CREATE_USER_ID
+     		, CREATE_TS
+     		, UPDATE_USER_ID
+     		, UPDATE_TS
+     	FROM TB_IMAGE_INFO
+     ]]>
+  </select>
+  
+    <select id="select" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  A.ID
+     		, B.ID IMAGE_ID
+     		, A.COLLECTION_DT
+   		    , A.COLLECTION_POS
+   		    , A.COLLECTION_DEVICE_CD
+   		    , A.SOURCE_CD
+   		    , A.DAY_OR_NIGHT
+   		    , A.STILL_OR_MOVIE
+   		    , A.DATA_TYPE
+   		    , A.DATA_COORD_X
+   		    , A.DATA_COORD_Y
+   		    , A.DATA_CD
+   		    , A.NATION_CD
+   		    , A.ETC
+   		    , A.APPROVED_TS
+     		, B.LABELING_YN
+     		, B.CREATE_USER_ID
+     		, B.CREATE_TS
+     		, B.UPDATE_USER_ID
+     		, B.UPDATE_TS
+     	FROM TB_DATASET_INFO A
+     	INNER JOIN TB_IMAGE_INFO B
+   	    ON   A.ID = B.PARENT_ID
+     	<where>
+     	AND A.ID = #{id}
+     	</where>
+  </select>
+  
+  <select id="selectVo" parameterType="HashMap" resultType="DatasetVo">
+        
+     	SELECT
+     		  A.ID
+     		, B.ID IMAGE_ID
+     		, A.COLLECTION_DT
+   		    , A.COLLECTION_POS
+   		    , A.COLLECTION_DEVICE_CD
+   		    , A.SOURCE_CD
+   		    , A.DAY_OR_NIGHT
+   		    , A.STILL_OR_MOVIE
+   		    , A.DATA_TYPE
+   		    , A.DATA_COORD_X
+   		    , A.DATA_COORD_Y
+   		    , A.DATA_CD
+   		    , A.NATION_CD
+   		    , A.SOURCE_TYPE
+   		    , A.SHIP_CLASS
+   		    , A.SHIP_NM
+   		    , A.ETC
+   		    , A.APPROVED_TS
+     		, B.LABELING_YN
+     		, B.CREATE_USER_ID
+     		, C.USER_NM CREATE_USER_NM
+     		, B.CREATE_TS
+     		, B.UPDATE_USER_ID
+     		, B.UPDATE_TS
+     	FROM TB_DATASET_INFO A
+     	INNER JOIN TB_IMAGE_INFO B
+   	    ON   A.ID = B.PARENT_ID
+   	 <!--    AND  B.FILE_SEQ = 1 -->
+   	    INNER JOIN TB_USER C
+   	    ON B.CREATE_USER_ID = C.USER_ID
+     	<where>
+     	AND A.ID = #{id}
+     	AND ROWNUM = 1
+     	</where>
+  </select>
+  
+  <select id="selectObjectList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  D.ID
+     		, ROW_NUMBER() OVER (ORDER BY C.CREATE_TS ) AS RN
+     		, ROW_NUMBER() OVER(ORDER BY C.CREATE_TS ASC) AS IDX
+     		, C.CLASS_INFO_ID CLASS_ID
+     		, C.IMAGE_ID
+     		, D.CLASS_NM
+     		, C.X SX
+	   		, C.Y SY
+	   		, C.EX 
+     		, C.EY
+     	FROM TB_DATASET_INFO A
+     	INNER JOIN TB_IMAGE_INFO B
+     	ON A.ID = B.PARENT_ID
+     	INNER JOIN  TB_OBJECT_INFO C
+     	ON B.ID = C.IMAGE_ID
+     	LEFT JOIN TB_CLASS_INFO D
+     	ON C.CLASS_INFO_ID =D.ID
+     	<where>
+     	AND B.PARENT_ID = #{id}
+     	AND B.FILE_SEQ = #{fileSeq, jdbcType=INTEGER}
+     	</where>
+  </select>
+  
+  <select id="selectFileList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  A.ID
+     		, ROW_NUMBER() OVER (ORDER BY C.CREATE_TS ) AS RN
+     		, ROW_NUMBER() OVER(ORDER BY C.CREATE_TS ASC) AS IDX
+     		, B.ID IMAGE_ID
+     		, C.ID FILE_ID
+     	    , C.SEQ
+     	    , C.ORIGIN_FILE_NM
+     	    , C.FILE_TYPE
+     	    , C.FILE_PATH
+     	    , C.WORK_FILE_PATH
+     	    , C.THUMB_FILE_PATH
+     	    , C.FILE_NM
+     	    , C.FILE_SIZE
+     	FROM TB_DATASET_INFO A
+     	INNER JOIN TB_IMAGE_INFO B
+   	    ON   A.ID = B.PARENT_ID
+   	    INNER JOIN TB_FILE C
+   	    ON   B.PARENT_ID = C.ID
+   	    AND  B.FILE_SEQ = C.SEQ
+     	<where>
+     	AND A.ID = #{id}
+     	AND C.FILE_TYPE != 'text/xml'
+     	</where>
+  </select>
+  
+  <select id="selectRemainImgCnt" parameterType="HashMap" resultType="int">
+     SELECT COUNT(1) FROM TB_DATASET_INFO A
+     INNER JOIN TB_IMAGE_INFO B
+     ON A.ID = B.PARENT_ID
+     INNER JOIN TB_FILE C
+     ON B.PARENT_ID = C.ID
+     AND B.FILE_SEQ = C.SEQ
+     WHERE A.ID = #{id}
+     AND C.FILE_TYPE != 'text/xml';
+  </select>
+  
+   <update id="insertImg" parameterType="CmmnMap">
+       INSERT INTO TB_IMAGE_INFO (ID
+				              , PARENT_ID
+				              , FILE_SEQ
+				              , STATUS
+				              , CREATE_USER_ID
+				              , CREATE_TS
+				              , UPDATE_USER_ID
+				              , UPDATE_TS)
+				        VALUES( #{id}
+				              , #{parentId}
+				              , #{fileSeq, jdbcType=INTEGER}
+				              , #{status, jdbcType=VARCHAR}
+				              , #{createUserId}
+				              , SYSDATE
+				              , #{updateUserId}
+				              , SYSDATE)
+   </update>
+ 
+   <delete id="deleteImgByParentId" parameterType="hashmap">
+    DELETE FROM TB_IMAGE_INFO
+   	<where>
+   	AND PARENT_ID = #{id}
+   	</where> 
+  </delete>
+  
+  <delete id="deleteFileById" parameterType="hashmap">
+    DELETE FROM TB_FILE
+   	<where>
+   	AND ID = #{id}
+   	</where> 
+  </delete>
+  
+  <delete id="deleteImgs" parameterType="hashmap">
+       DELETE FROM TB_IMAGE_INFO
+       <where>
+       AND ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("imageId")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+       </where>
+   </delete>
+   
+    <delete id="deleteImgObjectInfos" parameterType="hashmap">
+       DELETE FROM TB_OBJECT_INFO
+       <where>
+       AND IMAGE_ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("imageId")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+       </where>
+   </delete>
+  
+  
+</mapper>
+

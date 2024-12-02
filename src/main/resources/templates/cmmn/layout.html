@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />     
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon" />
+<!--     <link th:href="@{/css/style.css}" rel="stylesheet">     --> 
+    <link th:href="@{/css/common.css}" rel="stylesheet">
+    <link th:href="@{/css/mod_dark.css}" rel="stylesheet">
+    <link th:href="@{/css/sys_grid.css}" rel="stylesheet">
+    <link th:href="@{/css/all.min.css}" rel="stylesheet">
+    <link th:href="@{/css/calendar.css}" rel="stylesheet">
+    <link th:href="@{/font/font.css}" rel="stylesheet">
+   
+    <script type="text/javascript" th:src="@{/js/cmmn.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/msg.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/file.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/grid.js}" ></script>
+<!--     <script type="text/javascript" th:src="@{/js/canvas.js}" ></script> -->
+    <script type="text/javascript" th:src="@{/js/input.js}" ></script>     
+    <script type="text/javascript" th:src="@{/js/tree.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/labeling.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/pagination.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/calendar.js}" ></script>
+<!--     <script type="text/javascript" th:src="@{/js/fontawesome.js}" ></script> -->
+    <script type="text/javascript" th:src="@{/js/chart.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/d3.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/topojson.js}" ></script>
+<!--     <script type="text/javascript" th:src="@{/js/img-touch-canvas.js}"></script> -->
+    <title>NIS</title>
+</head>
+<body>
+	<div class="grid-container">
+		<!--왼쭉메뉴영역 시작-->
+		<aside id="nav">
+			<th:block th:replace="~{cmmn/leftMenu::menu}"></th:block>
+		</aside>
+		<!--content영역 시작-->
+		<section>
+			<!--header 영역 시작-->
+			<th:block th:replace="~{cmmn/header::header}"></th:block>
+			<!--main content 영역 시작-->
+			<main> <th:block layout:fragment="content"></th:block> </main>
+		</section>
+	</div>
+	<!--모달팝업 start-->
+	<div class="pop-wrap layer"> 
+	<th:block th:replace="cmmn/dynimicLayer::modal"></th:block> 
+	</div> 
+	<!--모달팝업 end-->
+  
+	<div class="pop-wrap msgLayer">
+	    <th:block th:replace="cmmn/msgLayer::msgModal"></th:block>
+	</div>
+	<div class="progress-wrap loadingLayer" style="z-index:300;">
+		<div class="progress_container">
+		<img src="/img/loading.svg" width="30%" height="30%">
+		</div>
+	</div>
+	
+</body>
+</html>

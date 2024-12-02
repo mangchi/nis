@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+    
+    <meta charset="UTF-8">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport" />
+    <style>
+    
+    </style>
+    <script type="text/javascript" th:src="@{/js/111d3.js}"></script>
+    <script type="text/javascript" th:src="@{/js/topojson.js}"></script>
+  </head>
+  <body>
+    <script>
+    let koreaMap = '/json/topo.json';
+    const geojson = topojson.feature(koreaMap, koreaMap.objects.skorea_municipalities_geo);
+    const center = d3.geoCentroid(geojson);
+    
+    
+    </script>
+  </body>
+</html>

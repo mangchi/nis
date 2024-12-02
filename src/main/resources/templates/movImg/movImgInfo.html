@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head> 
+    <title>NIS | 영상/이미지 등록</title>
+</head>
+<div class="contentContainer">
+    <div class="title">
+        <h2>영상/이미지 등록</h2>
+    </div>
+    <form id="frm" th:action method="post" th:object="${movImg}">
+    <div class="infoCont">
+        <div class="dataCont">
+         <div class="dataRow"><h3>보조정보</h3></div>
+         <div class="dataRow">
+         <!--       <div class="dataRowItm">77777 -->
+	               <div class="itmGrp">
+			            <div class="dItm">
+			                <label for="dataAcquTs" >데이터 수집시간</label>
+			            </div>
+			            <div class="dItm">
+				            <input type="text" class="form-control" th:field="*{dataAcquTs}" placeholder="">
+			           </div>
+		              <span id="valid_dataAcquTs" style="color:red"></span>
+		          </div>
+		         <div class="itmGrp">
+			           <div class="dItm">
+		                <label for="dataAcquLoc" >데이터 수집위치</label>
+		              </div>
+		               <div class="dItm">
+			            <input type="text" class="form-control" th:field="*{dataAcquLoc}" placeholder="" />
+		              </div>
+		              <span id="valid_dataAcquLoc" style="color:red"></span>  
+	              </div>
+	               <div class="itmGrp">
+			           <div class="dItm">
+		                <label for="dataAcquMth" >데이터 수집수단</label>
+		              </div>
+		               <div class="dItm">
+			            <input type="text" class="form-control kor" th:field="*{dataAcquMth}" placeholder="">
+		              </div>
+		              <span id="valid_dataAcquLoc" style="color:red"></span>  
+	              </div> 
+         </div> 
+         <div class="dataRow"><h3>기본정보</h3></div>
+         <div class="dataRow">
+            <!-- <div class="dataRowItm">-->
+	             <div class="itmGrp">
+			           <div class="dItm">
+		                <label for="dataOrgin" >데이터 출처</label>
+		              </div>
+		               <div class="dItm">
+			            <input type="text" class="form-control" th:field="*{dataOrgin}" placeholder="">
+		              </div>
+		              <span id="valid_dataAcquLoc" style="color:red"></span>  
+	              </div>
+	              <div class="itmGrp">
+			           <div class="dItm">
+		                <label for="objCd" >데이터 종류</label>
+		              </div>
+		               <div class="dItm">
+			            <input type="text" class="form-control kor"  th:field="*{objCd}" placeholder="">
+		              </div>
+		              <span id="valid_dataAcquLoc" style="color:red"></span>  
+	              </div>
+	              <div class="itmGrp">
+			           <div class="dItm">
+		                <label for="unitNm" >데이터 좌표</label>
+		              </div>
+		               <div class="dItm">
+			            <input type="text" class="form-control" th:field="*{dataCoord}" placeholder="">
+		              </div>
+		              <span id="valid_dataAcquLoc" style="color:red"></span>  
+	              </div>
+          <!--  </div> -->
+         </div> 
+         
+        </div>   
+        <div class="dataCont">
+         
+        </div>     
+    </div>
+    <div class="fileCont">
+      <div class="itmGrp">
+          <h3>파일 업로드</h3>
+	      <div class="rightBtnGrp">
+	          <button type="button" class="btn btn-secondary" onclick="saveFunc();">등록</button>
+	      </div>
+      </div>
+      <div class="fileBox">
+      </div>
+<!--            <ul>
+			<li th:each="file : ${files}">
+				<a th:href="${file}" th:text="${file}" />
+			</li>
+		   </ul> -->
+    </div>
+  </form>
+</div>
+<script type="text/javascript">
+
+    //console.log("info:",${info});
+    fileInit('1');
+	window.addEventListener('DOMContentLoaded', function(){
+		//dynimicInit();
+	});
+	
+	dynimicInit = () => {
+		return new Promise(function(resolve, reject){
+			resolve(true);
+		});
+	}
+	
+	saveFunc = () => {
+    	console.log("saveFunc");
+    }
+	
+	
+	
+
+	/* 폼 전송 */
+	function submitForm() {
+	    // 폼데이터 담기
+	    var form = document.querySelector("form");
+	    var formData = new FormData(form);
+	    for (var i = 0; i < filesArr.length; i++) {
+	        // 삭제되지 않은 파일만 폼데이터에 담기
+	        if (!filesArr[i].is_delete) {
+	            formData.append("attach_file", filesArr[i]);
+	        }
+	    }
+
+	}
+</script>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 비밀번호 변경</title>
+
+</head>
+<div class="content">
+      <div class="con-title"><span>암호 변경</span></div>
+      <form id="frm" th:action method="post" th:object="${user}">
+        <div class="sec-grid1">
+          <div class="g-area3">
+            <div class="pannel change-pass">
+              <div class="img-warning"></div>
+              <div class="txt-warning">보안을 위하여 <span>기존 비밀번호를 변경</span>해야 합니다.<br>아래에 현재 비밀번호와 새 비밀번호를 입력해 주세요.</div>
+              <div class="subtxt-warning">(초기화에 부여된  임시비밀번호는 로그인 후 즉시 변경해야 하고, 분기별로 1회이상 주기적으로 변경해 주세요.)</div>
+              <div class="group-input">
+                <div class="area-input">
+                  <ul class="basic">
+                    <li>
+                      <div class="input-group">
+                        <label class="la_basic01" for="oldPw">현재 비밀번호</label>
+                        <input type="password" id="oldPw" th:field="*{oldPw}" autocomplete="off" class="basic" title="현재 비밀번호 입력" placeholder="대문자, 소문자 특수문자 포함 6~25자 이내로 입력.">
+                        <span id="valid_oldPw" class="inform2 valid"></span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="input-group">
+                        <label class="la_basic01" for="newPw">새 비밀번호</label>
+                        <input type="password" id="newPw" th:field="*{newPw}" autocomplete="off" class="basic" title="새로운 비밀번호 입력" placeholder="대문자, 소문자 특수문자 포함 6~25자 이내로 입력.">
+                        <span id="valid_newPw" class="inform2 valid"></span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="input-group">
+                        <label class="la_basic01" for="newPwConfirm">비밀번호 확인</label>
+                        <input type="password" id="newPwConfirm" th:field="*{newPwConfirm}" autocomplete="off" class="basic" title="새로운 비밀번호 확인" placeholder="대문자, 소문자 특수문자 포함 6~25자 이내로 입력.">
+                        <span id="valid_newPwConfirm" class="inform2 valid"></span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="area-info">
+                  <ul class="info-list">
+                    <li><i class="warn"></i>비밀번호를 5회 이상 틀릴 경우 30분간 접속이 차단됩니다.</li>
+                    <li><i class="warn"></i>사용자계정(ID)와 동일하지 않아야합니다.</li>
+                    <li><i class="warn"></i>동일문자 혹은 숫자가 3회이상 반복되지 않아야합니다.</li>
+                    <li><i class="warn"></i>연속하여 오름차군 혹은 내림차순이 아니어야 합니다.</li>
+                    <li><i class="warn"></i>숫자,문자,특수문자를 포함하여 9자리 이상이어야 합니다.  </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="btn-group-bottom">
+                <button type="button" class="btn-m-cancel" onclick="gfn_goBackUrl();">취소</button> 
+                <button type="button" class="btn-m-confirm" onclick="saveFunc();return false;">비밀번호 변경</button>
+              </div>
+            </div>
+          </div>   
+        </div> 
+	</form>
+</div>
+<script th:inline="javascript"> 
+	dynimicInit = () => {
+		
+	}
+	saveFunc = () => {
+	    gfn_removeValidHtml(frm,'span');
+    	let requiredParams = {oldPw: "사용자 비밀번호"
+    			             ,newPw: "변경 비밀번호"
+    			             ,newPwConfirm: "변경 비밀번호 확인"};
+  
+	    gfn_asyncCall('/chgPwd','POST',document.getElementById('frm'),requiredParams,null,null,'Y').then((data) => {
+			for(key in data) {
+				if(key.indexOf('success_msg') > -1){
+					msgCallBack(data[key]+"<br> 이전 페이지로 이동합니다.",true,'gfn_goBackUrl()');
+					break;
+				}
+				if(key.indexOf('fail_msg') > -1){
+					msgCall(data[key],false);
+					break;
+				}
+				if(key.indexOf('valid') > -1){
+					let valid = document.getElementById(key); 
+					valid.innerHTML = data[key];
+				}
+			}
+		});
+    	
+
+	}
+	
+</script>
+</html>

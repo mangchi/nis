@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 데이터(영상/이미지)관리</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+<div class="pop-wrap unitPop">
+    <div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+        <div class="pop-body" style="padding:0px;">
+          <div class="graph4" style="height:360px;">
+            <div class="gridCont05">
+				<div class="treeBox">
+				</div>
+            </div>
+          </div>
+        </div>
+         <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel btnUnitClose" title="취소">취소</button>
+	            <button type="button" class="btn-m-confirm btnUnitOpen" title="확인하기">확인</button>
+	          </div>
+	     </div>
+      </div>
+    </div>
+  </div>
+<div class="con-title"><span>데이터(영상/이미지)관리</span></div>
+<form id="frm" th:action method="post">
+<input type="hidden" sec:authorize="hasRole('ADMIN')" id="isAdmin">
+		<div class="sec-grid1">
+			<div class="g-area3">
+				<div class="pannel">
+					<div class="p-head2">
+					    <div class="searchGrp">
+							<div class="searchItem">
+								<input name="frDt" class="calendar_input"
+									placeholder="yyyy.mm.dd" type="text" value=""> ~ <input
+									name="toDt" class="calendar_input" placeholder="yyyy.mm.dd"
+									type="text" value="">
+							</div>
+							<div class="sel-multi"></div>
+							<div class="rightBtnGrp">
+							    <button type="button" class="btn btn-secondary btn-search01" onclick="qryInit();">초기화</button>
+							    <button type="button" class="btn btn-secondary btn-search01" onclick="searchFunc(this);">조회</button>
+								<button type="button" class="btn-make" title="등록">등록</button>
+							    <button type="button" class="btn-delete" title="선택 삭제">선택 삭제</button>
+							</div>
+						</div>
+						<div class="calendarModal kor hidden" tabindex="0"></div>
+						
+					</div>
+					<div class="contWrap">
+					    <div class="result">
+                        </div>
+						<div class="gridCont03"></div>
+						<div class="page-nav-group"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<script th:inline="javascript"> 
+       window.addEventListener('DOMContentLoaded', function(){
+	   }); 
+       dynimicInit = () => {
+    	   searchInit(document.querySelector('.sel-multi'));
+    	   document.getElementsByName('frDt')[0].value = gfn_getDiffDay(nis.diffDay);
+    	   document.getElementsByName('toDt')[0].value = gfn_getDay();
+    	   document.querySelector(".btn-make").addEventListener('click',(e)=>{
+        	   e.preventDefault();
+        	   dynimicCall({},'GET','/datasetInfo');
+           });
+           
+           document.querySelector(".btn-delete").addEventListener('click',(e)=>{
+        	   e.preventDefault();
+        	   let checkedData = gridCheckedData();
+     
+        	   deleteCall = (isExec) => {
+        		   if(isExec){
+        			   gfn_asyncJsonCall('/datasetDelete','POST',checkedData,'searchFunc()');
+        		   }
+        		   
+        	   }
+        	   if(Object.keys(checkedData).length > 0){
+        		   let list = checkedData['list'];
+        		   let isApproveChk = false;
+        		   let isAdmin = document.querySelector('#isAdmin');
+        	   	   for(let itm of list){
+        	   		   if(!isAdmin && gfn_nullValue(itm['approvedTs']) != ''){
+        	   			   isApproveChk = true;
+        	   			   break;
+        	   		   }
+        	   	   }
+        	   	   if(isApproveChk){
+        	   		   msgCall(msg.approveChk,false);
+        	   	   }
+    	    	   confirmCall(msg.del,this.deleteCall);
+        	   }
+        	   else{
+        		   msgCall(msg.delChk,false);
+        	   }
+           });
+    	   treeInit(document.querySelector('.unitPop').querySelector('.treeBox'));
+    	   pageInit(document.querySelector(".page-nav-group"),searchFunc,pagination.doubleRowPerPage);
+           const headColumns =  [{id:"chk",width: "45px"}
+           	                   ,{id:"idx",width: "50px",label:"NO",sortable:"Y",isNumber:"Y"}
+           	                   ,{id:"id",width: "0px"}
+           	                   ,{id:"collectionDt",width: "100px",label:"임무시간",sortable:"Y",data_cellType:"tdCCell"}  
+           	                   ,{id:"collectionPos",width: "100px",label:"탐지구역",sortable:"Y",data_cellType:"tdCCell"}  
+           	                   ,{id:"collectionDeviceCd",width: "80px",label:"탐지수단",sortable:"Y",data_cellType:"tdCCell",data_grpCd:"006"}  
+           	                   ,{id:"stillOrMovie",width: "80px",label:"자료구분",data_cellType:"tdCCell", data_grpCd:"003"}
+           	                   ,{id:"dayOrNight",width: "100px",label:"주/야 구분", data_cellType:"tdCCell",data_grpCd:"002"}
+           	                   ,{id:"sourceCd",width: "80px",label:"데이터출처", data_cellType:"tdCCell",data_grpCd:"008"}
+           	                   ,{id:"shipClass",width: "80px",label:"함종/선종", data_cellType:"tdCCell"}
+           	                   ,{id:"originFileNm",width: "100px",label:"파일명", data_cellType:"tdCCell"}
+           	                   ,{id:"updateUserNm",width: "80px",label:"작업자",data_cellType:"tdCCell"}
+           	                   ,{id:"updateUserId",width: "0px"}
+           	                   ,{id:"createTs",width: "120px",label:"등록일시",sortable:"Y",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+           	                   ,{id:"approvedTs",width: "120px",label:"승인일시",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+
+				              ];
+       	   gridInit(document.querySelector(".gridCont03"),headColumns);
+       	   searchFunc();
+       }
+
+       searchFunc = (invoker) => {
+    	   pageSearch(document.getElementById('frm'),"/datasetMng",document.querySelector('.gridCont03'),document.querySelector('.page-nav-group'),invoker,null,searchAfterFunc) 
+       }
+       
+       searchAfterFunc = (appendData) => {
+	   		let totCount = document.querySelector('.result');
+	   	    while (totCount.hasChildNodes()) {
+	   	    	totCount.removeChild(totCount.firstChild);
+	   	    }
+	   	    totCount.append('총 ');
+	   	    const totCountSpan = document.createElement('span');
+	   	    totCountSpan.append(appendData.totalCount);
+	   	    totCount.appendChild(totCountSpan);
+	   	    totCount.append('건의 작업이 검색 되었습니다.');
+	   	}
+       
+      
+       
+       rowClick = (item,gridComp,target) => {
+    	   console.log("item:",item);
+    	   gridComp.querySelectorAll('.overChild').forEach((overChild) => {
+    		   if(overChild.classList.contains('on')){
+    			   overChild.classList.remove('on');
+			   }
+    	   });
+    	  
+    	   target.classList.add('on');
+    	   dynimicCall({},'GET','/datasetInfo', null,item);
+    	   
+       }
+       
+
+</script>
+</html>
+

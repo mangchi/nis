@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Modal -->
+<div th:fragment="modal">
+	<div class="modalBody"></div>    
+	<script th:inline="javascript"> 
+	let layerData = '';
+	let tranCnt = 0;
+	let _callBackFn = null;
+  
+	
+	const dynimicCall = (params,method,url,callBackFn,postParam) => {
+		document.querySelector('.layer').style.display = "block";
+	    document.querySelector('.modalBody').innerHTML = '';
+	   _callBackFn = callBackFn;
+	   gfn_asyncUrlCall(url,method,params,true).then((data) => {
+		   let parser = new DOMParser();
+		   let doc = parser.parseFromString(data, "text/html")
+		   if(tranCnt === 0){
+			   layerData = data;
+		   }
+		   const html = doc.querySelector('.content');
+		   if(!html){
+			   msgCall(msg.expired,false,"/login");
+		       return;
+		   }
+		  
+           const scriptList = document.querySelectorAll("script[type='text/javascript']");
+           const convertedNodeList = Array.from(scriptList);
+           const dynimicScript = convertedNodeList.find(script => script.id === "modalScript");
+           if(dynimicScript){
+          	   dynimicScript.parentNode.removeChild(dynimicScript);
+           }
+		   document.querySelector('.modalBody').appendChild(html);
+		   let scripts = html.getElementsByTagName("script");
+           for (let i = 0; i < scripts.length; i++) {
+        	   let script = document.createElement('script');
+               script.setAttribute('id', 'modalScript');
+               script.type = scripts[i].type || 'text/javascript';
+               if( scripts[i].hasAttribute('src') ) script.src = scripts[i].src;
+               script.innerHTML = scripts[i].innerHTML;
+               
+               if(script.innerHTML.indexOf('layerRowClick') == -1){
+            	   script.innerHTML += " layerRowClick = (row) => {} \n" 
+	           }
+               if(script.innerHTML.indexOf('layerRowDblClick') == -1){
+            	   script.innerHTML += " layerRowDblClick = (row) => {} \n" 
+	           }
+               if(script.innerHTML.indexOf('unitAfterLayerFunc') == -1){
+	            	 script.innerHTML += " unitAfterLayerFunc = () => {} \n" 
+	           }
+        	   document.head.appendChild(script);
+           }
+           if(_callBackFn != undefined && _callBackFn != ''){
+				_callBackFn;
+		   }
+           inputInit();
+           modalInit(postParam);
+		   const tabmenu = html.querySelector('.tabmenu01');
+		   if(tabmenu){
+		  	   //tabInit();
+		   }   
+	   });
+	 }
+	 
+	</script>
+
+</div>
+</html>

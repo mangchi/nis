@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="User">
+
+   <select id="selectUserList" parameterType="HashMap" resultType="CmmnMap">
+     <![CDATA[
+     	SELECT ROW_NUMBER() OVER (ORDER BY A.CREATE_TS DESC) AS RN
+     	     , ROW_NUMBER() OVER(ORDER BY A.CREATE_TS ASC) AS IDX
+     	     , A.ID ID
+     	     , A.USER_ID USER_ID
+     	     , USER_NM
+     	     , USER_PW
+     	     , DEPT_NM
+     	     , SPEC_NM
+     	     , UNIT_ID
+     	     , C.UNIT_NM
+     	     , B.ID AUTHORITY
+     	     , B.AUTH_NM
+     	     , RANK_CD
+     	     , A.CREATE_TS CREATE_TS
+     	     , LAST_VISITED_TS
+     	     , USER_STATUS
+     	     , PWD_INIT_YN
+     	     , PW_FAIL_CNT
+     	FROM TB_USER A
+     	LEFT JOIN TB_AUTH B
+     	ON A.AUTH_ID = B.ID
+     	INNER JOIN (SELECT ID,UNIT_NM
+	               FROM TB_UNIT 
+	               START WITH ID = #{schUnitId}
+	               CONNECT BY PRIOR ID = UPPER_ID) C
+     	ON A.UNIT_ID = C.ID
+     ]]>
+     <where>
+     AND A.USER_STATUS = '001'
+     <if test='schUserNm != null and !schUserNm.equals("")'>
+     AND A.USER_NM LIKE CONCAT('%',CONCAT(TRIM(#{schUserNm}),'%'))
+     
+     </if>
+
+     </where>
+  </select>
+  
+  <!-- 로그인 -->
+  <select id="selectUser" parameterType="string" resultType="userVo">
+     <![CDATA[
+     	SELECT A.ID ID
+     	     , USER_ID
+     	     , USER_NM
+     	     , USER_PW
+     	     , DEPT_NM
+     	     , SPEC_NM
+     	     , UNIT_ID
+     	     , C.UNIT_NM
+     	     , RANK_CD
+     	     , B.ID AUTHORITY
+     	     , PW_REG_TS
+     	     , USER_STATUS
+     	     , PWD_INIT_YN
+     	     , PW_FAIL_CNT
+     	FROM TB_USER A
+     	LEFT JOIN TB_AUTH B
+     	ON A.AUTH_ID = B.ID
+     	LEFT JOIN TB_UNIT C
+     	ON A.UNIT_ID = C.ID
+     	WHERE USER_ID = #{userId}
+     	AND A.USER_STATUS = '001'
+     ]]>
+  </select>
+  
+  <!-- 로그인 -->
+  <select id="selectLoginUser" parameterType="hashmap" resultType="userVo">
+     	SELECT A.ID ID
+     	     , USER_ID
+     	     , USER_NM
+     	     , USER_PW
+     	     , DEPT_NM
+     	     , SPEC_NM
+     	     , UNIT_ID
+     	     , RANK_CD
+     	     , B.ID AUTHORITY
+     	FROM TB_USER A
+     	LEFT JOIN TB_AUTH B
+     	ON A.AUTH_ID = B.ID
+        <where>
+        AND A.USER_STATUS = '001'
+        AND A.ID IN 
+        <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	    <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("id")'>
+            #{col} 
+         </if>
+	    </foreach> 
+   	    </foreach>     
+        </where>
+  </select>
+  
+  
+  <select id="selectUserId" parameterType="string" resultType="integer">
+        SELECT COUNT(1) CNT
+     	FROM TB_USER 
+     	<where>
+     	AND USER_ID = #{userId}
+     	</where>
+  </select>
+  
+ <!--  <select id="selectUserRole" parameterType="string" resultType="string">
+     <![CDATA[
+     	SELECT
+     		   USER_ROLE
+     	FROM TB_USER_ROLE
+     	WHERE USER_ID = #{userId}
+     ]]>
+  </select> -->
+  
+  <select id="selectPwFail" parameterType="string" resultType="CmmnMap">
+     <![CDATA[
+     	SELECT USER_ID
+     	     , PW_FAIL_CNT
+     	FROM TB_USER
+        WHERE PW_FAIL_CNT > 0
+     ]]>
+  </select>
+  
+  <!-- 회원가입 -->
+   <update id="mergeUser" parameterType="UserVo">
+       MERGE INTO TB_USER A
+       USING DUAL
+       ON  A.ID = #{id, jdbcType=VARCHAR}
+       WHEN MATCHED THEN 
+       UPDATE SET USER_NM  = #{userNm, jdbcType=VARCHAR}
+                , DEPT_NM = #{deptNm, jdbcType=VARCHAR}
+                , SPEC_NM = #{specNm, jdbcType=VARCHAR}
+                , UNIT_ID = #{unitId, jdbcType=VARCHAR}
+                , RANK_CD = #{rankCd, jdbcType=VARCHAR}
+                , AUTH_ID = #{authority, jdbcType=VARCHAR}
+                , UPDATE_TS   = SYSDATE
+       WHEN NOT MATCHED THEN
+       INSERT  (ID
+              , USER_ID
+              , USER_PW
+              , USER_NM
+              , DEPT_NM
+              , SPEC_NM
+              , UNIT_ID
+              , RANK_CD
+              , AUTH_ID
+              , PW_REG_TS
+              , USER_STATUS
+              , CREATE_USER_ID
+              , CREATE_TS)
+        VALUES( #{id}
+              , #{userId}
+              , #{userPw, jdbcType=VARCHAR}
+              , #{userNm}
+              , #{deptNm}
+              , #{specNm}
+              , #{unitId}
+              , #{rankCd}
+              , #{authority}
+              , SYSDATE
+              , '001'
+              , #{userId}
+              , SYSDATE)
+   </update>
+   
+<!--    <update id="mergeUserRole" parameterType="UserVo">
+       MERGE INTO TB_USER_ROLE A
+       USING DUAL
+       ON  A.USER_ID = #{userId, jdbcType=VARCHAR}
+       WHEN MATCHED THEN 
+       UPDATE SET USER_ROLE = #{userRole, jdbcType=VARCHAR}
+       WHEN NOT MATCHED THEN
+       INSERT  (ID
+              , USER_ID
+              , USER_ROLE)
+        VALUES( #{id}
+              , #{userId}
+              , #{userRole} )
+
+   </update> -->
+   
+    <update id="updateFailureCount" parameterType="hashmap">
+        <![CDATA[
+            UPDATE TB_USER
+            SET PW_FAIL_CNT = #{pwFailCnt, jdbcType=INTEGER}
+            WHERE USER_ID = #{userId}
+        ]]>
+    </update>
+    
+    <update id="updateFailureCntInit">
+        <![CDATA[
+            UPDATE TB_USER
+            SET PW_FAIL_CNT = 0
+            WHERE PW_FAIL_CNT > 0
+        ]]>
+    </update>
+    
+<!--     
+     <update id="updateUserRole" parameterType="userVo">
+        <![CDATA[
+            UPDATE TB_USER_ROLE
+            SET USER_ROLE = #{userRole}
+            WHERE USER_ID = #{userId}
+        ]]>
+    </update> -->
+    
+    <update id="updateUserPw" parameterType="userVo">
+        <![CDATA[
+            UPDATE TB_USER
+            SET USER_PW = #{userPw}
+              , PW_REG_TS = SYSDATE
+              , PWD_INIT_YN = 'N'
+            WHERE USER_ID = #{userId}
+        ]]>
+    </update>
+    
+    <update id="initUserPw" parameterType="userVo">
+        <![CDATA[
+            UPDATE TB_USER
+            SET USER_PW = #{userPw}
+              , PWD_INIT_YN = 'Y'
+            WHERE USER_ID = #{userId}
+        ]]>
+    </update>
+    
+    <update id="updateLoginData" parameterType="userVo">
+        <![CDATA[
+            UPDATE TB_USER
+            SET LAST_VISITED_TS = SYSDATE
+              , LAST_CONNECTED_IP = #{lastConnectedIp}
+            WHERE USER_ID = #{userId}
+        ]]>
+    </update>
+    
+     <update id="deleteUser" parameterType="hashmap">
+       UPDATE TB_USER SET USER_STATUS = '003'
+       <where>
+       AND ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("id")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+       </where>
+   </update>
+    
+     <delete id="deleteUser1" parameterType="hashmap">
+       DELETE FROM TB_USER
+       <where>
+       AND ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("id")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+       </where>
+   </delete>
+   
+   <delete id="deleteUserRole" parameterType="hashmap">
+       DELETE FROM TB_USER_ROLE
+       <where>
+       AND USER_ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("userId")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+       </where>
+   </delete>
+    
+    
+
+</mapper>

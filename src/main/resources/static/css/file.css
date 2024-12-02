@@ -1,0 +1,155 @@
+.fileBox {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+}
+.fileBox .fileList {
+	display: flex;
+	flex-direction: column;
+    height: 280px;
+    overflow: auto;
+    border: 1px solid rgba(0,0,0,0.1); 
+    padding: 0px;
+    cursor: pointer;
+}
+
+.fileBox .fileList p{
+    margin: 8px;
+    font-size: 14px;
+}
+.fileBox .filesInfo{
+    display: flex;
+    padding:8px; 
+    justify-content: flex-end;
+    background-color: #F2F4F4;
+    border-bottom: 1px solid rgba(0,0,0,0.1); 
+}
+
+.fileBox .fileBtn{
+    display: flex;
+    padding:6px;
+    background-color: #EAECEE;
+    border: 1px solid #EAECEE; 
+}
+
+.fileBox .fileList .fileHead{
+	display: flex;
+ 	position: sticky;
+	top: 0;
+	height: 40px;
+	background-color: #EAECEE;
+	border: 1px solid rgba(0,0,0,0.1);
+}
+
+.fileBox .fileList .fileRow{
+	display: flex;
+} 
+
+.fileBox .fileList p:focus{
+	outline:none;
+	background-color: rgba(0,0,0,0) ;
+}
+
+/* .fileBox .fileList .fileRow {
+	display: flex;
+	padding: 0;
+    margin:0px;
+    border: 0px;
+    border-bottom: 1px solid rgba(0,0,0,0.1); 
+
+}
+
+.fileBox .fileList .fileRow a{
+	padding: 4px;
+	margin-left: auto; 
+} */
+
+.fileBox .fileList .fileRow:nth-child(even) {
+	background: #f5f5ff;
+}
+
+
+.fileBox .fileList .fileHead div,
+.fileBox .fileList .fileRow div{
+	flex-grow:1;
+	padding:6px 12px;
+	border:0;
+	line-height: 28px;
+	/* border: 1px solid rgba(0,0,0,0.1);  */
+	
+}
+
+.fileBox .fileList .fileRow div{
+	border-bottom: 1px solid rgba(0,0,0,0.1); 
+	
+}
+
+.fileBox .fileList .fileHead div:nth-child(1)
+{
+ 	border-right: 1px solid rgba(0,0,0,0.1);  
+	width:60%;
+}
+
+.fileBox .fileList .fileHead div:nth-child(2)
+{
+ 	border-right: 0px;
+	width:20%;
+}
+
+
+.fileBox .fileList .fileRow div:nth-child(1)
+{
+    border-right: 1px solid rgba(0,0,0,0.1);  
+	width:60%;
+}
+.fileBox .fileList .fileRow div:nth-child(2)
+{
+	width:20%;
+}
+
+
+.fileBox .fileList .helpDiv{
+	/*
+    margin: 0 auto;
+    line-height: 124px;
+    */
+    display: flex;
+    height:100%;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:rgba(0,0,0,0.3)
+}
+
+.fileBox .fileList .helpDiv .fa-file-upload{
+}
+
+
+
+.fileBox label ,
+.fileBox .fileBtn button{
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 6px;
+    margin:0px 4px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px solid rgba(0,0,0,0.1); 
+}
+
+.fileBox .fileBtn input:focus + label {
+    background-color: black;
+ }
+
+.fileBox input[type="file"] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+}
+

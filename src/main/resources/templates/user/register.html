@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 사용자</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+<form id="userFrm" th:action method="post" th:object="${user}">
+<input type="hidden" id="loginAuth"  name="loginAuth" th:value="${loginAuth}">
+<div class="pop_container userPop">
+<div class="pop-wrap userUnitPop">
+    <div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+        <div class="pop-body" style="padding:0px;">
+          <div class="graph4" style="height:360px;">
+            <div class="gridCont05">
+              <!--트리메뉴 들어가는 자리 시작-->
+				<div class="userTreeBox">
+				</div>
+			  <!--트리메뉴 들어가는 자리 끝-->
+            </div>
+          </div>
+        </div>
+         <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel userUnitPopBtn" title="취소">취소</button>
+	            <button type="button" class="btn-m-confirm userUnitPopBtn" title="확인하기">확인</button>
+	          </div>
+	     </div>
+      </div>
+    </div>
+  </div>
+  
+      <div class="pop-bg">
+        <div class="pop-head">
+        <div th:if="${user.getReadonly().toString().equals('Y')}" class="pop-title">사용자 수정</div>
+        <div th:unless="${user.getReadonly().toString().equals('Y')}" class="pop-title">사용자 등록</div>
+        </div>
+        <div class="pop-body">
+       
+          <ul class="pop-list">
+            <li>
+              <div class="input-group">
+                <label class="basic" for="userId">사용자 ID</label>
+                <input type="text" th:readonly="${user.readonly eq 'Y' ? 'readonly': false}" th:field="*{userId}" autocomplete="off" class="basic warn engNum userId" title="사용할 ID 입력" placeholder="6~25자 이내로 입력.">
+              </div>
+              <span id="valid_userId" class="inform1 valid"></span>
+            </li>
+            <li th:if="${!user.getHiddenPwd.toString().equals('Y')}">
+              <div  class="input-group">
+                <label class="basic" for="password">비밀번호</label>
+                <input type="password" id="password" th:field="*{userPw}" autocomplete="off" required="required" class="basic" title="사용할 비밀번호 입력" placeholder="소문자, 특수기호 포함 8~20자 이내로 입력">
+                <!--<div class="warning">*비밀번호 형식이 다릅니다.</div>-->
+                
+              </div>
+              <span id="valid_userPw" class="inform1 valid"></span>
+            </li>
+            <li th:unless="${!user.getHiddenPwd.toString().equals('Y')}">
+                <input type="hidden" id="userPw" name="userPw" value="noChk">
+                <input type="hidden" th:field="*{id}">
+            </li>
+            
+            <li>
+              <div class="input-group">
+                <label class="basic" for="userNm">성명</label>
+                <input type="text" id="userNm" th:field="*{userNm}" autocomplete="off" class="basic korNum" title="사용자 이름을 입력" placeholder="사용자 이름을 입력해 주세요.">
+                
+              </div>
+              <span id="valid_userNm" class="inform1 valid"></span>
+            </li>
+            <li>
+              <div class="input-group">
+                <label class="basic" for="deptNm">부서</label>
+                <input type="text" th:field="*{deptNm}" autocomplete="off" class="basic korNum" title="부서명 입력" placeholder="부서명을 정확히 입력해 주세요.">
+                
+              </div>
+              <span id="valid_deptNm" class="inform1 valid"></span>
+            </li>
+            <li>
+              <div class="input-group">
+                <label class="basic" for="specNm">직별</label>
+                <input type="text" th:field="*{specNm}" autocomplete="off" class="basic korNum" title="직별 입력" placeholder="직별명을 정확히 입력해 주세요.">
+              </div>
+              <span id="valid_specNm" class="inform1 valid"></span>
+            </li>
+            <li>
+              <div class="input-group input-unit">
+                <label class="basic" for="unitNm">소속부대</label>
+                <input type="text" th:field="*{unitNm}" class="basic unitNm" value="" title="소속부대 입력" readonly onclick="popInit();">
+                <input type="hidden" th:field="*{unitId}">
+              </div>
+              <span id="valid_unitNm" class="inform1 valid"></span>
+            </li>
+            <li>
+              <div class="input-group">
+                <label class="basic" for="rankCd">계급</label>
+                <select class="basic" th:field="*{rankCd}">
+					<option th:each="val : ${rankCds}" th:value="${val?.cd}"
+						th:text="${val?.cdNm}"></option>
+				</select>
+              </div>
+              <span id="valid_rankCd" class="valid"></span>
+            </li>
+             <li>
+              <div class="input-group">
+                <label class="basic" for="authority">권한</label>
+                 <div th:each="r : ${authorities}" class="input-group form-check form-check-inline">
+					<input type="radio" onclick="return chkAuth();"  th:field="*{authority}" th:value="${r.name}"
+						class="form-check-input" th:checked="${user.authority == r.name}">
+					<label th:for="${#ids.prev('authority')}" th:text="${r.desc}"
+						class="form-check-label"></label>
+				 </div>
+				 <input type="hidden" th:field="*{authority}">
+              </div>
+              <span id="valid_authority" class="valid"></span>
+            </li>
+          </ul>
+        </div>
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel" title="취소하기">취소</button>
+            <button type="button" class="btn-m-confirm" title="저장하기">저장</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>
+<script type="text/javascript">
+    
+	modalInit = () => {
+		treeInit(document.querySelector('.userTreeBox'));
+		
+	}
+	chkAuth = () => {
+		console.log("chkAuth auth:",document.getElementById('loginAuth').value);
+        if(document.getElementById('loginAuth').value === 'ROLE_ADMIN'){
+			return true;
+		}
+        else{
+        	return false;
+        }
+	}
+	/*
+	document.querySelector('.layer').querySelector('.btn-m-cancel').addEventListener('click', (e) => {
+		e.preventDefault();
+		let popLayer = document.querySelector('.pop-wrap');
+		popLayer.style.display = "none";
+	});
+	*/
+	document.querySelector('.layer').querySelectorAll('.btn-m-cancel').forEach((btnCancel) => {
+    	btnCancel.addEventListener('click', (e) => {
+    		e.preventDefault();
+    		let popLayer = document.querySelector('.layer');
+    		if(e.target.classList.contains('userUnitPopBtn')){
+    			popLayer = document.querySelector('.userUnitPop');
+    		}
+    		popLayer.style.display = "none";
+    	});
+    });
+	
+	document.querySelector('.layer').querySelectorAll('.btn-m-confirm').forEach((confirmCancel) => {
+		
+		confirmCancel.addEventListener('click', (e) => {
+			gfn_removeValidHtml(document.getElementById('userFrm'),'span')
+			e.preventDefault();
+    		let popLayer = document.querySelector('.layer'); 
+    		if(e.target.classList.contains('userUnitPopBtn')){
+    			popLayer = document.querySelector('.userUnitPop'); 
+    			let chkObj = false;
+    			document.querySelectorAll('.treejs-label').forEach((label) => {
+    				if(label.classList.contains('on')){
+    					chkObj = true;
+    					console.log(label.innerText);  
+    					document.querySelector('.input-unit').querySelector('#unitId').value = label.parentNode.getAttribute('data-id');
+    					document.querySelector('.userPop').querySelector('.unitNm').value = label.innerText;
+    					return false;
+		    		}
+    				
+    			});  	
+    			if(!chkObj){
+    				msgCall('부대정보를 선택하세요.',false);
+    				return;
+    			}
+    			popLayer.style.display = "none";
+    		}
+    		else{
+    			let authoities = document.getElementsByName('authority');
+    			authoities.forEach((auth,index)=> {
+    	    		if(auth.checked){
+    	    			if(index === 0){
+    	    				document.getElementById('authority').value="ROLE_ADMIN";
+    	    			}
+    	    			else if(index === 1){
+    	    				document.getElementById('authority').value="ROLE_MANAGER";
+    	    			}
+    	    			else{
+    	    				document.getElementById('authority').value="ROLE_USER";
+    	    			}
+    	    		}
+    	    		
+    	    		
+    	    	});
+    			let requiredParams = {userId : "사용자 아이디"
+			          , userPw : "사용자 비밀번호"
+			          , userNm : "사용자 성명"
+			          , deptNm : "부서"
+			          , specNm : "직책"
+			          , unitNm : "소속부대"
+			          , authority : "사용자 권한"};
+
+				let url = '/register';
+				let callBackFunc = 'saveAfterFunc(true)';
+				if(document.querySelector('.userId').readOnly){
+					url = '/chgUser';
+					callBackFunc = 'saveAfterFunc()';
+				}
+				let showPwd = document.querySelector('#valid_userPw');
+				if(!showPwd){
+					url = '/modUser';
+					console.log("modUser.....");
+					callBackFunc = 'saveAfterFunc(true)';
+				}
+
+				gfn_asyncCall(url,'POST',document.getElementById('userFrm'),requiredParams,null,callBackFunc).then((data) => {
+					for(key in data) {
+						if(key.indexOf('valid') > -1){
+							let valid = document.getElementById(key); 
+							valid.innerHTML = data[key];
+						}
+					}
+				});
+				
+    		}
+    		
+		});
+		
+	});
+	
+	popInit = () => {
+		let list = null;
+		gfn_asyncJsonCall("/unitInfo",'GET',{}).then((data) => {
+			for(key in data) {
+                if(key.indexOf('list') > -1){
+                   	list = data[key];
+				}
+			}
+			const treeBox = document.querySelector('.userUnitPop').querySelector('.userTreeBox');
+			treeBox.innerHTML = '';
+			console.log("list:",list);
+			let treejs = createInitTree(document.querySelector('.userTreeBox'),list,false);
+			if(list != null && list.length > 0){
+				createTreeNoChk(list,treejs);
+			}
+
+		}).then(() => {
+			document.querySelector('.userTreeBox').querySelectorAll('.treejs-label').forEach((label) => {
+				let li = label.parentNode;
+				if(li.getAttribute('data-id') === document.querySelector('.input-unit').querySelector('#unitId').value){
+					label.classList.add('on');
+					return false;
+	    		}
+			});  	
+			
+		});
+		let popLayer = document.querySelector('.userUnitPop');
+		popLayer.style.display = "block";
+	}
+	
+	
+	/*
+	document.querySelector('.layer').querySelector('.btn-m-confirm').addEventListener('click', (e) => {
+		 e.preventDefault();
+		 let requiredParams = {userId : "사용자 아이디"
+					          , userPw : "사용자 비밀번호"
+					          , userNm : "사용자 성명"
+					          , deptNm : "부서"
+					          , specNm : "직책"
+					          , unitNm : "소속부대"
+					          , authority : "사용자 권한"};
+
+        let url = '/register';
+        let callBackFunc = 'saveAfterFunc(true)';
+        if(document.getElementById('userId').readOnly){
+        	url = '/chgUser';
+        	callBackFunc = 'saveAfterFunc()';
+        }
+		gfn_asyncCall(url,'POST',document.getElementById('userFrm'),requiredParams,null,callBackFunc).then((data) => {
+			for(key in data) {
+				if(key.indexOf('valid') > -1){
+					let valid = document.getElementById(key); 
+					valid.innerHTML = data[key];
+				}
+			}
+		});
+   });
+*/
+   saveAfterFunc = (searchYn) => {
+	   console.log("saveAfterFunc searchYn:",searchYn);
+	   if(searchYn === undefined){
+		   searchMenuFunc();
+	   }
+	   let popLayer = document.querySelector('.layer');
+	   popLayer.style.display = "none";
+	   if(searchYn){
+		   searchFunc();
+	   }   
+   }
+
+</script>
+</div>
+</html>

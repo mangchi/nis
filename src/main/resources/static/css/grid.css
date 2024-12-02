@@ -1,0 +1,229 @@
+@charset "UTF-8";
+
+
+:grid {
+	--gridRows:10;
+	--gridHeight:470px;
+	--gridCheckbox:45px;
+	
+}
+
+
+.gridCont,
+.gridCont2,
+.gridCont3 {
+	background-color: white;
+	margin-top:5px;
+	overflow: auto;
+	border-top: 1px solid rgba(0,0,0,0.1);  
+	border-bottom: 1px solid rgba(0,0,0,0.1);  
+	padding: 0px 5px 8px 5px;
+}
+/* 
+.gridCont{
+	height: var(--gridHeight);;
+}
+
+.gridCont2{
+	height: var(--gridHeight2);;
+}
+
+.gridCont3{
+	height: var(--gridHeight3);;
+} */
+
+.gridGrpCont {
+    display:flex;
+    flex-direction: column;
+    width:100%;
+    margin:0px 5px;
+    padding : 3px;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.1); 
+}
+
+.divTable,.divTable2,.divTable3 {
+	/*  min-width: 100%;  */
+	/*  width: auto; */
+/*     flex: 1 auto; */
+	display: grid;
+	border-collapse: collapse;
+/* 	height: var(--gridHeight); */
+	/* width: auto; */
+/* 	overflow: auto; */
+	border-left: none;
+
+	/* grid-template-columns: var(--gridCheckbox) repeat(var(--gridColumns), minmax(var(--minwidth),auto));
+    */
+	/* grid-template-columns: 45px minmax(150px, 1.67fr) minmax(150px, 1.67fr)
+		minmax(150px, 1.67fr) minmax(150px, 3.33fr) minmax(150px, 1.67fr)
+		minmax(150px, 1.67fr) minmax(150px, 1.67fr); */
+}
+/* .divTable {
+	grid-template-columns: var(--gridColumn);
+}
+.divTable2 {
+	grid-template-columns: var(--gridColumn2);
+}
+.divTable3 {
+	grid-template-columns: var(--gridColumn3);
+}
+ */
+.divHead, .divBody, .divRow {
+	display: contents; 
+}
+
+.divHead {
+	position: sticky;
+ 	top: 0;  
+}
+
+.hdCell {
+ 	position: sticky;
+ 	top: 0;  
+	display:flex;
+	justify-content:center; 	
+	align-items:center;
+	height: 38px;
+/* 	height: 40px;
+	line-height: 40px; */
+	padding: 0px;
+	background: #f3f3f3;
+	flex-wrap: nowrap;
+/* 	text-align: center; */
+	font-weight: bold;
+/* 	font-size: 1.1rem; */
+	color: #5a462d;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-left: 0;
+	cusoer: pointer;
+}
+
+.hdCell:last-child {
+	border-rigth: 0;
+}
+
+/* 		.hdCell:first-child {
+		   border-left: 0;
+		}
+		 */
+.tdCell, .thCell, .tdRCell, .tdCCell {
+/* 	height: 40px;
+	line-height: 40px; */
+	display:flex;
+	align-items:center;
+	height: 36px;
+	overflow: hidden;
+	flex-wrap: nowrap;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-left: 0;
+	color: #808080;
+}
+
+.tdCell:last-child, .thCell:last-child {
+	border-rigth: 0;
+}
+
+.tdCell,
+.tdRCell {
+	padding: 0px 10px 0px 10px;
+}
+
+.tdRCell {
+	justify-content:flex-end;
+}
+
+.tdCCell,
+.thCell {
+	justify-content:center;
+}
+
+.thCell {
+	font-weight: strong;
+}
+
+.divRow:nth-child(even) .tdCell, .divRow:nth-child(even) .thCell,
+.divRow:nth-child(even) .tdCCell, .divRow:nth-child(even) .tdRCell  {
+	background: #f5f5ff;
+}
+
+.resize-handle {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: black;
+	opacity: 0;
+	width: 3px;
+	cursor: col-resize;
+}
+
+.resize-handle:hover,
+	/* The following selector is needed so the handle is visible during resize even if the mouse isn't over the handle anymore */
+	.header--being-resized .resize-handle {
+	opacity: 0.5;
+}
+
+.hdCell:hover .resize-handle {
+	opacity: 0.3;
+}
+
+.divBody .divRow div:hover {
+	background-color: #BECDFF;
+	border-radius: 4px;
+}
+
+/* 	.divRow div:hover {
+		    background-color: yellow;
+		    border-radius: 4px;
+		} */
+		
+/* .asc:after {
+ 	content: "\f0de"; 
+    content: "▲"; "\f0dc";
+ 	margin-left: 10px; 
+	color: gray;
+	font-size: 1.2rem;
+	cursor:pointer;
+	font-family: fontAwesome; 
+}
+
+.desc:after {
+	content: "\f0dd";
+ 	margin-left: 10px; 
+	color: gray;
+	font-size: 1.2rem;
+	cursor:pointer;
+	font-family: fontAwesome; 
+}
+ */
+.icons-sort {
+	display: flex;
+    flex-direction: column; 
+    justify-content:center;  
+    align-items: center;
+    padding:0;
+    margin-left: 8px;
+    opacity: 0.8;
+    cursor:pointer;
+}
+
+.icons-sort i.fa{
+	line-height: 0; 
+}
+
+.chgOpacity{
+	opacity: 0.4;
+}
+
+.info:after {
+ 	transform: scale(.9);  
+ 	content: "\f05a";
+    margin-left: 8px; 
+ 	opacity: 0.6; 
+	cursor:pointer;
+	font-family: fontAwesome; 
+}
+

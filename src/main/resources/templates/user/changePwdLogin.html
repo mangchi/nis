@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8">
+
+<!-- <link th:href="@{/css/style.css}" rel="stylesheet"> -->
+<link rel="icon" href="/img/favicon.ico" type="image/x-icon" />
+<link th:href="@{/css/common.css}" rel="stylesheet">
+<link th:href="@{/css/mod_dark.css}" rel="stylesheet">
+<link th:href="@{/css/sys_grid.css}" rel="stylesheet">
+<link th:href="@{/font/font.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/js/cmmn.js}"></script>
+<script type="text/javascript" th:src="@{/js/input.js}"></script>
+<!-- <script type="text/javascript" th:src="@{/js/fontawesome.js}"></script> -->
+
+<title>::딥러닝기반 식별체계 데이터구축::</title>
+</head>
+<body>
+<div class="container-wrap">
+<form id="frm" th:action method="post" th:object="${user}">
+	<div class="sec-grid1" style="margin-top:0px;padding-top:50px;">
+		<div class="g-area3" style="text-aling:center; margin:0 auto;">
+			<div class="pannel change-pass" style="width:1000px;height:860px">
+				<div class="img-warning"></div>
+				<div class="txt-warning">
+					보안을 위하여 <span>기존 비밀번호를 변경</span>해야 합니다.<br>아래에 현재 비밀번호와 새
+					비밀번호를 입력해 주세요.
+				</div>
+				<div class="subtxt-warning">(초기화에 부여된 임시비밀번호는 로그인 후 즉시 변경해야
+					하고, 분기별로 1회이상 주기적으로 변경해 주세요.)</div>
+				<span id="valid_loginMsg" class="inform valid" th:text="${#request.getAttribute('loginFailMsg')}"></span>
+				<input type="hidden" th:field="*{userId}">
+				<!-- <input type="hidden" id="userId" name="userId" th:value="${#request.getAttribute('userId')}"> -->
+		        <input type="hidden" id="isPwdChange" name="isPwdChange" th:value="${#request.getAttribute('isPwdChange')}">
+				<div class="group-input">
+					<div class="area-input">
+						<ul class="basic">
+							<li>
+								<div class="input-group">
+									<label class="la_basic01" for="oldPw">현재 비밀번호</label> 
+									<input type="password" id="oldPw" th:field="*{oldPw}" autocomplete="off" class="basic" title="현재 비밀번호 입력" placeholder="대문자, 소문자 특수문자 포함 6~25자 이내로 입력."> 
+									<span id="valid_oldPw" class="inform2 valid"></span>
+								</div>
+							</li>
+							<li>
+								<div class="input-group">
+									<label class="la_basic01" for="newPw">새 비밀번호</label> 
+									<input type="password" id="newPw" th:field="*{newPw}" autocomplete="off" class="basic" title="새로운 비밀번호 입력" placeholder="대문자, 소문자 특수문자 포함 6~25자 이내로 입력."> 
+									<span id="valid_newPw" class="inform2 valid"></span>
+								</div>
+							</li>
+							<li>
+								<div class="input-group">
+									<label class="la_basic01" for="newPwConfirm">비밀번호 확인</label>
+									<input type="password" id="newPwConfirm" th:field="*{newPwConfirm}" autocomplete="off" class="basic" title="새로운 비밀번호 확인" placeholder="대문자, 소문자 특수문자 포함 6~25자 이내로 입력."> 
+									<span id="valid_newPwConfirm" class="inform2 valid"></span>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="area-info">
+						<ul class="info-list">
+							<li><i class="warn"></i>비밀번호를 5회 이상 틀릴 경우 30분간 접속이 차단됩니다.</li>
+							<li><i class="warn"></i>사용자계정(ID)와 동일하지 않아야합니다.</li>
+							<li><i class="warn"></i>동일문자 혹은 숫자가 3회이상 반복되지 않아야합니다.</li>
+							<li><i class="warn"></i>연속하여 오름차군 혹은 내림차순이 아니어야 합니다.</li>
+							<li><i class="warn"></i>숫자,문자,특수문자를 포함하여 9자리 이상이어야 합니다.</li>
+						</ul>
+					</div>
+				</div>
+				<div class="btn-group-bottom" >
+					<button type="button" class="btn-m-confirm" onclick="saveFunc();return false;">비밀번호 변경</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+</div>
+<div class="pop-wrap msgLayer">
+	<div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">메시지</div></div>
+        <div class="pop-body" style="text-align:center;">
+        </div>
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel" title="닫기">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>   
+</div>
+<div class="pop-wrap loadingLayer" style="z-index:300;">
+    <div class="loading_modal">
+	<div class="loading_overlay"></div>
+	<div><img src="/img/loading.gif" >
+	</div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    let isTargetUrl = false;
+    window.addEventListener('DOMContentLoaded', function(){
+    	const whatMode = localStorage.getItem('whatMode'); //whatMode 아이템 값 불러오기
+ 	    if (whatMode === "false") { 
+ 	    	return !1; // 라이트모드이므로 아무런 행동을 할 필요가 없습니다.
+ 	    }  
+ 	    else { // 다크모드라면 
+ 	    	document.querySelector('body').classList.add('darkmode');
+ 	    }
+    	console.log("isPwdChange:",document.getElementById('isPwdChange').value);
+		if(document.getElementById('isPwdChange').value === 'Y'){
+			document.querySelector(".pop-body").innerHTML = "<strong><p'>"+document.getElementById('valid_loginMsg').innerText+"</p></strong>";
+            document.querySelector('.msgLayer').style.display = 'block';
+		}
+	});
+    
+    document.querySelector('.btn-m-cancel').addEventListener('click',(e)=>{
+    	e.preventDefault();
+    	document.querySelector('.msgLayer').style.display = 'none';
+    	if(isTargetUrl){
+    		location.href = "/logout";
+    	}
+    });
+  
+    const saveFunc = () => {
+    	isTargetUrl = false;
+        gfn_removeValidHtml(frm,'span');
+		let requiredParams = {oldPw: "사용자 비밀번호"
+				             ,newPw: "변경 비밀번호"
+				             ,newPwConfirm: "변경 비밀번호 확인"};
+		gfn_asyncCallNoLogin('/chgPwdLogin','POST',document.getElementById('frm'),requiredParams).then((data) => {
+			for(key in data) {
+				if(key.indexOf('success_msg') > -1){
+
+					document.querySelector(".pop-body").innerHTML = "<strong><p>"+data[key]+"<br>다시 로그인 하십시오.</p></strong>";
+		            document.querySelector('.msgLayer').style.display = 'block';
+		            isTargetUrl = true;
+					break;
+				}
+				if(key.indexOf('fail_msg') > -1){
+					document.querySelector(".pop-body").innerHTML = "<strong><p>"+data[key]+"</p></strong>";
+		            document.querySelector('.msgLayer').style.display = 'block';
+		            //closeMsg(false);
+					break;
+				}
+				if(key.indexOf('valid') > -1){
+					let valid = document.getElementById(key); 
+					valid.innerHTML = data[key];
+				}
+			}
+		});
+	
+
+    }  
+    
+</script>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 자동수집</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+<div class="pop-wrap addWorkPop">
+    <div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">작업 생성</div></div>
+        <div class="pop-body">
+          <ul class="basic">
+            <li>
+              <div class="input-group">
+                <label class="la_basic01" for="workNm">작업명</label>
+                <input type="text" id="workNm" name="workNm" class="basic04" title="작업명" placeholder="작업명을 입력해 주세요.">
+              </div>
+              <span id="valid_workNm" class="inform3 valid"></span>
+            </li>
+            <li>
+              <div class="input-group">
+                <label class="la_basic01" for="scheduleCd">일정주기 설정</label>
+                <select class="basic basic17" id="scheduleCd">
+                </select>
+                <input type="text" id="scheduleTerm" name="scheduleTerm" class="basic16 number " maxlength="2" title="일정주기" readOnly placeholder="ex)1">
+              </div>
+              <span id="valid_scheduleTerm" class="inform3 valid"></span>
+            </li>
+            <li>
+              <div class="input-group">
+                <label class="la_basic01" for="gatherIp">수집대상IP</label>
+                <input type="text" id="gatherIp" name="gatherIp" class="basic04 numComma" title="수집대상IP" placeholder="ex)127.0.0.1">
+              </div>
+              <span id="valid_gatherIp" class="inform3 valid"></span>
+            </li>
+            <li>
+              <div class="input-group">
+                <label class="la_basic01" for="gatherPort">수집대상 Port</label>
+                <input type="text" id="gatherPort" name="gatherPort" maxlength="5" class="basic04 number" title="수집대상 Port" placeholder="ex)8080">
+              </div>
+              <span id="valid_gatherPort" class="inform3 valid"></span>
+            </li>
+            <li>
+              <div class="input-group">
+                <label class="la_basic01" for="">수집대상경로</label>
+                <input type="text" id="gatherPath" name="gatherPath" class="basic04" title="수집대상 경로" placeholder="ex)/data/..">
+              </div>
+              <span id="valid_gatherPath" class="inform3 valid"></span>
+            </li>
+            <li>
+              <div class="input-group">
+                <label class="la_basic01" for="gatherExt">수집파일확장자</label>
+                <select class="basic basic04" id="gatherExt">
+                </select>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <input type="hidden" id="id" name="id" value="">
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel" title="취소">취소</button>
+            <button type="button" class="btn-m-confirm" title="확인">확인</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+    <form id="frm" th:action method="post">
+    <input type="hidden" id="logId" name="logId" value="">
+    <div class="con-title"><span>자동수집</span></div>
+        <div class="sec-grid1">
+          <div class="g-area3">
+            <div class="pannel">
+             
+              <div class="searchCont p-head3">
+                <div class="searchGrp">
+                  <div class="searchItem">
+                    <input name="frDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value=""> ~ <input name="toDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value="">
+                  </div>
+                  <div class="searchItem">
+                    <select name="useYn" class="basic">
+                      <option value="Y">정상</option>
+                      <option value="N">삭제</option>
+                    </select>
+                  </div>
+                  <div class="searchItem">
+                  </div>
+
+                  <div class="rightBtnGrp">
+                    <button type="button" class="btn btn-secondary btn-search01" onclick="searchFunc();">조회</button>
+                    <button type="button" class="btn btn-secondary btn-make">작업생성</button>
+                    <button type="button" class="btn btn-danger btn-delete">삭제</button>
+                  </div>
+                </div>
+                <div class="calendarModal kor hidden" tabindex="0">
+                </div>
+                                
+              </div>
+              <div class="result"></div>
+              
+              <div class="contWrap">
+                <!--table-->
+                <div class="gridCont03" id="gridWork">
+                </div>
+
+                <!--pagenavigation-->
+                <div class="page-nav-group pageWork">
+                </div>
+                
+              </div>
+              
+              <div class="contWrap">
+                <div class="title">수집로그</div>
+                
+                <!--table-->
+                <div class="gridCont03" id="gridLog">
+                </div>
+                
+                <!--pagenavigation-->
+                <div class="page-nav-group pageLog">
+                </div>
+                
+              </div>
+              
+            </div>
+          </div>
+        </div>
+    </form>
+</div>
+<script th:inline="javascript"> 
+
+       dynimicInit = () => {
+    	   gfn_setCodeGrpObj('023',document.getElementById('gatherExt'),true);
+    	   gfn_setCodeGrpObj('025',document.getElementById('scheduleCd'),true);
+    	   document.getElementsByName('frDt')[0].value = gfn_getDiffDay(nis.diffDay);
+    	   document.getElementsByName('toDt')[0].value = gfn_getDay();
+    	   pageInit(document.querySelector(".pageWork"),'searchFunc()',pagination.halfRowPerPage);
+    	   pageInit(document.querySelector(".pageLog"),'searchFunc("LOG")',pagination.halfRowPerPage);
+
+   		   const headWorkColumns = [{id:"chk",width: "45px"}
+                                  ,{id:"idx",width:"50px",label:"NO"}
+                                  ,{id:"id",width: "0px"}
+                                  ,{id:"workNm",width: "200px",label:"작업명"}  
+                                  ,{id:"scheduleVal",width: "80px",label:"작업주기"}  
+                                  ,{id:"lastSuccessTs",width: "120px",label:"마지막 작업성공",data_celltype:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}  
+                                  ,{id:"nextWorkTs",width: "120px",label:"다음 작업",data_celltype:"tdCCell" ,data_dateFrmt:"yy-mm-dd hh:mi:ss"}  
+                                  ,{id:"serverStatus",width: "80px",label:"서버상태",data_celltype:"tdCCell",data_grpCd:"026"}  
+                                  ,{id:"movCnt",width: "80px",label:"수집영상",data_celltype:"tdCCell"}  
+                                  ,{id:"imgCnt",width: "80px",label:"수집이미지",data_celltype:"tdCCell"} 
+                                  ,{id:"workProcess",width: "80px",label:"작업현황",data_celltype:"tdCCell",data_grpCd:"027"}  
+                                  ,{width: "80px",label:"편집",button:"Y",data_url:'modifyWork',data_btnNm:"수정",openType:"callBack"}
+					              ];
+		   gridInit(document.getElementById("gridWork"),headWorkColumns);
+		   const headLogColumns = [ {id:"idx",width: "50px",label:"NO", isNumber:"Y",data_cellType:"tdCCell",sortable:"Y"}
+								   ,{id:"workNm",width: "200px",label:"작업명",data_celltype:"tdCCell"}  
+						           ,{id:"stillOrMovie",width: "80px",label:"자료구분",data_celltype:"tdCCell",data_grpCd:"003"}  
+						           ,{id:"fileNm",width: "200px",label:"수집데이터명",data_celltype:"tdCCell"}  
+						           ,{id:"fileExt",width: "80px",label:"데이터 확장자"} 
+						           ,{id:"createTs",width: "120px",label:"수집일",data_celltype:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}  
+					             ];
+		   gridInit(document.getElementById("gridLog"),headLogColumns);
+       	   searchFunc();
+       }
+       
+       searchAfterFunc = (appendData) => {
+    	   let totCount = document.querySelector('.result');
+    	   while (totCount.hasChildNodes()) {
+    		   totCount.removeChild(totCount.firstChild);
+   		   }
+   		   totCount.append('총 ');
+   		   const totCountSpan = document.createElement('span');
+   		   totCountSpan.append(appendData.totalCount);
+   		   totCount.appendChild(totCountSpan);
+   		   totCount.append('건의 작업이 검색 되었습니다.');
+   		   if(appendData.totalCount != '0'){
+   			   //document.getElementById('logId').value = appendData.id;
+ 		       //pageSearch(document.getElementById("frm"),"/workLogList",document.getElementById("gridLog"),document.querySelector(".pageLog")); 
+ 		       let overChilds = document.getElementById("gridWork").querySelectorAll('.overChild');
+ 		       document.getElementById("gridWork").querySelectorAll('.overChild').forEach((overChild,index) => {
+	     		   if(index === 0){
+	     			  rowClick(appendData,document.getElementById("gridWork"),overChild);
+	     			  return false;
+	     		   }
+	     	   });
+   		   }
+       }
+       
+       rowClick = (item,gridComp,target) => {
+    	   console.log(gridComp.id);
+    	   if(gridComp.id === 'gridWork' ){
+    		   gridComp.querySelectorAll('.overChild').forEach((overChild) => {
+    	 		   if(overChild.classList.contains('on')){
+    	 			   overChild.classList.remove('on');
+    			   }
+    	 	   });
+    	 	  
+    	 	   target.classList.add('on');
+    		   document.getElementById('logId').value = item.id;
+    		   pageSearch(document.getElementById("frm"),"/workLogList",document.getElementById("gridLog"),document.querySelector(".pageLog")); 
+    	   }
+    	   
+       }
+       
+       modifyWork = (data) => {
+    	   
+    	   document.querySelector('.addWorkPop').querySelector('.pop-title').innerHTML = '작업 수정';
+    	   let scheduleTerm = document.getElementById('scheduleTerm');
+    	   let scheduleCd = document.getElementById('scheduleCd');
+    	   document.getElementById('id').value = data.id;
+	   	   document.getElementById('workNm').value = data.workNm;
+	       scheduleCd.value = data.scheduleCd;
+	   	   scheduleTerm.value = data.scheduleTerm;
+	     	
+	   	   document.getElementById('gatherIp').value = data.gatherIp;
+	   	   document.getElementById('gatherPort').value = data.gatherPort;
+	   	   document.getElementById('gatherPath').value = data.gatherPath;
+	   	   document.getElementById('gatherExt').value = gfn_nullValue(data.gatherExt);
+	   	   document.querySelector('.addWorkPop').style.display = "block";
+	       gfn_removeValidHtml(document.querySelector('.addWorkPop'),'span');
+		   scheduleTerm.readOnly = false;
+		   if(scheduleCd.value === '004'){
+			   scheduleTerm.readOnly = true;
+		   }
+		  
+	   }
+
+
+       searchFunc =  (searchType,invoker) => {
+    	   let _searchType = searchType===undefined?"ALL":searchType;
+    	   if(_searchType === 'ALL'){
+    		   pageSearch(document.getElementById("frm"),"/workList",document.getElementById("gridWork"),document.querySelector(".pageWork"),invoker,null,searchAfterFunc); 
+    	   }
+           
+    	   else{
+    		   pageSearch(document.getElementById("frm"),"/workLogList",document.getElementById("gridLog"),document.querySelector(".pageLog"),invoker); 
+    	   }
+	   }  
+       
+       document.querySelector('select').addEventListener('change',(e) => {
+    	   let scheduleTerm = document.getElementById('scheduleTerm');
+    	   if(e.target.value === ''){
+    		   scheduleTerm.value = '';
+    		   scheduleTerm.readOnly = true;
+    	   }else{
+    		   scheduleTerm.readOnly = false;
+    		   if(e.target.value === '004'){
+    			   scheduleTerm.value = '1';
+        		   scheduleTerm.readOnly = true;
+    		   }
+    		  
+    	   }
+       });
+       
+       document.querySelector('.btn-delete').addEventListener('click',(e) => {
+    	   e.preventDefault();
+    	   let checkedData = gridCheckedData(document.getElementById("gridWork"));
+    	   deleteCall = (isExec) => {
+    		   if(isExec){
+    			   gfn_asyncJsonCall('/deleteWork','POST',checkedData,'searchFunc()');
+    		   }   
+    	   }
+    	   if(Object.keys(checkedData).length > 0){
+	    	   confirmCall(msg.del,this.deleteCall);
+    	   }
+    	   else{
+    		   msgCall(msg.delChk,false);
+    	   }
+       });
+
+       document.querySelector('.btn-make').addEventListener('click',(e) => {
+    	   e.preventDefault();
+    	   let popLayer = document.querySelector('.addWorkPop');
+    	   document.querySelector('.addWorkPop').querySelector('.pop-title').innerHTML = '작업 생성';
+    	   gfn_initObj(popLayer);
+    	   gfn_removeValidHtml(popLayer,'span');
+    	   
+		   popLayer.style.display = "block";
+       });
+
+       document.querySelector('.addWorkPop').querySelector('.btn-m-cancel').addEventListener('click',(e) => {
+    	   e.preventDefault();
+    	   let popLayer = document.querySelector('.addWorkPop');
+		   popLayer.style.display = "none";
+       });
+       
+       document.querySelector('.addWorkPop').querySelector('.btn-m-confirm').addEventListener('click',(e) => {
+    	   e.preventDefault();
+    	   gfn_removeValidHtml(document.querySelector('.addWorkPop'),'span');
+    	   let requiredParams = {workNm: "작업명"
+					           , scheduleTerm: "일정주기"
+					           , gatherIp: "수집대상 IP"
+					           , gatherPort: "수집대상 Port"
+					           , gatherPath: "수집대상경로"
+					            };
+    	   let param = {id : document.getElementById('id').value
+    			      , workNm : document.getElementById('workNm').value.trim()
+    			      , scheduleTerm : document.getElementById('scheduleTerm').value.trim()
+    			      , scheduleCd : document.getElementById('scheduleCd').value.trim()
+    			      , gatherIp : document.getElementById('gatherIp').value.trim()
+    			      , gatherPort : document.getElementById('gatherPort').value.trim()
+    			      , gatherPath : document.getElementById('gatherPath').value.trim()
+    			      , gatherExt : document.getElementById('gatherExt').value.trim()
+    			      , workProcess : '001'
+    			   
+    	   };
+    	   let scheduleTermVal = document.getElementById('scheduleTerm').value;
+    	   if(parseInt(document.getElementById('scheduleTerm').value) === 0){
+    		   document.querySelector('#valid_scheduleTerm').innerText = "0 이외의 값을 입력하세요.";
+    		   return;
+    	   }
+
+    	   if(!gfn_validJson(param,requiredParams,null,document.querySelector('.addWorkPop'))){
+	   			return;
+	   	   }
+    	   if(!isIpValid(document.getElementById('gatherIp').value)){
+    		   document.querySelector('#valid_gatherIp').innerText = "IP형식이 아닙니다.";
+    		   return;
+    	       
+           }
+           
+    	   gfn_asyncJsonCall("/saveWork",'POST',param,saveAfter,requiredParams);
+       });
+       
+       saveAfter =  () => {
+	   		let popLayer = document.querySelector('.addWorkPop');
+	   		popLayer.style.display = "none";
+	   		searchFunc();
+	   }
+       
+      
+   	
+</script>
+</html>
+

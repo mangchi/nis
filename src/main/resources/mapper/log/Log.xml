@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="Log">
+  <select id="selectConnList" parameterType="HashMap" resultType="CmmnMap">
+     <![CDATA[
+     	SELECT
+     		  SEQ
+     		, ROW_NUMBER() OVER (ORDER BY A.CREATE_TS DESC) AS RN
+     		, ROW_NUMBER() OVER(ORDER BY A.CREATE_TS ASC) AS IDX
+     		, USE_MENU
+     		, CONNECT_IP
+     		, CONTENTS
+     		, A.CREATE_USER_ID
+     		, B.USER_NM CREATE_USER_NM
+     		, A.CREATE_TS
+     		, TO_CHAR(A.CREATE_TS,'YYYY-MM-DD HH24:MI:SS') CREATE_DT
+     	FROM TB_HISTORY_LOG A
+     	INNER JOIN TB_USER B
+     	ON A.CREATE_USER_ID = B.USER_ID
+     	WHERE USE_MENU = '/login'
+     ]]>
+  </select>
+  
+   <select id="selectViewList" parameterType="HashMap" resultType="CmmnMap">
+     <![CDATA[
+     	SELECT
+     		  A.SEQ
+     		, ROW_NUMBER() OVER (ORDER BY A.CREATE_TS DESC) AS RN
+     		, ROW_NUMBER() OVER(ORDER BY A.CREATE_TS ASC) AS IDX
+     		, USE_MENU
+     		, C.VIEW_NM
+     		, CONNECT_IP
+     		, CONTENTS
+     		, A.ORIGIN_FILE_NM
+     		, A.FILE_TYPE
+     		, A.CREATE_USER_ID
+     		, B.USER_NM CREATE_USER_NM
+     		, A.CREATE_TS
+     		, TO_CHAR(A.CREATE_TS,'YYYY-MM-DD HH24:MI:SS') CREATE_DT
+     	FROM TB_HISTORY_LOG A
+     	INNER JOIN TB_USER B
+     	ON A.CREATE_USER_ID = B.USER_ID
+     	INNER JOIN TB_VIEW C 
+     	ON A.USE_MENU = C.VIEW_URL
+     	WHERE USE_MENU NOT IN ( '/login','/logout','')
+     ]]>
+  </select>
+  
+  <select id="selectUpdownList" parameterType="HashMap" resultType="CmmnMap">
+     <![CDATA[
+     	SELECT
+     		  A.SEQ
+     		, ROW_NUMBER() OVER (ORDER BY A.CREATE_TS DESC) AS RN
+     		, ROW_NUMBER() OVER(ORDER BY A.CREATE_TS ASC) AS IDX
+     		, FILE_ID
+     		, FILE_SEQ
+     		, ORIGIN_FILE_NM
+     		, FILE_TYPE
+     		, SOURCE_CD
+     		, E.CD_NM SOURCE_NM
+     		, DECODE(UP_OR_DOWN,'D','다운로드','업로드') UP_OR_DOWN
+     		, A.COLLECTION_DT
+     		, A.COLLECTION_POS
+     		, A.COLLECTION_DEVICE_CD
+     		, F.CD_NM COLLECTION_DEVICE_NM
+     		, A.CREATE_USER_ID
+     		, C.USER_NM AS CREATE_USER_NM
+     		, A.CREATE_TS
+     		, TO_CHAR(A.CREATE_TS,'YYYY-MM-DD HH24:MI:SS') CREATE_DT
+     	FROM TB_UPDOWNLOAD_LOG A
+     	INNER JOIN TB_USER C
+     	ON A.CREATE_USER_ID = C.USER_ID
+	    LEFT JOIN TB_CD E 
+	    ON E.GRP_CD = '008'
+	    AND A.SOURCE_CD = E.CD
+	    LEFT JOIN TB_CD F
+	    ON F.GRP_CD = '006'
+	    AND A.COLLECTION_DEVICE_CD = F.CD
+     	WHERE UP_OR_DOWN = #{upOrDown}
+     ]]>
+  </select>
+  
+   
+  <update id="insertLog" parameterType="HashMap">
+       INSERT INTO TB_HISTORY_LOG( SEQ
+                                 , USE_MENU
+                                 , CONNECT_IP
+                                 , CONTENTS
+                                 , FILE_ID
+                                 , FILE_SEQ
+                                 , ORIGIN_FILE_NM
+                                 , FILE_TYPE
+                                 , CREATE_USER_ID
+                                 , CREATE_TS
+                                 )
+                         VALUES (SEQ_HISTORY_LOG.NEXTVAL
+                                 , #{useMenu}
+                                 , #{connectIp}
+                                 , #{contents}
+                                 , #{fileId}
+                                 , #{fileSeq ,jdbcType=INTEGER}
+                                 , #{originFileNm}
+                                 , #{fileType}
+                                 , #{userId}
+                                 , SYSDATE
+                                 )
+       
+      
+   </update>
+   
+   <update id="insertUpDownLog" parameterType="hashmap">
+        INSERT INTO TB_UPDOWNLOAD_LOG(SEQ
+                                    , FILE_ID
+                                    , FILE_SEQ
+                                    , UP_OR_DOWN
+                                    , SOURCE_CD
+                                    , ORIGIN_FILE_NM
+                                    , FILE_TYPE
+                                    , COLLECTION_DT
+                                    , COLLECTION_POS
+                                    , COLLECTION_DEVICE_CD
+                                    , CREATE_USER_ID
+                                    , CREATE_TS) 
+                             VALUES (SEQ_UPDOWNLOAD_LOG.NEXTVAL
+                                   , #{fileId}
+                                   , #{fileSeq}
+                                   , #{upOrDown}
+                                   , #{sourceCd}
+                                   , #{originFileNm}
+                                   , #{collectionDt}
+                                   , #{collectionPos}
+                                   , #{collectionDeviceCd}
+                                   , #{createUserId}
+                                   , SYSDATE
+                                 )
+
+  </update>
+
+   
+   <delete id="deleteUpDownLog" parameterType="HashMap">
+       DELETE FROM TB_UPDOWNLOAD_LOG
+       WHERE FILE_ID = #{fileId}
+   </delete>
+</mapper>
+

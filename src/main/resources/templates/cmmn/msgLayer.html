@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="msgModal"> 
+    <div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">메시지</div></div>
+        <div class="pop-body msgBody" style="text-align:center;">
+        </div>
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-confirm msgConfirm" title="확인">확인</button>
+            <button type="button" class="btn-m-cancel msgClose" title="닫기">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+<script type="text/javascript">
+    _callBackFn = null;
+    _targetUrl = null;
+    const msgCall = (msg,isSuccess,targetUrl,reloadYn) => {
+    	try{
+    		document.querySelector('.msgLayer').style.display = "block";
+	    	let _reloadYn = reloadYn===undefined?false:reloadYn;
+			if(isSuccess){
+				document.querySelector(".msgBody").innerHTML = "<strong><p>"+msg+"</p></strong>";
+				if(document.querySelector('.msgConfirm').style.display === 'none'){
+					document.querySelector('.msgConfirm').style.display = "";
+				}
+				document.querySelector('.msgClose').style.display = "none";
+				
+
+			}else{
+				document.querySelector(".msgBody").innerHTML = "<strong><p'>"+msg+"</p></strong>";
+			 	document.querySelector('.msgConfirm').style.display = "none";
+				if(document.querySelector('.msgClose').style.display === 'none'){
+					document.querySelector('.msgClose').style.display = "";
+				} 
+				
+			}
+			_targetUrl = null;
+			if(targetUrl != undefined && targetUrl != null){
+				_targetUrl = targetUrl;
+			}
+			
+		
+    	}catch(e){
+    		console.error("msgCall:",e);
+    	}
+    }
+    
+    const msgCallBack = (msg,isSuccess,callBackFn) => {
+    	_callBackFn = null;
+    	document.querySelector('.msgLayer').style.display = "block";
+		if(isSuccess){
+	    	document.querySelector(".msgBody").innerHTML = "<strong><p>"+msg+"</p></strong>";
+	     	document.querySelector('.msgConfirm').style.display = "";
+	    	document.querySelector('.msgClose').style.display = "none"; 
+			
+		}else{
+			document.querySelector(".msgBody").innerHTML  = "<strong><p>"+msg+"</p></strong>";
+		 	document.querySelector('.msgConfirm').style.display = "none";
+			document.querySelector('.msgClose').style.display = ""; 
+		}
+		if(callBackFn != undefined){
+			_callBackFn = callBackFn;
+		}
+		
+    }
+    
+    const confirmCall = (msg,callBackFn) => {
+    	_callBackFn = null;
+        try{
+        	document.querySelector('.msgLayer').style.display = "block";
+        	document.querySelector(".msgBody").innerHTML = "<strong><p>"+msg+"</p></strong>";
+        	document.querySelector('.msgConfirm').style.display = "";
+        	document.querySelector('.msgClose').style.display = ""; 
+        	if(callBackFn != undefined){
+        		_callBackFn = callBackFn;
+    		}
+    	
+        }catch(e){console.error(e);}
+        
+      
+    }
+    
+    document.querySelector('.msgConfirm').addEventListener('click', function(e){
+		e.preventDefault();
+		document.querySelector('.msgLayer').style.display = "none";
+		if(_targetUrl != null){
+			location.href = _targetUrl;
+		}
+		else{
+			//gfn_goBackUrl();
+		}
+		if(_callBackFn === null){
+			return;
+		}
+		if(typeof _callBackFn === 'function'){
+			_callBackFn(true);
+			
+		}
+		else{
+			new Function(_callBackFn)(true);
+		}
+		_callBackFn = null;
+		
+
+	});
+
+    document.querySelector('.msgClose').addEventListener('click', function(e){
+		e.preventDefault();
+		
+		document.querySelector('.msgLayer').style.display = "none";   	
+		if(_targetUrl != null){
+			location.href = _targetUrl;
+		}
+		if(_callBackFn === null){
+			return false;
+		}
+		if(typeof _callBackFn === 'function'){
+			_callBackFn(false);
+			
+		}
+		else{
+			new Function(_callBackFn)(false);
+		}
+		_callBackFn = null;
+	});
+    
+</script>
+</div>
+</html>

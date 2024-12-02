@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>::딥러닝기반 식별체계 데이터구축::</title>
+</head>
+<div class="content">
+<div class="pop-wrap unitPop">
+	    <div class="pop_container">
+	      <div class="pop-bg">
+	        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+	        <div class="pop-body" style="padding:0px;">
+	          <div class="graph4" style="height:360px;">
+	            <div class="gridCont05">
+	              <!--트리메뉴 들어가는 자리 시작-->
+					<div class="treeBox">
+					</div>
+				  <!--트리메뉴 들어가는 자리 끝-->
+	            </div>
+	          </div>
+	        </div>
+	         <div class="pop-footer">
+		          <div class="pop-btn-group">
+		            <button type="button" class="btn-m-cancel btnUnitClose" title="취소">취소</button>
+		            <button type="button" class="btn-m-confirm btnUnitOpen" title="확인하기">확인</button>
+		          </div>
+		     </div>
+	      </div>
+	    </div>
+	  </div>
+	<div class="con-title">
+		<span>데이터 등록 현황</span>
+	</div>
+	<form id="frm" th:action method="post">
+		<div class="sec-grid">
+			<!--그래프 영역 시작-->
+			<!-- <div class="g-area5">
+	            <div class="pannel">
+	              <div class="p-head">
+	              <div class="p-tit">부대별</div>
+	              </div>
+	              <div class="graph chart0">
+	               <canvas id="unitChart" width="350" height="250"></canvas>
+	              </div>
+	            </div>
+	        </div> -->
+	        
+			<div class="g-area5">
+	            <div class="pannel">
+	              <div class="p-head">
+	              <div class="p-tit">탐지수단</div>
+	              </div>
+	              <div class="graph chart1">
+	               <canvas id="pieChart" width="450" height="250"></canvas>
+	              <!-- <svg viewBox="-1.5 -1.5 3 3" style="transform: rotate(-90deg)"></svg> -->
+	              </div>
+	            </div>
+	        </div>
+	        
+	        <div class="g-area5">
+            <div class="pannel mlr-20">
+              <div class="p-head"><div class="p-tit">객체 정보 분류</div></div>
+              <div class="graph bg">
+                <div class="num"><!-- 1,000 <span>used</span> --></div>
+                <div class="chart2">
+                <canvas id="barChart" width="500" height="180"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="g-area5">
+            <div class="pannel">
+              <div class="p-head"><div class="p-tit">영상 이미지 종류</div></div>
+              <div class="graph chart3">
+              <canvas id="donutChart"width="450"  height="250"></canvas>
+              </div>
+            </div>
+          </div>
+	  
+			<div class="g-area2">
+				<div class="pannel mt-20">
+				    <div class="searchCont p-head3">
+						<div class="searchGrp">
+							<div class="searchItem">
+								<input name="frDt" class="calendar_input"
+									placeholder="yyyy.mm.dd" type="text" value=""> ~ <input
+									name="toDt" class="calendar_input" placeholder="yyyy.mm.dd"
+									type="text" value="">
+							</div>
+							<div class="searchItem unitChk" >
+					           <input type="search" class="search" id="schUnitNm" name="schUnitNm" th:value="${schUnitNm}" style="width:125px;" title="검색"  readonly>
+					           <input type="hidden" id="schUnitId" name="schUnitId" th:value="${schUnitId}" >
+					        </div>
+					        <div class="searchItem approveChk">
+								<div class="btn-group-toggle">
+								    <input type="radio" id="approveAll" name="approvedYn" checked value=''> 
+								    <label for="approveAll">전체</label> 
+									<input type="radio" id="approved" name="approvedYn"  value='Y'> 
+								    <label for="approved">승인</label> 
+								    <input type="radio" id="unApproved" name="approvedYn"  value='N'> 
+									<label for="unApproved">미승인</label>
+								</div>
+							</div>
+							<div class="rightBtnGrp">
+							    <button type="button" class="btn btn-secondary btn-search01" onclick="searchFunc(this);">조회</button>
+								<button type="button" class="btn-basic" title="위치정보통계">위치정보통계</button>
+							</div>
+						</div>
+						<div class="calendarModal kor hidden" tabindex="0"></div>
+					</div>
+				    <!--  
+					<div class="p-head2">
+						<div class="input-group">
+							<button type="button" class="btn-cal" title="기간입력"></button>
+							<input type="text" class="txt-search" title="검색"
+								placeholder="검색어를 입력해 주세요.">
+							<button type="button" class="btn-search" title="검색버튼"></button>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn-basic" title="위치정보통계">위치정보통계</button>
+						</div>
+					</div>
+					-->
+					<!--TabMenu-->
+					<div class="tabmenu">
+						<a href="" id="all" class="btn-tab on" title="전체">All(<span
+							class="allCnt"></span>)
+						</a> <a href="" id="image" class="btn-tab" title="이미지">Image(<span
+							class="imgCnt"></span>)
+						</a> <a href="" id="mov" class="btn-tab" title="영상">Movie(<span
+							class="movCnt"></span>)
+						</a> 
+				     	<input type="hidden" id="schStillOrMovie" name="schStillOrMovie" value=''>
+					</div>
+					
+					<div class="graph2">
+						<div class="gridCont"></div>
+					</div>
+					<div class="page-nav-group"></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<script th:inline="javascript"> 
+       dynimicInit = () => {
+		   document.getElementsByName('frDt')[0].value = gfn_getDiffDay(nis.diffDay);
+	       document.getElementsByName('toDt')[0].value = gfn_getDay();
+		   treeInit(document.querySelector('.unitPop').querySelector('.treeBox'));
+   		   const headColumns = [{id:"idx",width: "65px",label:"NO",isNumber:"Y",data_cellType:"tdCCell",sortable:"Y"}
+   		                       ,{id:"originFileNm",width: "100px",label:"파일명", data_cellType:"tdCCell"}
+   		                       ,{id:"collectionDt",width: "100px",label:"임무시간",sortable:"Y",data_cellType:"tdCCell"}  
+                               ,{id:"collectionPos",width: "100px",label:"탐지구역",sortable:"Y",data_cellType:"tdCCell"}  
+   		                       ,{id:"unitNm",width: "100px",label:"부대명", data_cellType:"tdCCell",sortable:"Y"}
+					           ,{id:"collectionDeviceCd",width: "60px",label:"탐지수단", data_cellType:"tdCCell",data_grpCd:"006",sortable:"Y",}
+					           ,{id:"stillOrMovie",width: "70px",label:"자료구분", data_cellType:"tdCCell",data_grpCd:"003"}
+					           ,{id:"dayOrNight",width: "115px",label:"주/야 구분", data_cellType:"tdCCell",data_grpCd:"002"}
+					           ,{id:"updateUserNm",width: "80px",label:"작업자", data_cellType:"tdCCell"}
+					           ,{id:"createTs",width: "125px",label:"등록일시",sortable:"Y",resizable:"Y", data_cellType:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+					           ,{id:"approvedTs",width: "120px",label:"승인일시",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+					          ];
+   		   gridInit(document.querySelector(".gridCont"),headColumns);
+   		   pageInit(document.querySelector(".page-nav-group"),searchFunc,pagination.rowPerPage);
+    	   searchFunc();   	     
+       }
+
+       searchFunc = (invoker) => {
+    	   if(invoker != undefined && invoker != null){
+    		   pageSearch(document.getElementById("frm"),"/intro",document.querySelector(".gridCont"),document.querySelector(".page-nav-group"),invoker,null,searchAfterFunc);
+    	   }
+    	   else{
+    		   pageSearch(document.getElementById("frm"),"/intro",document.querySelector(".gridCont"),document.querySelector(".page-nav-group"),invoker,null,searchAfterFunc);
+    	   }
+    	   
+       }
+       
+       searchAfterFunc = (appendData) => {
+    	   drawPieChart(appendData.stat);
+    	   drawBarChart(appendData.statObject);
+    	   drawDoughnutChart(appendData.stat);
+    	   document.querySelector('.allCnt').innerHTML = appendData.stat.totalCount;
+    	   document.querySelector('.imgCnt').innerHTML = appendData.stat.stillCount;
+    	   document.querySelector('.movCnt').innerHTML = appendData.stat.movieCount;
+       }
+       
+       getXY = (fill) => {
+    	   const x = Math.cos(2*Math.PI*fill);
+    	   const y = Math.sin(2*Math.PI*fill);
+    	   return [x,y];
+       }
+       
+       var pieChart = null;
+       var barChart = null;
+       var doughuntChar = null;
+       drawPieChart = (data) => {
+    	  
+   		   let isarVal = { key:"ISAR", cnt:data.isarCount, fill:data.isarCount/data.totalCount, color:"#80e080"};
+   		   let eoVal = { key:"EO", cnt:data.eoCount, fill:data.eoCount/data.totalCount, color:"#4fc3f7"};
+   		   let irVal = { key:"IR", cnt:data.irCount, fill:data.irCount/data.totalCount, color:"#9575cd"};
+   		   let madVal = { key:"MAD", cnt:data.madCount, fill:data.madCount/data.totalCount, color:"#f06292"};
+
+   		   const labels = new Array();
+   		   labels.push(isarVal.key);
+   		   labels.push(eoVal.key);
+   		   labels.push(irVal.key);
+   		   labels.push(madVal.key);
+   		   const chartData = {
+   				   labels: labels,
+   				   datasets: [{
+   					   label: 'My First Dataset',
+   				       data: [data.isarCount, data.eoCount, data.irCount,data.madCount],
+   				       backgroundColor: [
+   				    	   'rgb(255, 99, 132)',
+   				           'rgb(54, 162, 235)',
+   				           'rgb(255, 205, 86)',
+   				           'rgb(255, 130, 86)'
+   				       ],
+   				       hoverOffset: 4
+   				       }]
+   		   };
+   		   const config = {
+   				   type: 'pie',
+   				   data: chartData,
+   				   options: {
+   					   responsive: false,
+   					   plugins: {
+   						   legend: {
+   							   position: 'bottom',
+   		       			       display: true
+   		       			       }
+   		               }
+   				   }
+   		   };
+	   	   if(pieChart!=null){
+	   		   pieChart.destroy();
+		   }
+	  	   pieChart = new Chart(document.getElementById('pieChart').getContext("2d"),config); 
+       }
+       
+       drawBarChart = (datas) => {
+
+    	   console.log(datas);
+    	   let totCnt = 0;
+    	   let barDatas = new Array();
+    	   let barLabels = new Array();
+    	   let etcCnt = 0;
+    	   datas.forEach((data,index) => {
+    		   totCnt += parseInt(data.cnt);
+    		   if(index < 14){
+    			   barLabels.push(data.classNm);
+    			   barDatas.push(data.cnt); 
+    		   }
+    		   else{
+    			   etcCnt += parseInt(data.cnt);
+    			   if(index === datas.length -1){
+    				   barLabels.push('기타');
+        			   barDatas.push(etcCnt); 
+    			   }
+    		   }
+    	   });
+    	   document.querySelector('.num').innerHTML = totCnt+' <span>used</span>';
+    	  
+    	   const chartData = {
+    			   labels: barLabels,
+    			   datasets: [{
+    				   label: '',
+    	               data: barDatas,
+    	               borderColor: 'red',
+    	               backgroundColor: [
+    	            	   'rgb(255, 99, 132)',
+				           'rgb(54, 162, 235)',
+				           'rgb(54, 162, 111)',
+				           'rgb(124, 3, 235)',
+				           'rgb(231, 162, 235)',
+				           'rgb(204, 162, 21)',
+				           'rgb(54, 34, 235)',
+				           'rgb(108, 162, 77)',
+				           'rgb(255, 205, 86)',
+				           'rgb(0, 205, 86)',
+				           'rgb(33, 32, 86)',
+				           'rgb(59, 205, 222)',
+				           'rgb(58, 111, 86)',
+				           'rgb(167, 45, 11)',
+				           'rgb(255, 130, 86)']
+    	           }]
+    	   };
+    	        		 
+       	   const config = {
+       			   type: 'bar',
+       			   data: chartData,
+       			   options: {
+       				   responsive: false,
+       			       plugins: {
+       			    	   legend: {
+       			    		   position: 'bottom',
+       			               display: false,
+       			           },
+       			           title: {
+       			    	       display: false,
+       			               text: 'Chart.js Bar Chart'
+       			           }
+       			      }
+       			   }
+       	   };
+           if(barChart!=null){
+        	   barChart.destroy();
+ 	       }
+ 	       barChart = new Chart(document.getElementById('barChart').getContext("2d"),config);	  
+
+       }
+       
+       drawDoughnutChart = (data) => {
+    	   console.log("drawDoughnutChart data:",data);
+    	   let stillDay = { key:"이미지(주간)", cnt:data.stillDayCount, fill:data.stillDayCount/data.stillMovieCount, color:"#80e080"};
+		   let stillNight =   { key:"이미지(야간)", cnt:data.stillNightCount, fill:data.stillNightCount/data.stillMovieCount, color:"#4fc3f7"};
+		   let movieDay =   { key:"  영상(주간)", cnt:data.movieDayCount, fill:data.movieDayCount/data.stillMovieCount, color:"#9575cd"};
+		   let movieNight =   {key:"  영상(야간)", cnt:data.movieNightCount, fill:data.movieNightCount/data.stillMovieCount, color:"#f06292"};
+
+		   const labels = new Array();
+		   labels.push(stillDay.key);
+		   labels.push(stillNight.key);
+		   labels.push(movieDay.key);
+		   labels.push(movieNight.key);
+    	   const chartData = {
+    			   labels: labels,
+    			   datasets: [{
+    				   label: 'My First Dataset',
+    			       data: [data.stillDayCount, data.stillNightCount, data.movieDayCount,data.movieNightCount],
+    			       backgroundColor: [
+    			    	   '#80e080',
+    			           '#4fc3f7',
+    			           '#9575cd',
+    			           "#f06292"
+    			       ],
+    			       hoverOffset: 4
+    			   }]
+    	   };
+    	   
+    	   const config = {
+    			   type: 'doughnut',
+    			   data: chartData,
+    			   options: {
+    				   responsive: false,
+					   plugins: {
+						   legend: {
+							   position: 'right',
+		       			       display: true
+		       			       }
+    	               }
+				   }
+    	   };
+    	   if(doughuntChar!=null){
+    		   doughuntChar.destroy();
+    	   }
+
+    	   doughuntChar = new Chart(document.getElementById('donutChart').getContext("2d"),config);
+				     
+				     
+				   
+       }
+       
+       drawChart4 = (data) => {
+    	   let isarVal = { key:"ISAR", cnt:data.isarCount, fill:data.isarCount/data.totalCount, color:"#80e080"};
+		   let eoVal = { key:"EO", cnt:data.eoCount, fill:data.eoCount/data.totalCount, color:"#4fc3f7"};
+		   let irVal = { key:"IR", cnt:data.irCount, fill:data.irCount/data.totalCount, color:"#9575cd"};
+		   let madVal = { key:"MAD", cnt:data.madCount, fill:data.madCount/data.totalCount, color:"#f06292"};
+		   let chartDatas = new Array();
+		   chartDatas.push(isarVal);
+		   chartDatas.push(eoVal);
+		   chartDatas.push(irVal);
+		   chartDatas.push(madVal);
+		   let chart3 = document.querySelector(".chart3");
+		   let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		   svg.setAttribute("transform","rotate("+(-90)+")");
+		   svg.setAttribute("width","100%");
+		   svg.setAttribute("height","100%");
+		   svg.setAttribute("viewBox","-1.5 -1.5 3 3"); 
+		   
+		       
+	       let cumulativePercent = 0;
+	      
+	       chartDatas.forEach((chartData,index) => {
+	    	   const [startX, startY] = getXY(cumulativePercent);
+	    	   cumulativePercent += chartData.fill;
+	    	   const [endX, endY] = getXY(cumulativePercent);
+	    	   const largeArcFlag = chartData.fill > .5 ? 1 : 0;
+	    	   const pathData = [
+    		  
+    	   ].join(' '); 
+	    	   let targetRad = 2*Math.PI*chartData.fill;
+	    	   let targetRestRad = 2*Math.PI*(1-chartData.fill);
+	    	   let animationDuration = 0.2;
+	    	 
+	    	   const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+	    	   pathEl.setAttribute('d', pathData);
+	    	   pathEl.setAttribute('data-label', chartData.key);
+	    	   pathEl.setAttribute('fill', 'none');
+	    	   pathEl.setAttribute('stroke-width', '0.3');
+	    	   pathEl.setAttribute('stroke', chartData.color);
+	    	   pathEl.setAttribute('stroke-dasharray', `${targetRad} ${targetRestRad}`);
+	    	   pathEl.setAttribute('stroke-dashoffset', '0.05');
+	    	   pathEl.classList.add('scaleup');
+	    	   pathEl.addEventListener('mouseover',e => {
+	    		   //console.log(e.clientX);
+	    		   //console.log(chartData.key);
+	    		  
+	    	   });
+	    	   const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+	    	   animate.setAttribute('attributeName', 'stroke-dashoffset');
+	    	   animate.setAttribute('begin', `${animationDuration*index}`);
+	    	   animate.setAttribute('from', `${targetRad}`);
+	    	   animate.setAttribute('to', '0.05');
+	    	   animate.setAttribute('dur', `${animationDuration}`);
+	    	   animate.setAttribute('fill', 'freeze');
+	    	   pathEl.appendChild(animate);
+	    	   
+	    	   svg.appendChild(pathEl);
+	    	});
+	        chart3.appendChild(svg);
+    	   
+       }
+       
+       document.querySelectorAll('.btn-tab').forEach((tabBtn) => {
+    	    tabBtn.addEventListener('click', (e) => {
+    	    	e.preventDefault();  
+    	    	let isSameAnch = false;
+    	    	document.querySelectorAll('.btn-tab').forEach((tab) => {
+    	    		if(tab === e.target || tab === e.target.parentNode){
+    	    			if(tab.classList.contains('on')){
+    	    				isSameAnch = true;
+    	    			}
+    	    			else{
+    	    				tab.classList.add('on');
+    	    			}
+    	    		}
+    	    		else{
+    	    			if(tab.classList.contains('on')){
+    	    				tab.classList.remove('on');
+    	    			}
+    	    			
+    	    		}
+  			    });
+    	    	if(!isSameAnch){
+                	document.getElementById('schStillOrMovie').value = "";
+                	if(e.target.tagName === 'SPAN'){
+                		 if(e.target.parentNode.id === 'image'){
+                         	document.getElementById('schStillOrMovie').value = "001";
+                         	
+                         }
+                         else if(e.target.parentNode.id === 'mov'){
+                         	document.getElementById('schStillOrMovie').value = "002";
+                         }
+                		 searchFunc(e.target.parentNode);
+                	}
+                	else{
+                		 if(e.target.id === 'image'){
+                         	document.getElementById('schStillOrMovie').value = "001";
+                         	
+                         }
+                         else if(e.target.id === 'mov'){
+                         	document.getElementById('schStillOrMovie').value = "002";
+                         }
+                		 searchFunc(e.target);
+                	}
+    			    
+    	    	}
+    	    	
+			   
+		    });
+		})
+		
+		document.querySelector('.btn-basic').addEventListener('click', (e) => {
+			e.preventDefault();
+			let params = {};
+			let postParam = {frDt: document.getElementsByName('frDt')[0].value
+					       , toDt: document.getElementsByName('toDt')[0].value
+					       };
+	    	dynimicCall(params,'GET','/korMap',null,postParam);
+		});
+       
+       rowClick = (row,gridComp,target) => {
+	   		console.log("row:",row);
+	   		gridComp.querySelectorAll('.overChild').forEach((overChild) => {
+    		   if(overChild.classList.contains('on')){
+    			   overChild.classList.remove('on');
+			   }
+    	   });
+    	  
+    	   target.classList.add('on');
+	   		let param = {id:row["id"]
+	   			       ,stillOrMovie:row["stillOrMovie"]
+	   			       ,sourceType: row["sourceType"]
+	   		           };
+	           
+	   	    dynimicCall(param,'POST','/dataDetail', null,param);
+	   	
+	   }
+
+
+</script>
+</html>
+

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Cls">
+	<select id="selectClass" parameterType="HashMap" resultType="CmmnMap">
+		SELECT ID
+		     , UPPER_ID
+		     , CLASS_NM
+		FROM TB_CLASS_INFO
+		ORDER BY ID DESC
+	</select>
+
+	<select id="selectClassId" parameterType="HashMap" resultType="CmmnMap">
+		SELECT ID
+		     , UPPER_ID
+		     , CLASS_NM
+		FROM TB_CLASS_INFO
+		<where>
+			AND CLASS_NM = #{classNm}
+		</where>
+	</select>
+
+	<select id="selectLearningList" parameterType="HashMap" resultType="CmmnMap">
+		SELECT ROW_NUMBER() OVER(ORDER BY CREATE_TS DESC) AS RN
+             , ROW_NUMBER() OVER(ORDER BY CREATE_TS ASC) AS IDX
+		     , ID
+		     , LEARNING_NM
+			 , EPOCH
+			 , LEARNING_RATE
+			 , BATCH_SIZE
+			 , OPTIMIZER
+			 , LEARNING_PATH
+			 , STATUS                 
+	         , CREATE_TS  
+	         , UPDATE_TS
+		FROM TB_LEARNING
+	</select>
+	
+	<select id="selectLearningFileList" parameterType="HashMap" resultType="CmmnMap">
+		SELECT B.ID
+		      ,B.SEQ
+		      ,B.FILE_NM
+              ,B.FILE_PATH
+              ,B.WORK_FILE_PATH
+              ,CONCAT(CONCAT(B.WORK_FILE_PATH,'/'),B.FILE_NM) AS SRC_FILE
+              ,D.CLASS_NM
+              ,C.POSE
+              ,C.DIFFICULT
+              ,C.X
+              ,C.Y
+              ,C.EX
+              ,C.EY
+		FROM TB_IMAGE_INFO A
+		INNER JOIN TB_FILE B 
+		ON A.PARENT_ID = B.ID
+		AND A.FILE_SEQ = B.SEQ 
+		INNER JOIN TB_OBJECT_INFO C
+		ON A.ID = C.IMAGE_ID 
+		INNER JOIN TB_CLASS_INFO D 
+		ON C.CLASS_INFO_ID = D.ID
+		<where>
+        AND C.CLASS_INFO_ID IN 
+        <foreach collection="classList" item="row" open="(" close=")" separator=",">
+	   	    <foreach collection="row" item="col" index="key"  >
+	        <if test='key.equals("id")'>
+	            #{col} 
+	        </if>
+		    </foreach> 
+   	    </foreach>     
+        </where>
+        ORDER BY B.FILE_NM
+	</select>
+	
+	<update id="insertLearning" parameterType="HashMap">
+	    INSERT INTO TB_LEARNING    (ID
+	                              , LEARNING_NM
+							      , EPOCH
+							      , LEARNING_RATE
+								  , BATCH_SIZE
+								  , OPTIMIZER
+								  , LEARNING_PATH
+								  , STATUS   
+						          , CREATE_TS            
+						          , CREATE_USER_ID
+						          )
+	                   VALUES(  #{id}
+	                            , #{learningNm}
+								, #{epoch , jdbcType=INTEGER}
+								, #{learningRate, jdbcType=FLOAT}
+								, #{batchSize, jdbcType=INTEGER}
+								, #{optimizer, jdbcType=VARCHAR}
+								, #{learningPath, jdbcType=VARCHAR}
+								, #{status, jdbcType=VARCHAR}
+								, SYSDATE
+								, #{userId, jdbcType=VARCHAR}
+								
+	                         )
+	</update>
+	
+
+	<update id="mergeClass" parameterType="DatasetVo">
+		MERGE INTO TB_CLASS_INFO A
+		USING DUAL
+		ON A.ID = #{id, jdbcType=VARCHAR}
+		WHEN MATCHED THEN
+		UPDATE SET UPPER_ID = #{upperId}
+		         , CLASS_NM = #{classNm}
+		WHEN NOT MATCHED THEN
+		INSERT (ID
+				, UPPER_ID
+				, CLASS_NM)
+				VALUES( #{id}
+				, #{upperId}
+				, #{classNm, jdbcType=VARCHAR}
+				)
+	</update>
+	
+	<delete id="deleteClass" parameterType="HashMap">
+		DELETE FROM TB_CLASS_INFO
+       <where>
+	   	AND ID NOT IN 
+	   	<foreach collection="list" item="item" open="(" close=")" separator=",">
+	   	   #{item}
+	   	</foreach>     
+	   	</where> 
+	</delete>
+
+
+	<update id="insertClassByXml" parameterType="DatasetVo">
+		INSERT INTO TB_CLASS_INFO(ID
+								, UPPER_ID
+								, CLASS_NM)
+								VALUES( #{id}
+								, #{upperId}
+								, #{classNm, jdbcType=VARCHAR}
+								)
+	</update>
+
+	<delete id="deleteAllClass" parameterType="DatasetVo">
+		DELETE FROM TB_CLASS_INFO
+
+	</delete>
+
+	<update id="deleteObjectClass" parameterType="DatasetVo">
+		UPDATE TB_OBJECT_INFO A SET A.CLASS_INFO_ID = NULL
+		<where>
+			AND NOT (A.CLASS_INFO_ID IS NULL OR A.CLASS_INFO_ID = '')
+			AND NOT EXISTS (SELECT 1 FROM TB_CLASS_INFO B
+			WHERE B.ID = A.CLASS_INFO_ID
+			)
+		</where>
+
+	</update>
+
+</mapper>

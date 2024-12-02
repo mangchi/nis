@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="Mov">
+
+  <select id="select" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  A.ID
+     		, B.ID MOVIE_ID
+     		, A.COLLECTION_DT
+   		    , A.COLLECTION_POS
+   		    , A.COLLECTION_DEVICE_CD
+   		    , A.SOURCE_CD
+   		    , A.DAY_OR_NIGHT
+   		    , A.STILL_OR_MOVIE
+   		    , A.DATA_TYPE
+   		    , A.DATA_COORD_X
+   		    , A.DATA_COORD_Y
+   		    , A.DATA_CD
+   		    , A.NATION_CD
+   		    , A.SHIP_CLASS
+   		    , A.SHIP_NM
+   		    , A.ETC
+   		    , A.APPROVED_TS
+     		, B.CREATE_USER_ID
+     		, B.CREATE_TS
+     		, B.UPDATE_USER_ID
+     		, B.UPDATE_TS
+     	FROM TB_DATASET_INFO A
+     	INNER JOIN TB_MOVIE_INFO B
+   	    ON   A.ID = B.PARENT_ID
+     	<where>
+     	AND A.ID = #{id}
+     	</where>
+  </select>
+  
+   <select id="selectMovImageList" parameterType="HashMap" resultType="CmmnMap">
+    SELECT  ROW_NUMBER() OVER(ORDER BY C.CREATE_TS DESC) AS RN
+          , ROW_NUMBER() OVER(ORDER BY C.CREATE_TS ASC) AS IDX
+          , A.ID
+   		  , B.ID MOV_ID
+   		  , B.IMAGE_SIZE
+   		  , C.ID IMG_ID
+   		  , D.ID FILE_ID
+   		  , D.SEQ
+   		  , D.FILE_NM
+   		  , D.ORIGIN_FILE_NM
+   		  , D.FILE_PATH
+   		  , D.WORK_FILE_PATH
+   		  , D.THUMB_FILE_PATH
+   		  , D.FILE_SIZE
+   		  , D.FILE_TYPE
+   	FROM TB_DATASET_INFO A
+   	INNER JOIN TB_MOVIE_INFO B
+   	ON  A.ID = B.PARENT_ID
+   	INNER JOIN TB_IMAGE_INFO C
+   	ON  B.ID = C.PARENT_ID
+   	LEFT JOIN TB_FILE D
+   	ON   C.PARENT_ID = D.ID
+   	AND  C.FILE_SEQ = D.SEQ
+    <where>
+    AND A.ID = #{id}
+    </where>
+  </select>
+  
+  <select id="selectVo" parameterType="HashMap" resultType="DatasetVo">
+     	SELECT
+     		  A.ID
+     		, B.ID MOVIE_ID
+     		, A.COLLECTION_DT
+   		    , A.COLLECTION_POS
+   		    , A.COLLECTION_DEVICE_CD
+   		    , A.SOURCE_CD
+   		    , A.DAY_OR_NIGHT
+   		    , A.STILL_OR_MOVIE
+   		    , A.DATA_TYPE
+   		    , A.DATA_COORD_X
+   		    , A.DATA_COORD_Y
+   		    , A.DATA_CD
+   		    , A.NATION_CD
+   		    , A.SHIP_CLASS
+   		    , A.SHIP_NM
+   		    , A.ETC
+   		    , A.SOURCE_TYPE
+   		    , A.APPROVED_TS
+     		, B.CREATE_USER_ID
+     		, C.USER_NM CREATE_USER_NM
+     		, B.CREATE_TS
+     		, B.UPDATE_USER_ID
+     		, B.UPDATE_TS
+     	FROM TB_DATASET_INFO A
+     	INNER JOIN TB_MOVIE_INFO B
+   	    ON   A.ID = B.PARENT_ID
+   	  <!--   AND  B.FILE_SEQ = 1 -->
+   	    INNER JOIN TB_USER C
+   	    ON B.CREATE_USER_ID = C.USER_ID
+     	<where>
+     	AND A.ID = #{id}
+     	AND ROWNUM = 1
+     	</where>
+  </select>
+  
+    <select id="selectFileList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  A.ID
+     		, ROW_NUMBER() OVER (ORDER BY C.CREATE_TS ) AS RN
+     		, ROW_NUMBER() OVER(ORDER BY C.CREATE_TS ASC) AS IDX
+     		, B.ID MOVIE_ID
+     		, C.ID FILE_ID
+     	    , C.SEQ
+     	    , C.ORIGIN_FILE_NM
+     	    , C.FILE_TYPE
+     	    , C.FILE_PATH
+     	    , C.FILE_NM
+     	    , C.FILE_SIZE
+     	FROM TB_DATASET_INFO A
+     	INNER JOIN TB_MOVIE_INFO B
+   	    ON   A.ID = B.PARENT_ID
+   	    INNER JOIN TB_FILE C
+   	    ON   B.PARENT_ID = C.ID
+   	    AND  B.FILE_SEQ = C.SEQ
+     	<where>
+     	AND A.ID = #{id}
+     	AND C.FILE_TYPE != 'text/xml'
+     	</where>
+  </select>
+  
+  <select id="selectRemainMovCnt" parameterType="HashMap" resultType="int">
+     SELECT COUNT(1) FROM TB_DATASET_INFO A
+     INNER JOIN TB_MOVIE_INFO B
+     ON A.ID = B.PARENT_ID
+     INNER JOIN TB_FILE C
+     ON B.PARENT_ID = C.ID
+     AND B.FILE_SEQ = C.SEQ
+     WHERE A.ID = #{id}
+     AND C.FILE_TYPE != 'text/xml';
+  </select>
+  
+  <update id="insertMov" parameterType="CmmnMap">
+       INSERT INTO TB_MOVIE_INFO (ID
+		                      , PARENT_ID
+				              , FILE_SEQ
+				              , CREATE_USER_ID
+				              , CREATE_TS
+				              , UPDATE_USER_ID
+				     		  , UPDATE_TS)
+				        VALUES( #{id}
+				              , #{parentId}
+				              , #{fileSeq, jdbcType=INTEGER}
+				              , #{createUserId}
+				              , SYSDATE
+				              , #{updateUserId}
+				              , SYSDATE)
+   </update>
+  
+  <update id="mergeMov" parameterType="CmmnMap">
+       MERGE INTO TB_MOVIE_INFO A
+       USING DUAL
+       ON  A.PARENT_ID = #{parentId, jdbcType=VARCHAR}
+       AND A.FILE_SEQ = #{fileSeq, jdbcType=INTEGER}
+       WHEN MATCHED THEN 
+       UPDATE SET UPDATE_USER_ID = #{updateUserId, jdbcType=VARCHAR}
+                , UPDATE_TS   = SYSDATE
+       WHEN NOT MATCHED THEN
+       INSERT  (ID
+              , PARENT_ID
+              , FILE_SEQ
+              , CREATE_USER_ID
+              , CREATE_TS
+              , UPDATE_USER_ID
+     		  , UPDATE_TS)
+        VALUES( #{id}
+              , #{parentId}
+              , #{fileSeq, jdbcType=INTEGER}
+              , #{createUserId}
+              , SYSDATE
+              , #{updateUserId}
+              , SYSDATE)
+   </update>
+   
+   
+   <delete id="deleteMovByParentId" parameterType="CmmnMap">
+       DELETE FROM TB_MOVIE_INFO
+       <where>
+       AND PARENT_ID = #{id}
+       </where>
+   </delete>
+   
+   <delete id="deleteFileById" parameterType="hashmap">
+	   DELETE FROM TB_FILE
+	   <where>
+	   AND ID = #{id}
+	   </where> 
+   </delete>
+   
+   <delete id="deleteMovs" parameterType="hashmap">
+       DELETE FROM TB_MOVIE_INFO
+       <where>
+       AND ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("movieId")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>     
+       </where>
+   </delete>
+   
+</mapper>
+

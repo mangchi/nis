@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>데이터 상세정보</title>
+</head>
+<div class="content">
+   <form id="detailFrm" th:action method="post" th:object="${dataSet}">
+    <input type="hidden"  th:field="*{id}" >
+    <input type="hidden"  th:field="*{stillOrMovie}" >
+    <input type="hidden"  th:field="*{sourceType}" >
+    <input type="hidden"  th:field="*{approvedTs}" >
+    <input type="hidden" id="fileSeq" name="fileSeq" value="1">
+    <input type="hidden" id="imageId" name="imageId" value="">
+   <div class="pop_container07">
+      <div class="pop-bg" style="background:var(--bg-panh);">
+        <div class="pop-head"><div class="pop-title">데이터 상세정보</div></div>
+        <div class="pop-body" style="padding:0px 30px;">
+          <div class="sec-grid1" style="margin-top:0px;">
+            
+            <div class="g-area3">
+              <div class="pannel">
+             
+                <div class="gridCont03" style="overflow:hidden;">
+                  <div class="sec-grid14">
+                    <!--1열-->
+                    <div class="g-area3 item">
+                      <div class="pannel" style="border:1px solid var(--color-line); box-shadow:none;">
+                        <div class="graph" style="height:584px; padding:0px;"><!--height 수정:20221014-->
+                          <!--table-->
+                          <div class="gridCont06 gridList">
+                          </div>
+                          
+                        </div>
+                        <div class="p-bottom">
+                          <!--pagenavigation-->
+                          <div class="page-nav-group pageImg" style="padding:0px;">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!--2열-->
+                    <div class="g-area3 item">
+                      <div class="pannel" style="border:1px solid var(--color-line); box-shadow:none; background: var(--pure-b); padding:5px;">
+                       <!--  <div class="p-head">
+                          <div class="btn-group04" style="top:-6px;">
+                            <button type="button" id="btnImage" name="btnImage" class="btn-zoomin">확대</button>
+                            <button type="button" id="" name="" class="btn-zoomout">축소</button>
+                          </div>
+                        </div> -->
+                        <div class="graph3 dataGraph"><canvas>이미지 들어가는 자리</canvas></div>
+                      </div>
+                    </div>
+                    
+                    <!--3열-->
+                    <div class="g-area3 item">
+                      <div class="pannel" style="border:1px solid var(--color-line); box-shadow:none;">
+                        <div class="p-head1">
+                          <div class="tabmenu01">
+                            <a  class="btn-tab01 on" style="width:40%;" title="기본/보조정보">기본/보조정보</a>
+                            <a  class="btn-tab01 on" style="width:59%;" title="항공기 수집영상 분석태그">항공기 수집영상 분석태그(Tag)</a>
+                          </div>
+                        </div>
+                        <div class="graph bg">
+                          <div class="group-input">
+                            <fieldset>
+                              <ul class="basic tabPane">
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="">임무시간</label>
+                                    <input type="text" class="basic01" th:field="*{collectionDt}" title="임무시간" readonly>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="">탐지구역</label>
+                                    <input type="text" class="basic01" th:field="*{collectionPos}" title="탐지구역" readonly>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="passPresent">탐지수단</label>
+                                    <select class="basic basic01" th:field="*{collectionDeviceCd}" disabled>
+			                        <option th:each="val : ${collectionDeviceCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									</select>
+                                  </div>
+                                </li>
+                                <li>
+									<div class="input-group">
+										<label class="basic" for="stillOrMovie">자료구분</label>
+										<div class="btn-group-toggle">
+											<input type="radio" id="stillOrMovie1" name="stillOrMovie" th:checked="${dataSet.getStillOrMovie().equals('001')}"  value='001' disabled> 
+										    <label for="stillOrMovie1">이미지</label> 
+										    <input type="radio" id="stillOrMovie2" name="stillOrMovie" th:checked="${dataSet.getStillOrMovie().equals('002')}" value='002' disabled> 
+											<label for="stillOrMovie2">영상</label>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="input-group">
+										<label class="basic" for="dayOrNight">주/야 구분</label>
+										<div class="btn-group-toggle">
+											<input type="radio" id="dayOrNight1" name="dayOrNight" th:checked="${dataSet.getDayOrNight().equals('001')}"  value='001' disabled> 
+											<label for="dayOrNight1">주간</label> 
+											<input type="radio" id="dayOrNight2" name="dayOrNight" th:checked="${dataSet.getDayOrNight().equals('002')}" value='002' disabled>
+											<label for="dayOrNight2">야간</label>
+										</div>
+									</div>
+								</li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="sourceCd">데이터 출처</label>
+			                        <select id="sourceCd" class="basic basic01" th:field="*{sourceCd}" disabled>
+									<option th:each="val : ${sourceCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									</select>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="">데이터 종류</label>
+                                    <select class="basic basic01" th:field="*{dataType}" disabled>
+			                        <option th:each="val : ${dataTypes}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									</select>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="">데이터 좌표</label>
+                                    <input type="text" class="basic02 numComma" th:field="*{dataCoordX}" title="데이터 X좌표" readonly>
+									<input type="text" class="basic02 numComma" th:field="*{dataCoordY}" title="데이터 Y좌표" readonly>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="">설명</label>
+                                    <textarea style="width:77%; height:110px; margin-bottom: 20px;" th:field="*{etc}" th:value="${etc}" th:text="${etc}"  readonly></textarea>
+                                  </div>
+                                </li>
+                              </ul>
+                              <ul class="basic tabPane">
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="collectionDt">임무시간</label>
+		                            <input type="text" class="basic basic01" th:field="*{collectionDt}" title="임무시간" readonly>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="collectionPos">탐지구역</label>
+		                            <input type="text" class="basic basic01" th:field="*{collectionPos}" title="탐지구역" readonly>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="dataCd">대상</label>
+		                             <select class="basic basic01" th:field="*{dataCd}" disabled>
+			                         <option th:each="val : ${dataCds}" th:value="${val?.cd}"
+												th:text="${val?.cdNm}"></option>
+									 </select>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="nationCd">국적</label>
+		                             <select class="basic basic01" th:field="*{nationCd}" disabled>
+			                        <option th:each="val : ${nationCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									 </select>
+		                          </div>
+		                        </li>
+		                        <li>
+									<div class="input-group">
+										<label class="basic" for="airStillOrMovie">자료구분</label>
+										<div class="btn-group-toggle">
+											<input type="radio" id="airStillOrMovie1" name="airStillOrMovie" th:checked="${dataSet.getStillOrMovie().equals('001')}"  value='001' disabled> 
+										    <label for="airStillOrMovie1">이미지</label> 
+										    <input type="radio" id="airStillOrMovie2" name="airStillOrMovie"  th:checked="${dataSet.getStillOrMovie().equals('002')}" value='002' disabled> 
+											<label for="airStillOrMovie2">영상</label>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="input-group">
+										<label class="basic" for="airDayOrNight">주/야 구분</label>
+										<div class="btn-group-toggle">
+											<input type="radio" id="airDayOrNight1" name="airDayOrNight" th:checked="${dataSet.getDayOrNight().equals('001')}" value='001' disabled> 
+											<label for="airDayOrNight1">주간</label> 
+											<input type="radio" id="airDayOrNight2" name="airDayOrNight" th:checked="${dataSet.getDayOrNight().equals('002')}" value='002' disabled>
+											<label for="airDayOrNight2">야간</label>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="input-group">
+										<label class="basic" for="sourceCd">데이터 출처</label>
+				                        <select id="sourceCd" class="basic basic01" th:field="*{sourceCd}" disabled>
+										<option th:each="val : ${sourceCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+										</select>
+									</div>
+								</li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="shipClass">함종/선종</label>
+		                            <input type="text" class="basic basic01" th:field="*{shipClass}" title="함종/선종" readonly>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="shipNm">함명/선명</label>
+		                            <input type="text" class="basic basic01" th:field="*{shipNm}" title="함명/선명" readonly>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                             <label class="basic" for="collectionDeviceCd">탐지수단</label>
+			                         <select class="basic basic01" th:field="*{collectionDeviceCd}" disabled>
+			                         <option th:each="val : ${collectionDeviceCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									 </select>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="etc">기타</label>
+		                            <textarea style="width:77%; height:110px; margin-bottom: 20px;" th:field="*{etc}" th:value="${etc}" th:text="${etc}"  readonly></textarea>
+		                          </div>
+		                        </li>
+		                      </ul>
+                              
+                            </fieldset>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!--4열-->
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel" title="닫기">닫기</button>
+            <button sec:authorize="hasRole('ADMIN')" type="button" class="btn-m-confirm approveBtn" title="승인">승인</button> 
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    </form>
+<script type="text/javascript">
+	modalInit = (param) => {
+		if(document.getElementById('sourceType').value === '001'){
+        	document.querySelector('.group-input').querySelectorAll('ul')[1].style.display = "none";
+        	document.querySelectorAll('.btn-tab01')[0].classList.add('on');
+		    document.querySelectorAll('.btn-tab01')[1].classList.remove('on');
+		}
+        else{
+        	document.querySelectorAll('.btn-tab01')[0].classList.remove('on');
+		    document.querySelectorAll('.btn-tab01')[1].classList.add('on');
+        	document.querySelector('.group-input').querySelectorAll('ul')[0].style.display = "none";
+        }
+		if(gfn_nullValue(document.getElementById('approvedTs').value) != ''){
+			let approveBtn = document.querySelector('.approveBtn');
+			if(approveBtn){
+				approveBtn.style.display = "none";
+			}
+		}
+		
+		pageInit(document.querySelector(".pageImg"),"modalSch()",pagination.rowPerPage,null,null,null,true);
+		const imgHeadColumns =  [{id:"idx",width: "40px",label:"NO"}
+						        ,{id:"id",width: "0px"}
+						        ,{id:"imageId",width: "0px"}
+						        ,{id:"originFileNm",width: "180px",label:"파일명",data_cellType:"tdCCell"}  						       
+						      ];
+		gridInit(document.querySelector(".gridCont06"),imgHeadColumns);
+		modalSch();
+	}	
+	
+
+
+	modalSch = (invoker) => {
+		if(document.getElementById('stillOrMovie').value === '001'){
+			
+			pageSearch(document.getElementById('detailFrm'),"/imgFileList",document.querySelector('.gridCont06'),document.querySelector('.pageImg'),invoker,null,modalSchAfterFunc);
+		}
+		else{
+			pageSearch(document.getElementById('detailFrm'),"/movFileList",document.querySelector('.gridCont06'),document.querySelector('.pageImg'),invoker,null,modalSchAfterFunc);
+		}
+		
+	}
+	
+	modalSchAfterFunc = (appendData) => {
+		layerRowClick(appendData,document.querySelector(".gridCont06"),null,layRowClickCallback);
+	}
+	
+	layRowClickCallback = () => {
+		let overChilds = document.querySelector(".gridCont06").querySelectorAll('.overChild');
+		//console.log("overChilds:",document.querySelector(".gridList").querySelector('.divTable').querySelectorAll('.over'));
+		if(overChilds){
+			overChilds.forEach((overChild,index) => {
+				console.log("index:",index);
+				if(index === 0){
+					overChild.classList.add('on');
+				}
+		    });
+		}
+		let children = document.querySelector(".gridCont06").children;
+	    for(var i=0; i<children.length; i++){
+		       console.log("자식노드: " + children[i].nodeName);
+		}
+	    /*
+		for(let ele of document.querySelector(".gridCont06").childNodes){
+			if(ele.tagName === 'DIV'){
+				for(let childEle of ele.childNodes){
+					if(childEle.tagName === 'DIV' && childEle.classList.contains('divBody')){
+						console.log("childEle:",childEle.child);
+						
+					}
+					
+					
+				}
+				
+			}
+		}*/
+	}
+	
+	layerRowClick = (row,gridComp,target,callBackFn) => {
+		if(gridComp === document.querySelector(".gridCont06")){
+			document.getElementById('fileSeq').value = row.seq;
+			let graph = document.querySelector('.dataGraph');
+			graph.innerHTML = '';
+			if(row.fileType.indexOf('video') > -1){
+				let video = document.createElement('video');
+				video.setAttribute('src','/fileId/'+row.id+'/'+row.seq+"/N/Y"+gfn_getStorageItem("curUrl")+"/"+new Date().getTime());
+				video.setAttribute('width','100%');
+				video.setAttribute('height','100%');
+				video.setAttribute('cotrols',true);
+				video.setAttribute('preload',"auto");
+				
+				graph.append(video);
+			}
+			else{
+				let canvas = document.createElement('canvas');
+				canvas.setAttribute("id","canvasImg");
+				canvas.setAttribute("width","600px");
+				canvas.setAttribute("height","527px");
+				graph.appendChild(canvas);
+				let context = canvas.getContext('2d');
+				let img = new Image();
+				img.classList.add("graph3Img");
+				img.setAttribute("src", "/fileId/"+row.id+"/"+row.seq+"/N/Y"+gfn_getStorageItem("curUrl")+"/"+new Date().getTime());
+				img.addEventListener("load", () => {
+					context.clearRect(0, 0, canvas.width, canvas.height);
+				    //canvas.width = img.width;
+				    //canvas.height = img.height;
+				    img.width = canvas.width;
+				    img.height = canvas.height;
+					context.drawImage(img,0,0,img.width,img.height);
+			    });
+			}
+			if(target === undefined || target === null){
+				if(callBackFn != undefined){
+					callBackFn();
+				}
+				
+			}
+			else{
+				gridComp.querySelectorAll('.overChild').forEach((overChild,index) => {
+		 		    if(overChild.classList.contains('on')){
+		 			   overChild.classList.remove('on');
+				    }
+		 	    });
+				target.classList.add('on');
+			}
+			
+		}
+    }
+
+	
+	document.querySelector('.layer').querySelector('.btn-m-cancel').addEventListener('click', (e) => {
+		e.preventDefault();
+ 		let popLayer = document.querySelector('.layer'); 
+ 		popLayer.style.display = 'none';
+	});
+	
+	if(document.querySelector('.layer').querySelector('.approveBtn')){
+		document.querySelector('.layer').querySelector('.approveBtn').addEventListener('click', (e) => {
+			e.preventDefault();
+			let param = {id:document.getElementById('id').value};
+	  	    approveCall = (isExec) => {
+	  	    	if(isExec){
+	  	    		gfn_asyncJsonCall('/approve','POST',param,'approveAfter()');
+	  	    	}
+	  	    }
+	  	    
+	  	    confirmCall(msg.approve,this.approveCall);
+		});
+	}
+	
+	approveAfter = () => {
+		searchFunc();
+	}
+	
+	
+
+
+</script>
+</div>
+</html>

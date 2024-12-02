@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 권한 관리</title>
+</head>
+<div class="content">
+<div class="pop-wrap unitPop">
+	    <div class="pop_container">
+	      <div class="pop-bg">
+	        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+	        <div class="pop-body" style="padding:0px;">
+	          <div class="graph4" style="height:360px;">
+	            <div class="gridCont05">
+	              <!--트리메뉴 들어가는 자리 시작-->
+					<div class="treeBox">
+					</div>
+				  <!--트리메뉴 들어가는 자리 끝-->
+	            </div>
+	          </div>
+	        </div>
+	         <div class="pop-footer">
+		          <div class="pop-btn-group">
+		            <button type="button" class="btn-m-cancel btnUnitClose" title="취소">취소</button>
+		            <button type="button" class="btn-m-confirm btnUnitOpen" title="확인하기">확인</button>
+		          </div>
+		     </div>
+	      </div>
+	    </div>
+	  </div>
+<div class="con-title"><span>권한관리</span></div>
+     <div class="sec-grid1">
+       <div class="g-area3">
+         <div class="pannel">
+             <div class="sec-grid11">
+             <!--체크영역 전체 수정:20220816-->
+             <!--그리드 헤더 부분-->
+             <div class="grid-head radius-left"><div class="gr-title">관리자 권한관리</div>
+            
+             </div>
+             <div class="grid-head"><div class="ip-check01"><input type="checkbox" id="chkAdmin"><label for="manage1">체계관리자</label></div></div><!--체크박스 삭제:20220816-->
+             <div class="grid-head"><div class="ip-check01"><input type="checkbox" id="chkManager"><label for="manage2">지역별관리자</label></div></div><!--체크박스 삭제:20220816-->
+             <div class="grid-head radius-right bor-right-none"><div class="ip-check01"><input type="checkbox" id="chkUser"><label for="manage3">사용자</label></div></div><!--체크박스 삭제:20220816-->               
+             <!--그리드 1열-->
+             <div class="grid-body">
+             <div class="searchItem" style="display:none;">
+	           <select id="schGrpCd" name="schGrpCd" class="basic" style="width:125px;">
+	           </select>
+	         </div>
+              <div class="searchItem unitChk" style="display:none;">
+		           <input type="search" class="search" id="schUnitNm"  name="schUnitNm" th:value="${schUnitNm}" style="width:125px;text-align:center;" title="검색"  readonly>
+		           <input type="hidden" id="schUnitId" name="schUnitId" th:value="${schUnitId}">
+		        </div>
+             </div>
+             <div class="grid-body">
+               <ul class="basic admin">
+               </ul>
+             </div>
+             <div class="grid-body">
+               <ul class="basic manager">
+               </ul>
+             </div>
+             <div class="grid-body bor-right-none">
+               <ul class="basic user">
+               </ul>
+             </div>
+           </div>
+           <!--버튼 영역 추가:20220913-->
+           <div class="p-bottom2">
+             
+             <div class="btn-group-bottom">
+               <button type="button" class="btn-m-confirm01" onclick="saveFunc();return false;" title="선택항목 저장">선택항목 저장</button>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+</div>
+<script th:inline="javascript"> 
+       dynimicInit = () => {
+    	   searchSingleInit('4');
+    	   treeInit(document.querySelector('.unitPop').querySelector('.treeBox'));
+    	   searchFunc();
+       }
+       searchFunc =  (unitId) => {
+           let param = {roleIds:[{id:"ROLE_ADMIN"},{id:"ROLE_MANAGER"},{id:"ROLE_USER"}],unitId};
+    	   let adminUl = document.querySelector('.admin');
+    	   let managerUl = document.querySelector('.manager');
+    	   let userUl = document.querySelector('.user');
+    	   gfn_asyncJsonCall("/authMng",'POST',param).then((data) => {
+    		   if(data.role === 'ROLE_USER'){
+            	   let chkAdmin = document.getElementById('chkAdmin');
+            	   chkAdmin.setAttribute("onclick","return false;");
+            	   let chkManager = document.getElementById('chkManager');
+            	   chkManager.setAttribute("onclick","return false;");
+            	   let chkUser = document.getElementById('chkUser');
+            	   chkUser.setAttribute("onclick","return false;");
+            	   
+    		   }
+    		   else if(data.role === 'ROLE_MANAGER'){
+    			   let chkAdmin = document.getElementById('chkAdmin');
+            	   chkAdmin.setAttribute("onclick","return false;");
+    		   }
+    		   else{
+    			   document.querySelectorAll('.searchItem')[0].style.display = "block";
+            	  // document.getElementById("schUnitId").value = "All";
+    		   }
+    		   let unChkAdminCnt = 0;
+    		   let unChkManagerCnt = 0;
+    		   let unChkUserCnt = 0;
+    		   adminUl.innerHTML = '';
+    		   managerUl.innerHTML = '';
+    		   userUl.innerHTML = '';
+    		   for(let key in data) {
+    			   let list = data[key];
+    			   for(let viewKey in list){
+					   let li = document.createElement('li');
+					   li.setAttribute("style","padding:10px 0px;")
+					   let div = document.createElement('div');
+					   div.classList.add("ip-check02");
+					   let input = document.createElement('input');
+					   input.setAttribute("type","checkbox")
+                       if(key.indexOf('adminList') > -1 && data.role != 'ROLE_ADMIN'){
+                    	   input.setAttribute("onclick","return false;");
+					   }
+					   if(key.indexOf('managerList') > -1 && data.role === 'ROLE_USER'){
+                    	   input.setAttribute("onclick","return false;");
+					   }
+					   if(key.indexOf('userList') > -1 && data.role === 'ROLE_USER'){
+                    	   input.setAttribute("onclick","return false;");
+					   }
+					   if(list[viewKey].authId != null && list[viewKey].authId != '' && list[viewKey].authId != 'undefined'){
+						   input.setAttribute("checked",true);
+					   }
+					   else{
+						   if(key.indexOf('adminList') > -1){
+							   unChkAdminCnt += 1;
+						   }
+						   if(key.indexOf('managerList') > -1){
+							   unChkManagerCnt += 1;
+						   }
+						   if(key.indexOf('userList') > -1){
+							   unChkUserCnt += 1;
+		   				   }
+					   }
+					   let label = document.createElement('label');
+					   label.append(list[viewKey].viewNm);
+					   div.appendChild(input);
+					   div.appendChild(label);
+					   li.appendChild(div);
+					   if(key.indexOf('adminList') > -1){
+						   input.classList.add('adminChk');
+						   adminUl.appendChild(li);
+					   }
+					   if(key.indexOf('managerList') > -1){
+						   input.classList.add('managerChk');
+						   managerUl.appendChild(li);
+					   }
+					   if(key.indexOf('userList') > -1){
+						   input.classList.add('userChk');
+						   userUl.appendChild(li);
+	   				   }
+				   }
+    		   }
+    		   if(unChkAdminCnt === 0){document.getElementById('chkAdmin').checked = true}
+    		   if(unChkManagerCnt === 0){document.getElementById('chkManager').checked = true}
+    		   if(unChkUserCnt === 0){document.getElementById('chkUser').checked = true}
+    		   
+    	   }); 		
+	   }
+       
+       unitAfterFunc = () => {
+    	   searchFunc(document.getElementById('schUnitId').value);
+       }
+       
+       document.getElementById('schGrpCd').addEventListener('click',(e)=>{
+    	   if(e.target.value === 'unitNm'){
+    		   document.querySelector('.unitSch').style.display='block';
+    	   }
+    	   else{
+    		   document.querySelector('.unitSch').style.display='none';
+    	   }
+       });
+
+       document.getElementById('chkAdmin').addEventListener('click',(e) => {
+    	   document.querySelectorAll('.adminChk').forEach((chk) => {
+    		   chk.checked = e.target.checked;
+    	   });
+       });
+       document.getElementById('chkManager').addEventListener('click',(e) => {
+    	   document.querySelectorAll('.managerChk').forEach((chk) => {
+    		   chk.checked = e.target.checked;
+    	   });
+       });
+	   document.getElementById('chkUser').addEventListener('click',(e) => {
+		   document.querySelectorAll('.userChk').forEach((chk) => {
+			   chk.checked = e.target.checked;
+    	   });   
+	   });
+
+       
+       saveFunc = () => {
+    	   
+    	   let adminParam = [];
+    	   let adminUl = document.querySelector('.admin');
+    	   adminUl.querySelectorAll('input').forEach((input,index) => {
+    		   if(input.checked){
+    			   let checkedParam = {viewId:index+1};
+    			   adminParam.push(checkedParam);
+    		   }
+    	   });
+    	   if(adminParam.length === 0){
+    		   msgCall("체계관리자 메뉴를 선택하세요.",false);
+    		   return;
+    	   }
+    	   let managerParam = [];
+    	   let managerUl = document.querySelector('.manager');
+    	   managerUl.querySelectorAll('input').forEach((input,index) => {
+    		   if(input.checked){
+    			   let checkedParam = {viewId:index+1};
+    			   managerParam.push(checkedParam); 
+    		   } 
+    	   });
+    	   if(managerParam.length === 0){
+        	   msgCall("지역관리자 메뉴를 선택하세요.",false);
+    		   return;
+    	   }
+    	   let userParam = [];
+    	   let userUl = document.querySelector('.user');
+    	   userUl.querySelectorAll('input').forEach((input,index) => {
+    		   if(input.checked){
+    			   let checkedParam = {viewId:index+1};
+    			   userParam.push(checkedParam);
+    		   } 
+    	   });
+    	   if(userParam.length === 0){
+        	   msgCall("사용자 메뉴를 선택하세요.",false);
+    		   return;
+    	   }
+    	   let param = {adminIds:adminParam,managerIds:managerParam,userIds:userParam,viewUnitId:document.getElementById("schUnitId").value};
+    	   gfn_asyncJsonCall("/saveAuthView",'POST',param).then((data) => {
+	   			for(let key in data) {
+	   				if(key.indexOf('success_msg') > -1){
+	   					msgCall(data[key]);
+	   					searchMenuFunc();
+	   					break;
+	   				}
+	   				if(key.indexOf('fail_msg') > -1){
+	   					msgCall(data[key],false);
+	   					break;
+	   				}
+
+	   			}
+	   	   });
+       }
+       
+
+</script>
+</html>
+

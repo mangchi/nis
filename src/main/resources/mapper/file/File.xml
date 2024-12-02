@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="File">
+
+    <select id="selectFileList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  ID    
+	        , SEQ
+		    , FILE_PATH             
+		    , FILE_NM      
+		    , WORK_FILE_PATH    
+		    , THUMB_FILE_PATH                 
+		    , ORIGIN_FILE_NM
+		    , FILE_TYPE
+		    , FILE_SIZE
+		    , FILE_STATUS
+		    , CREATE_USER_ID  
+		    , CREATE_TS       
+     	FROM TB_FILE 
+     	<where>
+     	AND ID = #{fileId}
+     	</where>
+  </select>
+  
+  <select id="selectFile" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  ID    
+	        , SEQ
+		    , FILE_PATH          
+		    , FILE_NM      
+		    , WORK_FILE_PATH   
+		    , THUMB_FILE_PATH               
+		    , ORIGIN_FILE_NM
+		    , FILE_TYPE
+		    , FILE_SIZE
+		    , FILE_STATUS
+		    , CREATE_USER_ID  
+		    , CREATE_TS       
+     	FROM TB_FILE 
+     	<where>
+     	AND ID = #{id}
+     	ANd SEQ = #{seq, jdbcType=INTEGER}  
+     	AND FILE_TYPE != 'text/xml'
+     	</where>
+  </select>
+  
+  <select id="selectXmlFile" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT
+     		  ID    
+	        , SEQ
+		    , FILE_PATH          
+		    , FILE_NM      
+		    , WORK_FILE_PATH       
+		    , THUMB_FILE_PATH             
+		    , ORIGIN_FILE_NM
+		    , FILE_TYPE
+		    , FILE_SIZE
+		    , FILE_STATUS
+		    , CREATE_USER_ID  
+		    , CREATE_TS       
+     	FROM TB_FILE 
+     	<where>
+     	AND ID = #{id}
+     	ANd SEQ = #{seq, jdbcType=INTEGER}  
+     	</where>
+  </select>
+  
+  <select id="selectDeleteFile" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT CONCAT(CONCAT(FILE_PATH,'/'),FILE_NM) FILE_NM
+     	     , CONCAT(CONCAT(WORK_FILE_PATH,'/'),FILE_NM) WORK_FILE_NM    
+     	     , CONCAT(CONCAT(THUMB_FILE_PATH,'/'),FILE_NM) THUMB_FILE_NM    
+     	FROM TB_FILE 
+     	<where>
+        AND ID IN 
+        <foreach collection="list" item="row" open="(" close=")" separator=",">
+	   	   <foreach collection="row" item="col" index="key"  >
+	         <if test='key.equals("id")'>
+	            #{col} 
+	         </if>
+		   </foreach> 
+	   	</foreach>     
+       </where>
+  </select>
+  
+  <select id="selectFileListByIds" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT  ID    
+		      , FILE_PATH             
+		      , FILE_NM      
+		      , WORK_FILE_PATH         
+		      , THUMB_FILE_PATH          
+		      , ORIGIN_FILE_NM
+		      , FILE_TYPE
+		      , FILE_SIZE         
+     	FROM TB_FILE 
+     	<where>
+        AND ID IN 
+        <foreach collection="list" item="row" open="(" close=")" separator=",">
+	   	   <foreach collection="row" item="col" index="key"  >
+	         <if test='key.equals("id")'>
+	            #{col} 
+	         </if>
+		   </foreach> 
+	   	</foreach>     
+       </where>
+  </select>
+
+  <update id="insertFiles" parameterType="hashmap">
+    INSERT INTO TB_FILE ( ID    
+                        , SEQ
+					    , FILE_PATH             
+					    , FILE_NM              
+					    , ORIGIN_FILE_NM
+					    , FILE_TYPE
+					    , FILE_SIZE
+					    , FILE_STATUS
+					    , CREATE_USER_ID  
+					    , CREATE_TS       
+					    )  
+   <foreach collection="fileList" item="row" index="index">
+     SELECT #{id, jdbcType=VARCHAR} 
+          , #{row.seq, jdbcType=INTEGER} 
+          , #{row.filePath, jdbcType=VARCHAR} 
+          , #{row.fileNm, jdbcType=VARCHAR} 
+          , #{row.originFileNm, jdbcType=VARCHAR} 
+          , #{row.fileType, jdbcType=VARCHAR} 
+          , #{row.fileSize, jdbcType=DECIMAL} 
+          , #{fileStatus, jdbcType=VARCHAR} 
+          , #{userId, jdbcType=VARCHAR} 
+          , SYSDATE
+	FROM DUAL
+	<if test='fileList.size > index+1'>
+	UNION ALL
+	</if>
+  </foreach>  
+  </update>
+  
+  <update id="insertUpDownLog" parameterType="hashmap">
+        INSERT INTO TB_UPDOWNLOAD_LOG(SEQ
+                                    , FILE_ID
+                                    , FILE_SEQ
+                                    , UP_OR_DOWN
+                                    , SOURCE_CD
+                                    , ORIGIN_FILE_NM
+                                    , FILE_TYPE
+                                    , COLLECTION_DT
+                                    , COLLECTION_POS
+                                    , COLLECTION_DEVICE_CD
+                                    , CREATE_USER_ID
+                                    , CREATE_TS) 
+        SELECT SEQ_UPDOWNLOAD_LOG.NEXTVAL
+             , A.* 
+        FROM (                             
+     <foreach collection="list" item="row" index="index">
+              SELECT   ID
+		             , SEQ
+		             , #{upOrDown} 
+		             , #{row.sourceCd, jdbcType=VARCHAR} 
+		             , ORIGIN_FILE_NM
+		             , FILE_TYPE
+		             , #{row.collectionDt} 
+		             , #{row.collectionPos} 
+		             , #{row.collectionDeviceCd} 
+		             , #{createUserId} 
+		             , SYSDATE
+			   FROM TB_FILE 
+			   <where>
+			   AND ID = #{row.id, jdbcType=VARCHAR} 
+			   </where>
+			 <if test='list.size > index+1'>
+			   UNION ALL
+			 </if>
+		    </foreach>                  
+              ) A
+  </update>
+  
+  <update id="updateFileSize" parameterType="hashmap">
+    UPDATE TB_FILE SET WORK_FILE_PATH = #{workFilePath, jdbcType=VARCHAR} 
+                     , THUMB_FILE_PATH =  #{thumbFilePath, jdbcType=VARCHAR} 
+  	<where>
+   	AND ID =  #{parentId, jdbcType=VARCHAR} 
+    AND SEQ = #{fileSeq, jdbcType=INTEGER} 
+    </where>
+  </update>
+  
+  <update id="deleteFilesById" parameterType="hashmap">
+    DELETE FROM TB_FILE
+  	<where>
+   	AND ID =  #{id, jdbcType=VARCHAR} 
+   	AND SEQ IN
+   	<foreach collection="deleteList" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("seq")'>
+            #{col, jdbcType=INTEGER} 
+         </if>
+	   </foreach> 
+   	</foreach>         
+   	</where> 
+  </update>
+  
+  <update id="deleteFiles" parameterType="hashmap">
+    DELETE FROM TB_FILE
+  	<where>
+   	AND ID IN 
+   	<foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("id")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	</foreach>         
+   	</where> 
+  </update>
+</mapper>
+

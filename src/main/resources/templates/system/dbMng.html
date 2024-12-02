@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 데이타베이스 관리</title>
+<style type="text/css">
+</style>
+</head>
+<div class="contentContainer">
+    <form id="frm" th:action method="post">
+	<div class="title">
+		<h2>데이타베이스 관리</h2>
+	</div>
+	<div class="searchCont">
+		
+			<div class="searchGrp ">
+				<div class="searchItem">
+					<input name="frDt" class="calendar_input" placeholder="yyyy.mm.dd"
+						type="text" value="" /> ~ <input name="toDt"
+						class="calendar_input" placeholder="yyyy.mm.dd" type="text"
+						value="" />
+				</div>
+				<div class="searchItem">
+					<select name="cd1">
+						<option value="" selected>All</option>
+						<option value="01">bbvvv</option>
+					</select>
+				</div>
+				<div class="searchItem">
+					<input class="search" type="search" placeholder="Search..">
+					<i class="fa fa-search fa-lg position-relative"></i>
+				</div>
+				<div class="rightBtnGrp">
+					<button type="button" class="btn btn-secondary" onclick="searchFunc(this);">조회</button>
+					<button type="button" class="btn btn-danger delete">삭제</button>
+				</div>
+			</div>
+			<div class="calendarModal kor"></div>
+		
+	</div>
+	<div>
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<button class="nav-link active">이미지/영상</button>
+			</li>
+			<li class="nav-item">
+				<button class="nav-link">객체정보</button>
+			</li>
+			<li class="nav-item">
+				<button class="nav-link">보조정보</button>
+			</li>
+			<li class="nav-item">
+				<button class="nav-link">기본정보</button>
+			</li>
+			<li class="nav-item">
+				<button class="nav-link">데이타셋</button>
+			</li>
+			<li class="nav-item">
+				<button class="nav-link">XML</button>
+			</li>
+		</ul>
+	</div>
+	<div class="tab-content">
+		<div class="tab-pane active">
+			<div class="gridCont">
+			</div>
+			<div class="boxRight"></div>
+		</div>
+		<div class="tab-pane fade">객체정보...</div>
+		<div class="tab-pane fade">보조정보...</div>
+		<div class="tab-pane fade">기본정보..</div>
+		<div class="tab-pane fade">데이타셋..</div>
+		<div class="tab-pane fade">XML..</div>
+	</div>
+    </form>
+</div>
+<script th:inline="javascript"> 
+
+       window.addEventListener('DOMContentLoaded', function(){
+    	   //dynimicInit();
+    	  
+	   });
+       
+       dynimicInit = () => {
+    	   return new Promise(function(resolve, reject){
+	    	   document.getElementsByName('frDt')[0].value = gfn_getDiffDay(-7);
+	    	   document.getElementsByName('toDt')[0].value = gfn_getDay();
+	    	   pageInit(document.querySelector(".boxRight"),"searchFunc()",pagination.rowPerPage);
+	    	   tabInit();
+	    	   calInit();
+	    	  
+              const headColumns =  [{id:"chk",width: "45px"}
+            	                   ,{id:"id",width: "80px",label:"ID",sortable:"Y",resizable:"Y"}
+            	                   ,{id:"acquCd",width: "80px",label:"획득원",sortable:"Y"}
+            	                   ,{id:"dataClsCd",width: "80px",label:"자료구분",sortable:"Y"}
+            	                   ,{id:"dayCd",width: "100px",label:"영상/이미지 종류",info:"Y"}
+            	                   ,{id:"objCd",width: "80px",label:"객체종류"}
+            	                   ,{id:"crtrUserId",width: "80px",label:"작업자"}
+            	                   ,{width: "80px",label:"편집",button:"Y",data_url:"movImgInfo",data_btnNm:"수정"}
+					              ];
+        	   gridInit(document.querySelector(".gridCont"),headColumns,"470px");
+	    	   searchFunc().then((data) => {
+	        	   if(data){
+	        		   resolve("success");
+	        	   }
+	        	   else{
+	        		   reject("fail");
+	        	   }
+	    	   });
+        	   //resolve(true);
+    	   });      	   
+       }
+
+       document.querySelector('.delete').addEventListener('click',(e) => {
+    	   e.preventDefault();
+
+	   });
+       
+       searchFunc =  (invoker) => {
+    	   if(invoker != undefined && invoker != null){
+    		   if(invoker.getAttribute("type") === 'button'){
+    			   const pageNum = document.getElementsByName('pageNum'); 
+    		   	   pageNum[0].setAttribute("value",1);
+    		   }
+    	   }
+
+    	   let url = "/dbList";
+    	  /*  let list = null;
+    	   let pageInfo = null; */
+    	   return new Promise(function(resolve, reject){
+	    	   gfn_asyncCall(url,'POST','#frm').then((data) => {
+	    		   if(data != undefined && data != null){
+	    			   gfn_pageGridSet(data,document.querySelector('.boxRight'));
+	    			   resolve(true);
+	    		   }else{
+	    			   reject(true);
+	    		   }
+					/* for(key in data) {
+						if(key.indexOf('success_msg') > -1){
+							
+						}
+						if(key.indexOf('fail_msg') > -1){
+							msgCall(data[key],false);
+							break;
+						}
+	                    if(key.indexOf('list') > -1){
+	                    	list = data[key];
+						}
+	                    if(key.indexOf('pageInfo') > -1){
+	                    	pageInfo = data[key];
+						}
+					}
+					if(list != null && list.length > 0){
+						gridBind(list);
+						pageBind(document.querySelector('.boxRight'),pageInfo);
+						resolve(true);
+					}else{
+						reject(true);
+					} */
+
+	    	   }); 
+    	   });
+		
+	   }
+       
+</script>
+</html>
+

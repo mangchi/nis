@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 프레임 추출설정</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+  <div class="pop-wrap unitPop">
+    <div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+        <div class="pop-body" style="padding:0px;">
+          <div class="graph4" style="height:360px;">
+            <div class="gridCont05">
+				<div class="treeBox">
+				</div>
+            </div>
+          </div>
+        </div>
+         <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel btnUnitClose" title="취소">취소</button>
+	            <button type="button" class="btn-m-confirm btnUnitOpen" title="확인하기">확인</button>
+	          </div>
+	     </div>
+      </div>
+    </div>
+  </div>
+<div class="pop-wrap extractConfigPop" >
+    <div class="pop_container06">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">프레임 추출설정</div></div>
+        <div class="pop-body">
+          <div class="pop-grid">
+            <div class="set-area01">
+              
+              <div class="pop-ic-group">
+                <div class="pop-ic-bg01"><div class="pimg1"></div></div>
+                <div class="pop-txtwrap">
+                  <dl class="pop-txtList">
+                    <dt>종류</dt>
+                    <dd>MP4</dd>
+                  </dl>
+                </div>
+              </div>
+              
+              <div class="pop-ic-group" style="margin:50px 0px;">
+                <div class="pop-ic-bg01"><div class="pimg2"></div></div>
+                <div class="pop-txtwrap">
+                  <dl class="pop-txtList">
+                    <dt>사이즈</dt>
+                    <dd>2940x1000</dd>
+                  </dl>
+                </div>
+              </div>
+              
+              <div class="pop-ic-group">
+                <div class="pop-ic-bg01"><div class="pimg3"></div></div>
+                <div class="pop-txtwrap">
+                  <dl class="pop-txtList">
+                    <dt>단위시간(1초)</dt>
+                    <dd style="width:130px">추출 이미지수<br>(1~30이내)</dd>
+                  </dl>
+                </div>
+              </div>
+              
+            </div>
+            <div class="set-area02"><div class="pimg7"></div></div>
+            <div class="set-area03">
+              
+              <div class="pop-ic-group">
+                <div class="pop-ic-bg02"><div class="pimg4"></div></div>
+                <div class="pop-txtwrap">
+                  <dl class="pop-txtList01">
+                    <dt>종류</dt>
+                    <dd>
+                      <div class="input-group">
+                        <select class="basic basic15" id="popFileType">
+                        </select>
+                      </div>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+              
+              <div class="pop-ic-group" style="margin:50px 0px;">
+                <div class="pop-ic-bg02"><div class="pimg5"></div></div>
+                <div class="pop-txtwrap">
+                  <dl class="pop-txtList01">
+                    <dt>사이즈</dt>
+                    <dd>
+                      <div class="input-group">
+                        <select class="basic basic15" id="popImageSize">
+                        </select>
+                      </div>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+              
+              <div class="pop-ic-group">
+                <div class="pop-ic-bg02"><div class="pimg6"></div></div>
+                <div class="pop-txtwrap">
+                  <dl class="pop-txtList01">
+                    <dt>이미지수</dt>
+                    <dd>
+                      <div class="input-group">
+                        <input type="text" id="popFps" name="popFps" maxlength="2" class="basic basic15 number" title="길이" placeholder="">
+                      </div>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel" title="취소">취소</button>
+            <button type="button" class="btn-m-confirm" title="적용">적용</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<!--   <div class="pop-wrap extractStopPop">
+    <div class="pop_container05">
+      <div class="pop-bg">
+        <div class="pop-body">
+          <div class="pop-txt">추출작업을 중단하시겠습니까?</div>
+        </div>
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel" title="취소">취소</button>
+            <button type="button" class="btn-m-confirm" title="추출 중단">추출 중단</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+<form id="frm" th:action method="post">
+<input type="hidden" name="extractStatusCd" id="extractStatusCd" value="001">
+<div class="con-title"><span>프레임 추출</span></div>
+        <div class="sec-grid1">
+          <div class="g-area3">
+            <div class="pannel">
+              <div class="searchCont p-head3">
+                
+                <div class="searchGrp">
+                <div class="input-group">
+                    <div class="btn-group-toggle">
+                      <input type="radio" id="extractStat1" name="extractStat" onchange="pageChk(this)" value="01" checked ><label for="extractStat1">프레임 추출</label>
+                      <input type="radio" id="extractStat2" name="extractStat" onchange="pageChk(this)" value="02"><label for="extractStat2">추출 완료</label>
+                    </div>
+                  </div>
+                  <div class="searchItem">
+                  <input name="frDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value=""> ~ <input name="toDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value="">
+                  </div>
+                  <div class="sel-multi"></div>
+                <!--   <div>   -->
+                  <!-- <div class="input-group">
+                    <div class="btn-group-toggle">
+                      <input type="radio" id="extractStat1" name="extractStat" value="01" checked><label for="extractStat1">프레임 추출</label>
+                      <input type="radio" id="extractStat2" name="extractStat" value="02"><label for="extractStat2">추출 완료</label>
+                    </div>
+                  </div> -->
+                 <!--  </div> -->
+                  <div class="rightBtnGrp">
+                    <button type="button" class="btn btn-secondary btn-search01" onclick="qryInit();">초기화</button>
+                    <button type="button" class="btn btn-secondary btn-search01" onclick="searchFunc(this);">조회</button>
+                  </div>
+                </div>
+                <div class="calendarModal kor hidden" tabindex="0">
+                </div>            
+              </div>
+              <div class="result">
+              </div>
+              <div class="gridCont04"><!--class수정:20220725-->
+              <div class="divTable">
+              <div class="divBody">
+              </div>
+              </div>
+              </div>
+              <div class="page-nav-group">
+              </div>
+              
+              <!--추가:20220725-->
+              <div class="p-bottom2">
+                <div class="btn-group-bottom1">
+                  <ul class="list-fr">
+                    <li>
+                      <div class="input-group">
+                        <label class="la_basic01" for="fileType">이미지 종류</label>
+                        <select class="basic basic13" style="" id="fileType">
+                        </select>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="input-group">
+                        <label class="la_basic01" for="imageSize">이미지 사이즈</label>
+                        <select class="basic basic13" style="" id="imageSize">
+                        </select>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="input-group">
+                        <label class="la_basic01" style="width:150px;" for="">추출 이미지수(1초)</label>
+                        <!-- <input type="text" id="" name="" class="basic14" title="프레임 수" value="60"><span class="fr-font">Frame per Second</span> -->
+                        <input type="text" id="fps" name="fps" maxlength="2" class="basic14 number" title="시간" value="">
+                      </div>
+                    </li>
+                  </ul>
+                  
+                </div>
+                <div class="btn-group-bottom2"><button type="button"  class="btn-m-confirm extractAll">일괄추출</button></div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+</form>
+</div>
+<script th:inline="javascript"> 
+       var extractConfigs = new Array();
+       dynimicInit = () => {
+    	   searchInit(document.querySelector('.sel-multi'),'1');
+    	   document.getElementsByName('frDt')[0].value = gfn_getDiffDay(nis.diffDay);
+    	   document.getElementsByName('toDt')[0].value = gfn_getDay();
+    	   treeInit(document.querySelector('.unitPop').querySelector('.treeBox'));
+    	   gfn_setCodeGrpObj('023',document.getElementById('fileType'),true,'1');
+    	   gfn_setCodeGrpObj('024',document.getElementById('imageSize'),true);
+    	   gfn_setCodeGrpObj('023',document.getElementById('popFileType'),true,'1');
+    	   gfn_setCodeGrpObj('024',document.getElementById('popImageSize'),true);
+    	   pageInit(document.querySelector(".page-nav-group"),searchFunc,pagination.halfRowPerPage);
+       	   searchFunc();
+       }
+       
+
+       searchFunc = (invoker) => {
+    	    if(document.getElementsByName('frDt')[0] && !gfn_validDay(document.getElementsByName('frDt')[0].value,document.getElementsByName('toDt')[0].value)){
+    			msgCallBack(msg.invalidDay,false,() => {
+    				document.getElementsByName('frDt')[0].focus();
+    			});	
+    		}
+    	    else{
+    	    	if(gfn_getDiffDays(document.getElementsByName('frDt')[0].value,document.getElementsByName('toDt')[0].value) > 100){
+    				msgCallBack(msg.diffChk,false,() => {
+    					document.getElementsByName('frDt')[0].focus();
+    				});
+    			}
+    			else{
+    				const pageComp = document.querySelector(".page-nav-group");
+            	    const compPageNum = pageComp.querySelector('.compPageNum'); 
+            		const compRowPerPage = pageComp.querySelector('.compRowPerPage'); 
+            		if(invoker != undefined && invoker != null){
+            			if(invoker.getAttribute("type") === 'button'){ 
+            				compPageNum.setAttribute("value",1);
+            		    }
+            	    }
+            		let pageNum = document.querySelector('#frm').querySelector('.pageNum');
+            		let rowPerPage = document.querySelector('#frm').querySelector('.rowPerPage');
+            		if(!pageNum){
+            			pageNum = document.createElement('INPUT'); 
+            			pageNum.setAttribute("type","hidden");
+            			pageNum.setAttribute("name","pageNum");
+            			pageNum.classList.add("pageNum");
+            			pageNum.setAttribute("value",compPageNum.getAttribute("value"));
+            			document.querySelector('#frm').appendChild(pageNum);
+            			
+            		}
+            		else{
+            			pageNum.setAttribute("value",compPageNum.getAttribute("value"));
+            		}
+            		if(!rowPerPage){
+            			rowPerPage = document.createElement('INPUT'); 
+            			rowPerPage.setAttribute("type","hidden");
+            			rowPerPage.setAttribute("name","rowPerPage");
+            			rowPerPage.classList.add("rowPerPage");
+            			rowPerPage.setAttribute("value",compRowPerPage.value);
+            			document.querySelector('#frm').appendChild(rowPerPage);
+            			
+            		}
+            		else{
+            			rowPerPage.setAttribute("value",compRowPerPage.value);
+            		}
+
+            		
+            	   let divBody = document.querySelector('.gridCont04').querySelector('.divBody');
+            	   divBody.innerHTML = '';
+            	   gfn_asyncCall("/frameList",'POST',document.getElementById('frm')).then((data) => {
+            			extractConfigs = new Array();
+            			let list = data['list'];
+            			let pageInfo = data['pageInfo'];
+            			pageBind(document.querySelector(".page-nav-group"),pageInfo);
+            			for(let key in list) {
+            				console.log("key:",key);
+        					let cellList = list[key];
+        					let extractStatusCd = gfn_nullValue(cellList['extractStatusCd']);
+        					let over2 = document.createElement('div');
+        					over2.classList.add('over2');
+        					let tbSub10 = document.createElement('div');
+        					tbSub10.classList.add('grid-tb-sub10');
+        					let thCell1 = document.createElement('div');
+        					thCell1.classList.add('thCell');
+        					if(extractStatusCd.trim() ===  ''){
+        						let input = document.createElement('input');
+        						input.setAttribute("type","checkbox");
+        						input.addEventListener('change',(e) => {
+        							checkConfig(e.target,key);
+        						});
+        						thCell1.appendChild(input);  
+        					}
+        					
+        					let thCell2 = document.createElement('div');
+        					thCell2.classList.add('thCell');
+        					let imgDiv = document.createElement('div');
+        					imgDiv.classList.add('img-box01');
+        					let filePath = gfn_nullValue(cellList['filePath']);
+        					if(filePath != ''){
+        						let video = document.createElement('video');
+        						video.setAttribute('src','/fileId/'+cellList['id']+'/'+cellList['seq']+"/N/N"+gfn_getStorageItem("curUrl")+"/"+new Date().getTime());
+        						video.setAttribute('width','100%');
+        						video.setAttribute('height','100%');
+        						video.setAttribute('cotrols',true);
+        						video.setAttribute('preload',"auto");
+        						imgDiv.append(video);
+        					}
+
+        					thCell2.appendChild(imgDiv);
+        					let thCell3 = document.createElement('div');
+        					thCell3.classList.add('thCell');
+        					let extWrap = document.createElement('div');
+        					extWrap.classList.add('ext-wrap');
+        					//
+        					let subject = document.createElement('div');
+        					subject.classList.add('subject');
+        					let extSub = document.createElement('div');
+        					extSub.classList.add('ext-sub');
+        					subject.append(gfn_nullValue(cellList['originFileNm']));
+        					let ul = document.createElement('ul');
+        					ul.classList.add('ext-list');
+        					extSub.appendChild(ul);
+        					extWrap.appendChild(subject);
+        					extWrap.appendChild(extSub);
+        					
+        					let collectLi = document.createElement('li');
+        					
+        					collectLi.append('탐지수단 : '+gfn_getCodeVal('006',cellList['collectionDeviceCd']));
+        					ul.appendChild(collectLi);
+        					
+        					let dayOrNightLi = document.createElement('li');
+        			
+        					dayOrNightLi.append('주/야 구분 : '+gfn_getCodeVal('002',cellList['dayOrNight']));
+        					ul.appendChild(dayOrNightLi);
+        					let userLi = document.createElement('li');
+        					userLi.append('작업자 : '+cellList['updateUserNm']);
+        					ul.appendChild(userLi);
+        					
+        					let tsLi = document.createElement('li');
+        					tsLi.append('등록일시 : '+gfn_dateFrmt(cellList['createTs'],'yy-mm-dd hh:mi:ss'));
+        					ul.appendChild(tsLi);
+        					if(gfn_nullValue(cellList['approvedTs']) != ''){
+        						let approvedTsLi = document.createElement('li');
+            					approvedTsLi.append('승인일시 : '+gfn_dateFrmt(cellList['approvedTs'],'yy-mm-dd hh:mi:ss'));
+            					ul.appendChild(approvedTsLi);
+        					}
+        					
+        					thCell3.appendChild(extWrap);
+        					let thCell4 = document.createElement('div');
+        					thCell4.classList.add('thCell');
+        					//
+        					if(extractStatusCd !=  ''){
+        						let extWrap = document.createElement('div');
+        						extWrap.classList.add('ext-wrap');
+        						extWrap.classList.add('show');
+        						let sTit = document.createElement('div');
+            					sTit.classList.add('s-tit');
+            					sTit.append('추출중');
+            					let proWrap = document.createElement('div');
+            					proWrap.classList.add('pro-wrap');
+            					let proIcon = document.createElement('div');
+            					proIcon.classList.add('pro-icon');
+            					let processBg = document.createElement('div');
+            					processBg.classList.add('process-bg');
+            					let processBar = document.createElement('div');
+            					processBar.classList.add('process-bar');
+            					processBar.setAttribute('style','width:48%;');
+            					processBg.appendChild(processBar);
+            					proWrap.appendChild(proIcon);
+            					proWrap.appendChild(processBg);
+            					extWrap.appendChild(sTit);
+            					extWrap.appendChild(proWrap);
+            					thCell4.appendChild(extWrap);
+        					}
+        					
+        					let extractConfig = {movId:cellList['movId']
+        					                   , fileType: gfn_nullValue(cellList['fileType'])
+        					                   , filePath: gfn_nullValue(cellList['filePath'])
+        					                   , fileNm: gfn_nullValue(cellList['fileNm'])
+         				                       , imageSize: gfn_nullValue(cellList['imageSize'])
+        				                       , fps: gfn_nullValue(cellList['fps'])
+        				                       , extractStatusCd: gfn_nullValue(cellList['extractStatusCd'])
+        				                       , checked:false
+        					                    };
+        					extractConfigs.push(extractConfig);
+        					
+        					
+        					let thCell5 = document.createElement('div');
+        					thCell5.classList.add('thCell');
+        					thCell5.style.cssText = "justify-content:center;";
+        					let anch1 = document.createElement('a');
+        					anch1.classList.add('btn-set');
+        					
+        					anch1.addEventListener('click',(e) => {
+        						let popLayer = document.querySelector('.extractConfigPop');
+        						popLayer.style.display = "block";
+        						
+        						popBtnSet(extractConfigs,cellList['movId']);
+        					});
+        					
+        					thCell5.appendChild(anch1);
+        					let thCell6 = document.createElement('div');
+        					thCell6.classList.add('thCell');
+        					let barDiv = document.createElement('div');
+        					barDiv.classList.add('bar');
+        					thCell6.appendChild(barDiv);
+        					let thCell7 = document.createElement('div');
+        					thCell7.classList.add('thCell');
+        					thCell7.style.cssText = "justify-content:center;";
+        					let anchExtract = document.createElement('a');
+        					anchExtract.classList.add('btn-extract');
+        					if(extractStatusCd !=  ''){
+        						anchExtract.append('추출중');
+        						anchExtract.setAttribute("readonly",true);
+        					}
+        					else{
+        						anchExtract.append('추출');
+        						anchExtract.addEventListener('click',(e) => {
+        							setExtractRow(e.target,key);
+        						});
+        					}
+        					
+        					thCell7.appendChild(anchExtract);
+        					tbSub10.appendChild(thCell1);
+        					tbSub10.appendChild(thCell2);
+        					tbSub10.appendChild(thCell3);
+        					tbSub10.appendChild(thCell4);
+        					tbSub10.appendChild(thCell5);
+        					tbSub10.appendChild(thCell6);
+        					tbSub10.appendChild(thCell7);
+        					over2.appendChild(tbSub10);
+        					divBody.appendChild(over2);
+        				}
+            			 
+            			 searchAfterFunc(data['appendData']);
+            	   }); 	
+    			}
+    	    	
+    	    }
+       }
+       
+       searchAfterFunc = (appendData) => {
+	   		let totCount = document.querySelector('.result');
+	   	    while (totCount.hasChildNodes()) {
+	   	    	totCount.removeChild(totCount.firstChild);
+	   	    }
+	   	    totCount.append('총 ');
+	   	    const totCountSpan = document.createElement('span');
+	   	    totCountSpan.append(appendData.totalCount);
+	   	    totCount.appendChild(totCountSpan);
+	   	    totCount.append('건의 작업이 검색 되었습니다.');
+	   	}
+       
+       checkConfig = (target,index) => {
+    	   console.log("checkConfig index:",index);
+    	   for(let idx in extractConfigs){
+    		   if(idx === index){
+    			   extractConfigs[idx].checked = target.checked;
+    		   }
+    	   }
+       }
+       
+       setExtractRow = (target,index) => {
+    	   console.log("setExtractRow index",extractConfigs.length);
+    	   let param = {};
+    	   for(let idx in extractConfigs){
+    		   if(index === idx){
+    			   if(extractConfigs[idx].fileType === undefined || extractConfigs[idx].fileType === ''){
+    				   msgCall('이미지 종류를 설정하세요.',false);
+    				   return;
+    			   }
+    			   else{
+    				   param = extractConfigs[idx];
+    				   let whTxt = gfn_getCodeVal('024',param.imageSize);
+    				   let w = "", h = "";
+    		    	   if(whTxt.indexOf('x') > -1){
+    		    		   let whs = whTxt.split('x');
+    		    		   w = whs[0];
+    		    		   h = whs[1];
+    		    	   }else{
+    		    		   msgCall('이미지 사이즈 값에 문제가 있습니다..',false);
+        				   return;
+    		    	   }
+    		    	   param.width = w;
+    		    	   param.height = h;
+    		    	   param.fileTypeTxt = gfn_getCodeVal('023',param.fileType);
+    				   param.extractStatusCd = '001';
+    			   }
+    		   }
+    	   }
+    	   console.log("param:",param);
+    	   gfn_asyncJsonCall("/extractMov",'POST',param,'searchFunc()');
+    	
+       }
+
+       popBtnSet = (confs,movId) => {
+    	   let fileType = document.getElementById('popFileType');
+    	   let imageSize = document.getElementById('popImageSize');
+    	   let fps = document.getElementById('popFps');
+    	   
+    	   for(let conf of confs){
+    		   if(conf.movId === movId){
+    			   conf.on = 1;
+    			   if(conf.fileType === undefined || conf.fileType === ''){
+    				   fileType.value = '';
+    				   imageSize.value = '';
+    				   fps.value = '';
+    				   document.querySelector('.extractConfigPop').querySelector('.btn-m-confirm').style.display = "";
+    			   }
+    			   else{
+    				   fileType.value = conf.fileType;
+    				   imageSize.value = conf.imageSize;
+    				   fps.value = conf.fps;
+    				   if(conf.extractStatusCd !=  ''){
+    					   document.querySelector('.extractConfigPop').querySelector('.btn-m-confirm').style.display = "none";
+    				   }
+    				   else{
+    					   document.querySelector('.extractConfigPop').querySelector('.btn-m-confirm').style.display = "";
+    				   }
+    			   }
+    		   }
+    		   else{
+    			   conf.on = 0;
+    		   }
+    	   }
+       }
+       pageChk = (radio) => {
+    	   if(radio.value === '01'){
+			   callMenu('/frameList');
+		   }else{
+			   callMenu('/extractList');
+		   }
+       }
+       
+       document.querySelector('.extractAll').addEventListener('click',(e) => {
+    	   e.preventDefault();
+    	   let fileType = document.getElementById('fileType');
+    	   let imageSize = document.getElementById('imageSize');
+    	   let fps = document.getElementById('fps');
+    	   if(fileType.value.length === 0){
+    		   msgCall('이미지 종류를  선택하세요.',false);
+    		   fileType.focus();
+    		   return;
+    	   }
+    	   if(imageSize.value.length === 0){
+    		   msgCall('이미지 사이즈를 선택하세요.',false);
+    		   imageSize.focus();
+    		   return;
+    	   }
+    	   if(fps.value.trim().length === 0){
+    		   msgCall('추출주기를  입력하세요.',false);
+    		   fps.focus();
+    		   return;
+    	   }
+    	   if(parseInt(fps.value.trim()) > 30){
+    		   msgCall('추출주기를  30이내로 입력하세요.',false);
+    		   fps.focus();
+    		   return;
+    	   }
+    	   let whTxt = gfn_getCodeVal('024',imageSize.value);
+		   let w = "", h = "";
+    	   if(whTxt.indexOf('x') > -1){
+    		   let whs = whTxt.split('x');
+    		   w = whs[0];
+    		   h = whs[1];
+    	   }else{
+    		   msgCall('이미지 사이즈 값에 문제가 있습니다..',false);
+			   return;
+    	   }
+    	
+    	   let chkCnt = 0;
+    	   let chkMovs = [];
+    	   for(let extractConfig of extractConfigs){
+    		   if(extractConfig.checked){
+    			   chkCnt += 1;
+    			   extractConfig.fileType = fileType.value;
+    			   extractConfig.fileTypeTxt = gfn_getCodeVal('023',fileType.value);
+        		   extractConfig.imageSize = imageSize.value;
+        		   extractConfig.fps = fps.value;
+        		   extractConfig.width = w;
+        		   extractConfig.height = h;
+        		   extractConfig.extractStatusCd = '001';
+        		   chkMovs.push(extractConfig);
+    		   }  
+    	   }
+
+    	   if(chkCnt === 0){
+    		   msgCall('영상을 선택하세요.',false);
+    		   return;
+    	   }
+    	   let param = {list:chkMovs};
+    	   gfn_asyncJsonCall("/extractMov",'POST',param,'searchFunc()');
+       });
+    	   
+       
+       document.querySelector('.extractConfigPop').querySelector('.btn-m-cancel').addEventListener('click',(e) => {
+    	   let popLayer = document.querySelector('.extractConfigPop');
+			popLayer.style.display = "none";
+       });
+       
+       document.querySelector('.extractConfigPop').querySelector('.btn-m-confirm').addEventListener('click',(e) => {
+    	   let popLayer = document.querySelector('.extractConfigPop');
+    	   let fileType = document.getElementById('popFileType');
+    	   let imageSize = document.getElementById('popImageSize');
+    	   let fps = document.getElementById('popFps');
+    	   if(fileType.value.length === 0){
+    		   msgCall('이미지 종류를 선택하세요.',false);
+    		   fileType.focus();
+    		   return;
+    	   }
+    	   if(imageSize.value.length === 0){
+    		   msgCall('이미지 사이즈를 선택하세요.',false);
+    		   imageSize.focus();
+    		   return;
+    	   }
+    	  
+    	   if(fps.value.trim().length === 0){
+    		   msgCall('추출주기를 입력하세요.',false);
+    		   fps.focus();
+    		   return;
+    	   }
+    	   if(parseInt(fps.value.trim()) > 30){
+    		   msgCall('추출주기를  30이내로 입력하세요.',false);
+    		   fps.focus();
+    		   return;
+    	   }
+    	  
+    	   for(let conf of extractConfigs){
+    		   if(conf.on === 1){
+    			   conf.fileType = fileType.value;
+    			   conf.imageSize = imageSize.value;
+    			   conf.fps = fps.value;
+    		   }
+    	   }
+		   popLayer.style.display = "none";
+       });
+</script>
+</html>
+

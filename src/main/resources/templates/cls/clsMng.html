@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 분류정보 관리</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+<div class="pop-wrap logFilePop">
+    <div class="pop_container01">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">로그 리스트</div></div>
+        <div class="pop-body">
+          <div class="pop-grid01">
+          
+            <!--left area-->
+            <div class="pop-area1">
+              <div class="title">히스토리</div>
+              <div class="contWrap">
+                <div class="gridCont01">
+                  
+                 <!--  <div class="divTable">                        
+                    <div class="divHead grid-tb18 tb-head">
+                       <div>#<div class="icons-sort"></div></div> 
+                      <div>Estimators</div>
+                      <div>Learning Rate</div>
+                      <div>Max Depth</div>
+                      <div>Objective</div>
+                      <div>파일명</div>
+                      <div>보기</div>
+                    </div>
+
+                    <div class="divBody">
+                      <div class="over">
+                        <div class="grid-tb18 tb-body">
+                          <div>1</div>
+                          <div>7</div>
+                          <div>0.83921</div>
+                          <div>95</div>
+                          <div>1.33</div>
+                        </div> 
+                      </div>
+                    </div>
+                  </div>  -->
+                  
+                </div>
+              </div>
+            </div>
+            
+            <!--blank area-->
+            <div class="blank"></div>
+            
+            <!--right area-->
+            <div class="pop-area1">
+              <div class="title">로그 내용</div>
+              <div class="pannel-bg"><textarea style="width: 100%; height: 400px;"  id="content" placeholder="로그 내용"></textarea></div>
+            </div>
+          
+          </div>
+        </div>
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel" title="확인">확인</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<div class="con-title"><span>분류정보 관리</span></div>
+<form id="frm" th:action method="post">
+    <div class="sec-grid9">
+      
+      <div class="g-area3">
+        <div class="pannel">
+          <div class="p-head">
+            <div class="p-tit">데이터 분류</div>
+          </div>
+          
+          <div class="graph4">
+            <div class="gridCont05">
+              <!--트리메뉴 들어가는 자리 시작-->
+              <div class="treeBox">
+              </div>
+              <!--트리메뉴 들어가는 자리 끝-->
+            </div>
+          </div>
+
+          <div class="p-bottom2">
+            <div class="btn-group-bottom">
+              <button type="button" class="btn-m03 add">추가</button>
+              <button type="button" class="btn-m03 delete">삭제</button>
+              <!-- <button type="button" class="btn-m02 add">추가</button>
+              <button type="button" class="btn-m02 delete">삭제</button> -->
+              <button type="button" class="btn-m03 save">저장</button>
+            </div>
+          </div>
+                        
+        </div>
+      </div>
+      
+      <div class="g-area3">
+        <div class="sec-grid10">
+          
+          <div class="g-area3">
+            <div class="pannel">
+              <div class="p-head">
+                <div class="p-tit">학습제어</div>
+              </div>
+
+              <div class="graph5">
+                <ul class="basic basicUl">
+                  <li>
+                    <div class="input-group">
+                      <label class="la_basic04 icon" for="epoch">학습명</label>
+                      <input type="text" id="learningNm" name="learningNm" autocomplete="off" class="basic19" title="학습명" maxlength="30" placeholder="학습명을 입력하세요">
+                      <span id="valid_learningNm" class="inform3 valid"></span>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="input-group">
+                      <label class="la_basic04 icon" for="epoch">EPOCH</label>
+                      <input type="text" id="epoch" name="epoch" autocomplete="off" class="basic19 number" maxlength="4" title="EPOCH" placeholder="1~1000 사이의 숫자를 입력하세요">
+                      <span id="valid_epoch" class="inform3 valid"></span>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="input-group">
+                      <label class="la_basic04 icon" for="learningRate">LEARNING RATE</label>
+                      <input type="text" id="learningRate" name="learningRate" autocomplete="off" class="basic19 numComma" maxlength="8" title="LEARNING RATE" placeholder="">
+                      <div class="ip-check"><input type="checkbox" id="auto"><label for="auto">자동</label></div>
+                    </div>
+                    <span id="valid_learningRate" class="inform3 valid"></span>
+                  </li>
+                  <li>
+                    <div class="input-group">
+                      <label class="la_basic04 icon" for="batchSize">BATCH SIZE</label>
+                      <input type="text" id="batchSize" name="batchSize" autocomplete="off" class="basic19 number" maxlength="8" title="BATCH SIZE" placeholder="">
+                    </div>
+                    <span id="valid_batchSize" class="inform3 valid"></span>
+                  </li>
+                  <li>
+                    <div class="input-group">
+                      <label class="la_basic04 icon" for="optimizer">OPTIMIZER</label>
+                      <select class="basic basic19" id="optimizer">
+                      </select>
+                    </div>
+                    <span id="valid_optimizer" class="inform3 valid"></span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="p-bottom2">
+                <div class="btn-group-bottom">
+                  <button type="button" class="btn-play" title="학습재생">학습</button>
+                 <!--  <button type="button" class="btn-stop01" title="학습중지">학습중지</button> -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
+          <div class="g-area3">
+            <div class="pannel">
+              <div class="p-head">
+                <div class="p-tit">상태 및 통계</div>
+              </div>
+              <div class="contWrap">
+                <div class="gridCont03">
+                </div>
+              </div>              
+              <!--pagenavigation-->
+              <div class="page-nav-group">
+              </div>
+
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+</form>
+</div>
+
+<script th:inline="javascript"> 
+    
+	dynimicInit = () => {
+		gfn_setCodeGrpObj('031',document.querySelector('#optimizer'),true);
+		pageInit(document.querySelector(".page-nav-group"),searchFunc,pagination.halfRowPerPage);
+		const headColumns = [{id:"idx",width: "65px",label:"NO",isNumber:"Y",data_cellType:"tdCCell",sortable:"Y"}
+                            ,{id:"id",width: "0px"}
+                            ,{id:"learningNm",width: "250px",label:"학습명"}
+		                    ,{id:"createTs",width: "120px",label:"학습시작일", data_cellType:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+                            ,{id:"epoch",width: "100px",label:"EPOCH"}
+                            ,{id:"learningRate",width: "120px",label:"LEARNING RATE" ,data_cellType:"tdCCell"}
+				            ,{id:"batchSize",width: "100px",label:"BATCH SIZE" ,data_cellType:"tdCCell"}
+				            ,{id:"optimizer",width: "100px",label:"OPTIMIZER" , data_cellType:"tdCCell",data_grpCd:"031"}
+				            ,{id:"status",width: "100px",label:"학습상태", data_cellType:"tdCCell",data_grpCd:"032"}
+				            ,{width: "100px",label:"로그",button:"Y",data_url:"openStat",data_btnNm:"확인",openType:"callBack"}
+			               ];
+		gridInit(document.querySelector(".gridCont03"),headColumns);
+		treeInit(document.querySelector('.treeBox'));
+		searchFunc();
+		
+
+	}
+	
+	viewLog = (data) => {
+		//console.log("viewLog:",data);
+		let filePath = data.filePath;
+		filePath = filePath.replace(/\\\\/g, '\\');
+		let param = {filePath : filePath
+				   , fileNm : data.fileNm};
+		gfn_asyncJsonCall("/viewLog",'POST',param).then((data) => {
+			//console.log("data:",data);
+			let content = document.querySelector('.logFilePop').querySelector('#content');
+			content.innerText = '';
+			content.innerText = data.content;
+		}); 
+	}
+	
+	openStat = (data) => {
+		//console.log(data);
+		let popLayer = document.querySelector('.logFilePop');
+		const headColumns =  [ {id:"idx",width: "60px",data_cellType:"tdCCell",label:"순번"}
+			                  ,{id:"fileNm",width: "120px",data_cellType:"tdCCell",label:"파일명"}
+		                      ,{id:"filePath",width: "0px"}
+		                     ,{width: "120px",label:"로그",button:"Y",data_cellType:"tdCCell",data_url:"viewLog",data_btnNm:"보기",openType:"callBack"}
+					        ];
+
+        popLayer.querySelector(".gridCont01").innerHTML = "";
+        gridInit(popLayer.querySelector(".gridCont01"),headColumns);
+		let learningPath = data.learningPath;
+		learningPath = learningPath.replace(/\\\\/g, '\\');
+		let param = {learningPath: learningPath};
+		gfn_asyncJsonCall("/logFileList",'POST',param).then((data) => {
+			gridBind(data['list'],document.querySelector('.logFilePop').querySelector(".gridCont01"));
+			let fileList = data['list'];
+			console.log("fileList:",fileList);
+		}); 
+		let content = document.querySelector('.logFilePop').querySelector('#content');
+		content.innerText = '';
+		popLayer.style.display = "block";
+	}
+	
+	document.querySelector('.logFilePop').querySelector('.btn-m-cancel').addEventListener('click', (e) => {
+		e.preventDefault();
+		let popLayer = document.querySelector('.logFilePop');
+		popLayer.style.display = "none";
+	});
+	
+	
+
+	searchFunc =  (invoker) => {
+		gfn_initObj(document.querySelector('.basicUl'));
+		pageSearch(document.getElementById('frm'),"/learningList",document.querySelector('.gridCont03'),document.querySelector('.page-nav-group'),invoker) 
+		if(invoker === undefined){
+			let list = null;
+			document.querySelector('.treeBox').innerHTML = '';
+	   	    gfn_asyncCall("/clsInfo",'POST',document.getElementById('frm')).then((data) => {
+				for(key in data) {
+					if(key.indexOf('fail_msg') > -1){
+						msgCall(data[key],false);
+						break;
+					}
+	                if(key.indexOf('list') > -1){
+	                   	list = data[key];
+					}
+				}
+				let treejs = createInitTree(document.querySelector('.treeBox'),list,true);
+				if(list != null && list.length > 0){
+					createTree(list,treejs);
+				}
+			 });
+		}	
+	}
+	
+    chkedMove = (fromTarget,toTargt) => {
+   		let chkedList = Array.from(fromTarget.querySelectorAll('.treejs-node__checked'));
+   		if(chkedList.length > 0){
+        	for(let chkedLi of chkedList){
+        		chkedLi.classList.remove('treejs-node__checked');
+    			chkedLi.querySelectorAll('.treejs-node__checked').forEach((childChkedLi) => {
+    				childChkedLi.classList.remove('treejs-node__checked');
+    			});
+                let hasChild = hasChileItem(chkedLi);   			
+    			if(hasChild){
+    				toTargt.appendChild(chkedLi);
+    			}
+    			else{
+    				toTargt.appendChild(chkedLi);
+    			}
+    			break;
+        	}
+        	chkedMove(fromTarget,toTargt);
+   		}
+    }
+    
+    document.querySelector('.btn-play').addEventListener('click',(e) => {
+    	e.preventDefault();
+    	gfn_removeValidHtml(document.getElementById('frm'),'span')
+    	let treeData = getChkedTreeData(document.querySelector('.rootLi').parentNode,'');
+    	if(treeData.length === 0){
+    		msgCall(msg.objChk,false);
+    		return;
+    	}
+    	let param = {learningNm : document.getElementById('learningNm').value
+    			   , epoch : document.getElementById('epoch').value
+    			   , learningRate : document.getElementById('learningRate').value
+    			   , batchSize : document.getElementById('batchSize').value
+    			   , optimizer : document.getElementById('optimizer').value
+    			   , auto : document.getElementById('auto').checked?'1':'0'
+                   , classList : treeData
+    			    };
+    	let requiredParams = { learningNm : "학습명"
+    			             , epoch: "EPOCH"
+				             , learningRate: "LEARNING RATE"
+				             , batchSize: "BATCH SIZE"
+				             , optimizer : "OPTIMIZER"
+				            };
+		if(!gfn_validJson(param,requiredParams,null,document.getElementById('frm'))){
+			return;
+		}
+		if(parseInt(document.getElementById('epoch').value) > 1000){
+ 		   document.querySelector('#valid_epoch').innerText = "1000 이내의 값을 입력하세요.";
+ 		   return;
+ 	    }
+    	gfn_asyncJsonCall('/callLearning','POST',param,'searchFunc()');
+	});
+    
+    document.querySelector('.btn-group-bottom').querySelector('.delete').addEventListener('click',(e) => {
+    	e.preventDefault();
+    	confirmCall(msg.delCls,this.deleteCall);
+    	deleteCall = (isExec) => {
+   	    	if(isExec){
+   	    		deleteTree(e.target);
+   	    	}
+   	    }
+	});
+    
+
+    document.querySelector('.btn-group-bottom').querySelector('.add').addEventListener('click',(e) => {
+    	e.preventDefault();
+    	addTree(e.target);
+    });
+   
+    
+    getTreeData = (target,idx) => {
+    	let jsonArray 	= new Array();
+    	try{
+    	for(let ele of target.childNodes){
+    		if(ele.tagName === 'LI'){
+    			var jsonObj	= new Object();
+    			jsonObj.id = gfn_nullValue(ele.getAttribute('data-id'));
+    			let spanLabel = ele.querySelector('.treejs-label');
+    			jsonObj.classNm = spanLabel.innerText.trim();
+    			if(hasChileItem(ele)){
+    				let childData = getTreeData(ele.querySelector('.treejs-nodes'),jsonObj.id);
+    				jsonObj.children = childData;
+    			}
+    			jsonObj = JSON.stringify(jsonObj);
+    			jsonArray.push(JSON.parse(jsonObj));
+    		}
+    	}
+    	}catch(e){console.error(e);}
+    	return jsonArray;
+    }
+    
+    var jsonChkArray 	= new Array();
+    getChkedTreeData = (target,child) => {
+    	if(child === ''){jsonChkArray 	= new Array();}  	
+    	try{
+    	for(let ele of target.childNodes){
+    		if(ele.tagName === 'LI'){
+    			var jsonObj	= new Object();
+    			if(ele.classList.contains('treejs-node__checked') && child != ''){
+        			jsonObj.id = ele.getAttribute('data-id');
+    				let spanLabel = ele.querySelector('.treejs-label')
+        			jsonObj.classNm = spanLabel.innerText;
+    				jsonObj = JSON.stringify(jsonObj);
+    				jsonChkArray.push(JSON.parse(jsonObj));    				
+    			}
+    			if(hasChileItem(ele)){
+    				getChkedTreeData(ele.querySelector('.treejs-nodes'),'child');
+    			}
+    		}
+    	}
+    	}catch(e){console.error(e);}
+    	return jsonChkArray;
+    }
+
+	document.querySelector('.btn-group-bottom').querySelector('.save').addEventListener('click',(e) => {	
+		let treeData = getTreeData(document.querySelector('.rootLi').parentNode,'');
+		let dupChkAry = new Array();
+		let dupClassNm = '';
+		document.querySelector('.treeBox').querySelectorAll('.treejs-label').forEach((lable) => {
+			let classNm = lable.innerText.trim();
+			if(dupChkAry.includes(classNm)){
+				lable.classList.add('on');
+				dupClassNm = classNm;
+				return false;
+			}
+			dupChkAry.push(classNm);
+		});
+		
+		if(dupClassNm != ''){
+			msgCall(dupClassNm+"은(는) 중복입니다.",false);
+			return;
+		}
+		let param = {cls : treeData};
+		gfn_asyncJsonCall('/saveClass','POST',param);
+	});
+    /*
+    document.querySelector('.btn-stop01').addEventListener('click',(e) => {
+    	e.preventDefault();
+    	alert("개발중");
+    	return;
+    	
+    });
+	*/
+    
+</script>
+</html>

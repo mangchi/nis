@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<th:block th:fragment="menu">
+  <a href="#" class="btn-top">
+    <span>Top</span>
+  </a>
+	<div class="profile">
+		<div class="m-tit">Profile</div>
+		<div class="box-img">
+			<div class="img">
+				<a href="" class="chgUser"><img src="img/menu/img_profile.png"
+					alt="프로필 아이콘" /></a>
+			</div>
+			<ul class="pro-txt">
+				<li id="liUser"></li>
+				<li class="online">접속중</li>
+			</ul>
+			<input type="hidden" id="loginUser">
+		</div>
+	</div>
+	<div id="userName" sec:authentication="name"></div>
+	<div class="menu">
+		<div class="m-tit">Menu</div>
+		<ul class="menu-list">
+		</ul>
+	</div>
+
+	<script th:inline="javascript">
+  window.addEventListener('DOMContentLoaded', function(){ 
+	  searchMenuFunc();
+	  document.getElementById('userName').style.display = "none";
+	  const liUser = document.getElementById('liUser');
+	  const userIdSpan = document.createElement('span'); 
+	  const markOnline = document.createElement('div'); 
+	  markOnline.classList.add("mark-online");
+	  userIdSpan.appendChild(markOnline);
+	  liUser.append(document.getElementById('userName').innerHTML);
+	  liUser.appendChild(userIdSpan);
+  });
+  
+  searchMenuFunc =  () => {
+	  let param = {};
+	  const menuList = document.querySelector('.menu-list');
+	  menuList.innerHTML = '';
+	  gfn_asyncJsonCall("/myAuthView",'GET',param).then((data) => {
+		  for(let key in data) {
+			   let list = data[key];
+			   console.log("list:",list);
+			   for(let viewKey in list){
+				   if(list[viewKey].authId != null && list[viewKey].authId != '' && list[viewKey].authId != 'undefined'){
+					   let li = document.createElement('li');
+					   if(viewKey === '0'){
+						   li.classList.add("on");
+					   }
+					   let classI = document.createElement('i');
+					   if(parseInt(viewKey) > 8){
+						   classI.classList.add('m'+list[viewKey].viewId);
+					   }else{
+						   classI.classList.add('m0'+list[viewKey].viewId);
+					   }
+					   
+					   let anch = document.createElement('a');
+					   anch.setAttribute("href","javascript:;");
+					   anch.setAttribute("onclick","callMenu('"+list[viewKey].viewUrl+"');return false;");
+					   anch.classList.add('link');
+					   anch.addEventListener('click',(e) => {
+						   e.preventDefault();
+							  document.querySelector('.menu-list').querySelectorAll("li").forEach((menuLi) => {
+								  if(menuLi.classList.contains('on')){
+									  menuLi.classList.remove('on');
+								  }
+							  });
+							  e.target.parentNode.classList.add('on'); 
+					   });
+					   anch.append(list[viewKey].viewNm);
+					   li.appendChild(classI);
+					   li.appendChild(anch);
+					   menuList.appendChild(li);
+				   }
+			   }
+		   }
+	  }); 		
+  }
+  
+  document.querySelector('.chgUser').addEventListener('click',(e) => {
+	   e.preventDefault();
+	   let params = {};
+	   dynimicCall(params,'GET','/chgUser');
+	  
+  });
+  
+  
+  const callMenu = (menu,method) => {
+	  gfn_setStorageItem("schFrm",null);
+	  let params = {};
+	  let _method = method===undefined?'GET':method;
+      
+	  document.querySelector('.contentBody').innerHTML = '';
+	  gfn_asyncUrlCall(menu,_method,params).then((data) => {
+		  let sessionData = gfn_getStorage(nis.storageKey);
+		  if(sessionData === null || sessionData === undefined){
+			  console.log("session is null..");
+			  msgCall(msg.expired,false,"/login");
+		      return;
+		  }
+		  dynimicContentCall(data);
+	  });
+
+  }
+
+  
+
+
+</script>
+</th:block>
+</html>

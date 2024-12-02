@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 데이타베이스 관리</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+  <div class="pop-wrap unitPop">
+    <div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+        <div class="pop-body" style="padding:0px;">
+          <div class="graph4" style="height:360px;">
+            <div class="gridCont05">
+				<div class="treeBox">
+				</div>
+            </div>
+          </div>
+        </div>
+         <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel btnUnitClose" title="취소">취소</button>
+	            <button type="button" class="btn-m-confirm btnUnitOpen" title="확인하기">확인</button>
+	          </div>
+	     </div>
+      </div>
+    </div>
+  </div>
+	<div class="con-title">
+		<span>데이터베이스 관리</span>
+	</div>
+	<form id="frm" th:action method="post">
+    <input type="hidden" sec:authorize="hasRole('ADMIN')" id="isAdmin">
+		<div class="sec-grid1">
+			<div class="g-area3">
+				<div class="pannel">
+					<div class="searchCont p-head3">
+						<div class="searchGrp">
+							<div class="searchItem">
+								<input name="frDt" class="calendar_input"
+									placeholder="yyyy.mm.dd" type="text" value=""> ~ <input
+									name="toDt" class="calendar_input" placeholder="yyyy.mm.dd"
+									type="text" value="">
+							</div>
+							<div class="sel-multi"></div>
+							<div class="rightBtnGrp">
+							    <button type="button" class="btn btn-secondary btn-search01" onclick="qryInit();">초기화</button>
+							    <button type="button" class="btn btn-secondary btn-search01" onclick="searchFunc(this);">조회</button>
+								<button type="button" class="btn btn-secondary btn-search01"
+									id="downloadBtn">내려받기</button>
+								<button type="button" class="btn btn-danger btn-delete">삭제</button>
+							</div>
+						</div>
+						<div class="calendarModal kor hidden" tabindex="0"></div>
+					</div>
+					<div class="contWrap">
+					    <div class="result">
+                        </div>
+						<div class="gridCont03"></div>
+					</div>
+					<div class="page-nav-group"></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<script th:inline="javascript"> 
+       dynimicInit = () => {
+    	   let schFrm = gfn_getStorageItem("schFrm");
+    	   searchInit(document.querySelector('.sel-multi'));
+    	   document.querySelector(".btn-delete").addEventListener('click',(e)=>{
+        	   e.preventDefault();
+        	   let checkedData = gridCheckedData();
+        	   deleteCall = (isExec) => {
+        		   if(isExec){
+        			   gfn_asyncJsonCall('/datasetDelete','POST',checkedData,'searchFunc()');
+        		   }
+        		   
+        	   }
+        	   if(Object.keys(checkedData).length > 0){
+        		   let list = checkedData['list'];
+        		   let isApproveChk = false;
+        		   let isAdmin = document.querySelector('#isAdmin');
+        	   	   for(let itm of list){
+        	   		   if(!isAdmin && gfn_nullValue(itm['approvedTs']) != ''){
+        	   			   isApproveChk = true;
+        	   			   break;
+        	   		   }
+        	   	   }
+        	   	   if(isApproveChk){
+        	   		   msgCall(msg.approveChk,false);
+        	   	   }
+    	    	   confirmCall(msg.del,this.deleteCall);
+        	   }
+        	   else{
+        		   msgCall(msg.delChk,false);
+        	   }
+        	   
+        	 
+    	   });
+    	   document.getElementById('downloadBtn').addEventListener('click',(e)=>{
+        	   let checkedData = gridCheckedData(document.querySelector(".gridCont03"));
+        	   if(Object.keys(checkedData).length === 0 ){
+    				msgCall(msg.downloadChk,false);
+    		   }
+        	   gfn_asyncDown('/fileDownZip','POST',checkedData);
+           });
+    	   treeInit(document.querySelector('.unitPop').querySelector('.treeBox'));
+    	   
+    	   console.log("schFrm:",schFrm);
+    	   //{"frDt":"2022.07.30","toDt":"2022.10.31","schUnitNm":"","schUnitId":"","schCollection":"","schStillOrMovie":"","schDayOrNight":"","schDataCd":"",
+    		//   "schWorkerNm":"","compPageNum":"1","compRowPerPage":"20","pageNum":"1","rowPerPage":"20"}
+    	   if(schFrm != undefined && schFrm != null){
+    		   //comp,pageFunc,defaultPerPage,title,optionItems,totPageInfo,appendCss,schFrm)
+    		   pageInit(document.querySelector(".page-nav-group"),"searchFunc()",pagination.doubleRowPerPage,null,null,null,null,schFrm);
+    		   document.getElementsByName('frDt')[0].value = schFrm.frDt
+        	   document.getElementsByName('toDt')[0].value = schFrm.toDt
+        	   if(schFrm.schUnitNm != undefined && schFrm.schUnitNm != ''){
+        		   document.getElementById('unitChk').checked = true;
+        		   schInputChk(document.getElementById('unitChk'),schFrm);
+        	   }
+    		   if(schFrm.schCollection != undefined && schFrm.schCollection != ''){
+        		   document.getElementById('collectionChk').checked = true;
+        		   schInputChk(document.getElementById('collectionChk'),schFrm);
+        	   }
+    		   if(schFrm.schStillOrMovie != undefined && schFrm.schStillOrMovie != ''){
+        		   document.getElementById('stillOrMovieChk').checked = true;
+        		   schInputChk(document.getElementById('stillOrMovieChk'),schFrm);
+        	   }
+    		   if(schFrm.schDayOrNight != undefined && schFrm.schDayOrNight != ''){
+        		   document.getElementById('dayOrNightChk').checked = true;
+        		   schInputChk(document.getElementById('dayOrNightChk'),schFrm);
+        	   }
+    		   if(schFrm.schDataCd != undefined && schFrm.schDataCd != ''){
+        		   document.getElementById('objChk').checked = true;
+        		   schInputChk(document.getElementById('objChk'),schFrm);
+        	   }
+    		   if(schFrm.schWorkerNm != undefined && schFrm.schWorkerNm != ''){
+        		   document.getElementById('workerChk').checked = true;
+        		   schInputChk(document.getElementById('workerChk'),schFrm);
+        	   }
+    		  // document.querySelector(".page-nav-group").querySelector('.page-num').innerText = schFrm.pageNum;
+    		   //document.getElementById('compPageNum').value = schFrm.compPageNum;
+    		   //console.log("schFrm.compPageNum:",schFrm.compPageNum);
+    		  // document.querySelector(".page-nav-group").querySelector('.compRowPerPage').innerText = schFrm.pageNum;
+    	   }
+    	   else{
+    		   pageInit(document.querySelector(".page-nav-group"),"searchFunc()",pagination.doubleRowPerPage);
+    		   document.getElementsByName('frDt')[0].value = gfn_getDiffDay(nis.diffDay);
+        	   document.getElementsByName('toDt')[0].value = gfn_getDay();
+    	   }
+           const headColumns =  [{id:"chk",width: "45px"}
+                               ,{id:"idx",width: "50px",label:"NO",sortable:"Y",isNumber:"Y"}
+                               ,{id:"id",width: "0px"}
+                               ,{id:"unitNm",width: "100px",label:"부대명", data_cellType:"tdCCell",sortable:"Y",}
+                               ,{id:"collectionDt",width: "100px",label:"임무시간",sortable:"Y",data_cellType:"tdCCell"}  
+           	                   ,{id:"collectionPos",width: "100px",label:"탐지구역",sortable:"Y",data_cellType:"tdCCell"}  
+                               ,{id:"sourceCd",width: "0px"}
+           	                   ,{id:"collectionDeviceCd",width: "80px",label:"탐지수단",sortable:"Y",data_cellType:"tdCCell",data_grpCd:"006"}  
+           	                   ,{id:"stillOrMovie",width: "80px",label:"자료구분",data_cellType:"tdCCell",data_grpCd:"003"}
+           	                   ,{id:"dayOrNight",width: "100px",label:"주/야 구분",data_cellType:"tdCCell",data_grpCd:"002"}
+           	                   ,{id:"sourceCd",width: "80px",label:"데이터출처", data_cellType:"tdCCell",data_grpCd:"008"}
+        	                   ,{id:"shipClass",width: "80px",label:"함종/선종", data_cellType:"tdCCell"}
+           	                   ,{id:"originFileNm",width: "100px",label:"파일명", data_cellType:"tdCCell"}
+           	                   ,{id:"updateUserNm",width: "80px",label:"작업자",data_cellType:"tdCCell"}
+           	                   ,{id:"updateUserId",width: "0px"}
+           	                  // ,{id:"status",width: "80px",label:"진행상태",data_cellType:"tdCCell",data_grpCd:"009"}
+           	                   ,{id:"createTs",width: "120px",label:"등록일시",sortable:"Y",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+           	                  // ,{id:"isApproved",width: "80px",label:"승인여부",data_cellType:"tdCCell"}
+           	                   ,{id:"approvedTs",width: "120px",label:"승인일시",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+           	                   ,{width: "80px",label:"편집",button:"Y",data_url:"movImgInfo",data_btnNm:"수정",openType:"new"}
+				              ];
+       	   gridInit(document.querySelector(".gridCont03"),headColumns);
+       	   searchFunc();
+       }
+
+       searchFunc = (invoker) => {
+    	   gfn_setStorageItem("schFrm",gfn_formToJson(document.getElementById('frm')));
+    	   pageSearch(document.getElementById('frm'),"/datasetList",document.querySelector('.gridCont03'),document.querySelector('.page-nav-group'),invoker) 
+       }
+       
+       searchAfterFunc = (appendData) => {
+	   		let totCount = document.querySelector('.result');
+	   	    while (totCount.hasChildNodes()) {
+	   	    	totCount.removeChild(totCount.firstChild);
+	   	    }
+	   	    totCount.append('총 ');
+	   	    const totCountSpan = document.createElement('span');
+	   	    totCountSpan.append(appendData.totalCount);
+	   	    totCount.appendChild(totCountSpan);
+	   	    totCount.append('건의 작업이 검색 되었습니다.');
+	   	}
+       
+       newUrl = (url,item) => {
+    	   //gfn_setStorageItem("schFrm",gfn_formToJson(document.getElementById('frm')));
+		   if(url === 'movImgInfo'){
+			   if(item.stillOrMovie === '001'){
+				   url = 'imgInfo';
+			   }
+			   else{
+				   url = 'movInfo';
+			   }
+		   }
+		   document.querySelector('.contentBody').innerHTML = '';
+		   gfn_asyncUrlCall('/'+url,'POST',item).then((data) => {
+			   let sessionData = gfn_getStorage(nis.storageKey);
+			   if(sessionData === null || sessionData === undefined){
+				   msgCall(msg.expired,false,"/login");
+				   return;
+			   }
+			   dynimicContentCall(data);
+		   });
+       }
+      
+       
+</script>
+</html>
+

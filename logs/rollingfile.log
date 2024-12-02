@@ -1,0 +1,198 @@
+[INFO ] 2023-02-01 13:11:56.348 [background-preinit][Version.java] Version - HV000001: Hibernate Validator 6.2.3.Final
+[INFO ] 2023-02-01 13:11:56.386 [restartedMain][StartupInfoLogger.java] NisApplication - Starting NisApplication using Java 17.0.5 on Donghoui-noteubug.local with PID 90124 (/Users/donghokang/eclipse-workspace/nis/bin/main started by donghokang in /Users/donghokang/eclipse-workspace/nis)
+[INFO ] 2023-02-01 13:11:56.390 [restartedMain][SpringApplication.java] NisApplication - The following 1 profile is active: "local"
+[INFO ] 2023-02-01 13:11:56.695 [restartedMain][DeferredLog.java] ChangeableUrls - The Class-Path manifest attribute in /Users/donghokang/.gradle/caches/modules-2/files-2.1/org.glassfish.jaxb/jaxb-core/2.3.0.1/33277bae433ecd0fdebd53812eb084da443575b6/jaxb-core-2.3.0.1.jar referenced one or more files that do not exist: file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/org.glassfish.jaxb/jaxb-core/2.3.0.1/33277bae433ecd0fdebd53812eb084da443575b6/jaxb-api-2.3.0.jar,file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/org.glassfish.jaxb/jaxb-core/2.3.0.1/33277bae433ecd0fdebd53812eb084da443575b6/txw2-2.3.0.1.jar,file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/org.glassfish.jaxb/jaxb-core/2.3.0.1/33277bae433ecd0fdebd53812eb084da443575b6/istack-commons-runtime-3.0.5.jar
+[INFO ] 2023-02-01 13:11:56.696 [restartedMain][DeferredLog.java] ChangeableUrls - The Class-Path manifest attribute in /Users/donghokang/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.3.1/a1a12b85ba1435b4189e065f7dafcc3fb9410d38/jaxb-impl-2.3.1.jar referenced one or more files that do not exist: file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.3.1/a1a12b85ba1435b4189e065f7dafcc3fb9410d38/jaxb-runtime-2.3.1.jar,file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.3.1/a1a12b85ba1435b4189e065f7dafcc3fb9410d38/txw2-2.3.1.jar,file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.3.1/a1a12b85ba1435b4189e065f7dafcc3fb9410d38/istack-commons-runtime-3.0.7.jar,file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.3.1/a1a12b85ba1435b4189e065f7dafcc3fb9410d38/stax-ex-1.8.jar,file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.3.1/a1a12b85ba1435b4189e065f7dafcc3fb9410d38/FastInfoset-1.2.15.jar,file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.3.1/a1a12b85ba1435b4189e065f7dafcc3fb9410d38/javax.activation-api-1.2.0.jar
+[INFO ] 2023-02-01 13:11:56.697 [restartedMain][DeferredLog.java] ChangeableUrls - The Class-Path manifest attribute in /Users/donghokang/.gradle/caches/modules-2/files-2.1/org.ehcache/ehcache/3.1.0/95ed9af94a27c3100a3c61020d0564a7d3395c0a/ehcache-3.1.0.jar referenced one or more files that do not exist: file:/Users/donghokang/.gradle/caches/modules-2/files-2.1/org.ehcache/ehcache/3.1.0/95ed9af94a27c3100a3c61020d0564a7d3395c0a/slf4j-api-1.7.7.jar
+[INFO ] 2023-02-01 13:11:56.697 [restartedMain][DeferredLog.java] DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[INFO ] 2023-02-01 13:11:56.698 [restartedMain][DeferredLog.java] DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[INFO ] 2023-02-01 13:11:57.990 [restartedMain][HikariDataSource.java] HikariDataSource - HikariPool-1 - Starting...
+[INFO ] 2023-02-01 13:11:58.063 [restartedMain][PoolBase.java] PoolBase - HikariPool-1 - Driver does not support get/set network timeout for connections. (Receiver class kr.co.realtimetech.kairos.jdbc.kairosConnection does not define or inherit an implementation of the resolved method 'abstract int getNetworkTimeout()' of interface java.sql.Connection.)
+[INFO ] 2023-02-01 13:11:58.082 [restartedMain][HikariDataSource.java] HikariDataSource - HikariPool-1 - Start completed.
+[INFO ] 2023-02-01 13:11:58.357 [restartedMain][MsgConfig.java] MsgConfig - messageSource Bean Created. Default Charset is UTF-8 and Default Locale is ko
+[INFO ] 2023-02-01 13:11:58.723 [restartedMain][TomcatWebServer.java] TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+[INFO ] 2023-02-01 13:11:58.822 [restartedMain][ServletWebServerApplicationContext.java] ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2123 ms
+[INFO ] 2023-02-01 13:11:58.978 [restartedMain][XmlConfiguration.java] XmlConfiguration - Loading Ehcache XML configuration from /Users/donghokang/eclipse-workspace/nis/bin/main/ehcache.xml.
+[INFO ] 2023-02-01 13:11:59.264 [restartedMain][EhcacheManager.java] EhcacheManager - Cache 'codeCacheData' created in EhcacheManager.
+[INFO ] 2023-02-01 13:11:59.266 [restartedMain][EhcacheManager.java] EhcacheManager - Cache 'PwFailCacheData' created in EhcacheManager.
+[INFO ] 2023-02-01 13:11:59.278 [restartedMain][Eh107CacheManager.java] Eh107CacheManager - Registering Ehcache MBean javax.cache:type=CacheStatistics,CacheManager=file./Users/donghokang/eclipse-workspace/nis/bin/main/ehcache.xml,Cache=codeCacheData
+[INFO ] 2023-02-01 13:11:59.281 [restartedMain][Eh107CacheManager.java] Eh107CacheManager - Registering Ehcache MBean javax.cache:type=CacheStatistics,CacheManager=file./Users/donghokang/eclipse-workspace/nis/bin/main/ehcache.xml,Cache=PwFailCacheData
+[INFO ] 2023-02-01 13:11:59.294 [restartedMain][Eh107CacheManager.java] Eh107CacheManager - Registering Ehcache MBean javax.cache:type=CacheStatistics,CacheManager=file./Users/donghokang/eclipse-workspace/nis/bin/main/ehcache.xml,Cache=codeCacheData
+[INFO ] 2023-02-01 13:11:59.294 [restartedMain][Eh107CacheManager.java] Eh107CacheManager - Registering Ehcache MBean javax.cache:type=CacheStatistics,CacheManager=file./Users/donghokang/eclipse-workspace/nis/bin/main/ehcache.xml,Cache=PwFailCacheData
+[INFO ] 2023-02-01 13:12:00.593 [restartedMain][DefaultSecurityFilterChain.java] DefaultSecurityFilterChain - Will not secure any request
+[INFO ] 2023-02-01 13:12:00.619 [restartedMain][MsgConfig.java] MsgConfig - localeResolver Bean Created.
+[INFO ] 2023-02-01 13:12:00.664 [restartedMain][CacheService.java] CacheService - cacheStore에 해당pwFailCnt값이 존재하지 않습니다.
+[WARN ] 2023-02-01 13:12:00.793 [restartedMain][AbstractApplicationContext.java] AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'initNisApp' defined in mil.gdl.nis.NisApplication: Invocation of init method failed; nested exception is org.springframework.jdbc.UncategorizedSQLException: 
+### Error querying database.  Cause: java.sql.SQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+### The error may exist in file [/Users/donghokang/eclipse-workspace/nis/bin/main/mapper/cmmn/Cmmn.xml]
+### The error may involve Cmmn.selectCode
+### The error occurred while executing a query
+### SQL: SELECT TB_GRP_CD.CD GRP_CD            , TB_GRP_CD.CD_NM GRP_CD_NM            , TB_CD.CD CD            , TB_CD.CD_NM CD_NM            , TB_GRP_CD.CD_DESC GRP_CD_DESC            , TB_CD.CD_DESC CD_DESC            , CD_FILTER       FROM TB_GRP_CD        LEFT JOIN TB_CD        ON    TB_GRP_CD.CD = TB_CD.GRP_CD
+### Cause: java.sql.SQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+; uncategorized SQLException; SQL state [HY000]; error code [53013]; ERROR(53013) Table [tb_grp_cd] does not exist.; nested exception is java.sql.SQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+[INFO ] 2023-02-01 13:12:00.796 [restartedMain][EhcacheManager.java] EhcacheManager - Cache 'codeCacheData' removed from EhcacheManager.
+[INFO ] 2023-02-01 13:12:00.797 [restartedMain][EhcacheManager.java] EhcacheManager - Cache 'PwFailCacheData' removed from EhcacheManager.
+[INFO ] 2023-02-01 13:12:00.799 [restartedMain][HikariDataSource.java] HikariDataSource - HikariPool-1 - Shutdown initiated...
+[INFO ] 2023-02-01 13:12:00.829 [restartedMain][HikariDataSource.java] HikariDataSource - HikariPool-1 - Shutdown completed.
+[INFO ] 2023-02-01 13:12:00.851 [restartedMain][ConditionEvaluationReportLoggingListener.java] ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+[ERROR] 2023-02-01 13:12:00.864 [restartedMain][SpringApplication.java] SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'initNisApp' defined in mil.gdl.nis.NisApplication: Invocation of init method failed; nested exception is org.springframework.jdbc.UncategorizedSQLException: 
+### Error querying database.  Cause: java.sql.SQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+### The error may exist in file [/Users/donghokang/eclipse-workspace/nis/bin/main/mapper/cmmn/Cmmn.xml]
+### The error may involve Cmmn.selectCode
+### The error occurred while executing a query
+### SQL: SELECT TB_GRP_CD.CD GRP_CD            , TB_GRP_CD.CD_NM GRP_CD_NM            , TB_CD.CD CD            , TB_CD.CD_NM CD_NM            , TB_GRP_CD.CD_DESC GRP_CD_DESC            , TB_CD.CD_DESC CD_DESC            , CD_FILTER       FROM TB_GRP_CD        LEFT JOIN TB_CD        ON    TB_GRP_CD.CD = TB_CD.GRP_CD
+### Cause: java.sql.SQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+; uncategorized SQLException; SQL state [HY000]; error code [53013]; ERROR(53013) Table [tb_grp_cd] does not exist.; nested exception is java.sql.SQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1804) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:953) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.18.jar:5.3.18]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.18.jar:5.3.18]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.6.6.jar:2.6.6]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:740) ~[spring-boot-2.6.6.jar:2.6.6]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:415) ~[spring-boot-2.6.6.jar:2.6.6]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:303) ~[spring-boot-2.6.6.jar:2.6.6]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1312) ~[spring-boot-2.6.6.jar:2.6.6]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1301) ~[spring-boot-2.6.6.jar:2.6.6]
+	at mil.gdl.nis.NisApplication.main(NisApplication.java:29) ~[main/:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) ~[spring-boot-devtools-2.6.6.jar:2.6.6]
+Caused by: org.springframework.jdbc.UncategorizedSQLException: 
+### Error querying database.  Cause: java.sql.SQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+### The error may exist in file [/Users/donghokang/eclipse-workspace/nis/bin/main/mapper/cmmn/Cmmn.xml]
+### The error may involve Cmmn.selectCode
+### The error occurred while executing a query
+### SQL: SELECT TB_GRP_CD.CD GRP_CD            , TB_GRP_CD.CD_NM GRP_CD_NM            , TB_CD.CD CD            , TB_CD.CD_NM CD_NM            , TB_GRP_CD.CD_DESC GRP_CD_DESC            , TB_CD.CD_DESC CD_DESC            , CD_FILTER       FROM TB_GRP_CD        LEFT JOIN TB_CD        ON    TB_GRP_CD.CD = TB_CD.GRP_CD
+### Cause: java.sql.SQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+; uncategorized SQLException; SQL state [HY000]; error code [53013]; ERROR(53013) Table [tb_grp_cd] does not exist.; nested exception is java.sql.SQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:92) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at jdk.proxy2.$Proxy138.selectList(Unknown Source) ~[?:?]
+	at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:224) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at mil.gdl.nis.dao.DAO.selectList(DAO.java:172) ~[main/:?]
+	at mil.gdl.nis.dao.DAO$$FastClassBySpringCGLIB$$eb9d5963.invoke(<generated>) ~[main/:?]
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218) ~[spring-core-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:783) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137) ~[spring-tx-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698) ~[spring-aop-5.3.18.jar:5.3.18]
+	at mil.gdl.nis.dao.DAO$$EnhancerBySpringCGLIB$$7caf4f0e.selectList(<generated>) ~[main/:?]
+	at mil.gdl.nis.cmmn.service.CacheService.getCodeCacheData(CacheService.java:96) ~[main/:?]
+	at mil.gdl.nis.cmmn.service.CacheService$$FastClassBySpringCGLIB$$fcefaf1c.invoke(<generated>) ~[main/:?]
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218) ~[spring-core-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:783) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.cache.interceptor.CacheInterceptor.lambda$invoke$0(CacheInterceptor.java:54) ~[spring-context-5.3.18.jar:5.3.18]
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:351) ~[spring-context-5.3.18.jar:5.3.18]
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64) ~[spring-context-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698) ~[spring-aop-5.3.18.jar:5.3.18]
+	at mil.gdl.nis.cmmn.service.CacheService$$EnhancerBySpringCGLIB$$7165115a.getCodeCacheData(<generated>) ~[main/:?]
+	at mil.gdl.nis.NisApplication$InitNisApp.initNis(NisApplication.java:42) ~[main/:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeCustomInitMethod(AbstractAutowireCapableBeanFactory.java:1930) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1872) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.18.jar:5.3.18]
+	... 21 more
+Caused by: kr.co.realtimetech.kairos.jdbc.kairosSQLException: ERROR(53013) Table [tb_grp_cd] does not exist.
+	at kr.co.realtimetech.kairos.kjapi.kairosInputHandler.readHeader(kairosInputHandler.java:136) ~[kairosjdbc.jar:?]
+	at kr.co.realtimetech.kairos.kjapi.kairosProtocolHandlerImpl.prepare(kairosProtocolHandlerImpl.java:655) ~[kairosjdbc.jar:?]
+	at kr.co.realtimetech.kairos.jdbc.kairosPreparedStatement.<init>(kairosPreparedStatement.java:44) ~[kairosjdbc.jar:?]
+	at kr.co.realtimetech.kairos.jdbc.kairosConnection.prepareStatement(kairosConnection.java:650) ~[kairosjdbc.jar:?]
+	at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:337) ~[HikariCP-4.0.3.jar:?]
+	at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java) ~[HikariCP-4.0.3.jar:?]
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.instantiateStatement(PreparedStatementHandler.java:86) ~[mybatis-3.5.9.jar:3.5.9]
+	at org.apache.ibatis.executor.statement.BaseStatementHandler.prepare(BaseStatementHandler.java:88) ~[mybatis-3.5.9.jar:3.5.9]
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.prepare(RoutingStatementHandler.java:59) ~[mybatis-3.5.9.jar:3.5.9]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:49) ~[mybatis-3.5.9.jar:3.5.9]
+	at mil.gdl.nis.dao.PrepareInterceptor.intercept(PrepareInterceptor.java:85) ~[main/:?]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:62) ~[mybatis-3.5.9.jar:3.5.9]
+	at jdk.proxy2.$Proxy159.prepare(Unknown Source) ~[?:?]
+	at org.apache.ibatis.executor.SimpleExecutor.prepareStatement(SimpleExecutor.java:87) ~[mybatis-3.5.9.jar:3.5.9]
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:62) ~[mybatis-3.5.9.jar:3.5.9]
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:325) ~[mybatis-3.5.9.jar:3.5.9]
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:156) ~[mybatis-3.5.9.jar:3.5.9]
+	at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:109) ~[mybatis-3.5.9.jar:3.5.9]
+	at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:89) ~[mybatis-3.5.9.jar:3.5.9]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:49) ~[mybatis-3.5.9.jar:3.5.9]
+	at mil.gdl.nis.dao.DAOInterceptor.intercept(DAOInterceptor.java:37) ~[main/:?]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:62) ~[mybatis-3.5.9.jar:3.5.9]
+	at jdk.proxy2.$Proxy158.query(Unknown Source) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:49) ~[mybatis-3.5.9.jar:3.5.9]
+	at mil.gdl.nis.dao.QueryInterceptor.intercept(QueryInterceptor.java:141) ~[main/:?]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:62) ~[mybatis-3.5.9.jar:3.5.9]
+	at jdk.proxy2.$Proxy158.query(Unknown Source) ~[?:?]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:151) ~[mybatis-3.5.9.jar:3.5.9]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:145) ~[mybatis-3.5.9.jar:3.5.9]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:140) ~[mybatis-3.5.9.jar:3.5.9]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at jdk.proxy2.$Proxy138.selectList(Unknown Source) ~[?:?]
+	at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:224) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at mil.gdl.nis.dao.DAO.selectList(DAO.java:172) ~[main/:?]
+	at mil.gdl.nis.dao.DAO$$FastClassBySpringCGLIB$$eb9d5963.invoke(<generated>) ~[main/:?]
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218) ~[spring-core-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:783) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137) ~[spring-tx-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698) ~[spring-aop-5.3.18.jar:5.3.18]
+	at mil.gdl.nis.dao.DAO$$EnhancerBySpringCGLIB$$7caf4f0e.selectList(<generated>) ~[main/:?]
+	at mil.gdl.nis.cmmn.service.CacheService.getCodeCacheData(CacheService.java:96) ~[main/:?]
+	at mil.gdl.nis.cmmn.service.CacheService$$FastClassBySpringCGLIB$$fcefaf1c.invoke(<generated>) ~[main/:?]
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218) ~[spring-core-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:783) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.cache.interceptor.CacheInterceptor.lambda$invoke$0(CacheInterceptor.java:54) ~[spring-context-5.3.18.jar:5.3.18]
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:351) ~[spring-context-5.3.18.jar:5.3.18]
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64) ~[spring-context-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753) ~[spring-aop-5.3.18.jar:5.3.18]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698) ~[spring-aop-5.3.18.jar:5.3.18]
+	at mil.gdl.nis.cmmn.service.CacheService$$EnhancerBySpringCGLIB$$7165115a.getCodeCacheData(<generated>) ~[main/:?]
+	at mil.gdl.nis.NisApplication$InitNisApp.initNis(NisApplication.java:42) ~[main/:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeCustomInitMethod(AbstractAutowireCapableBeanFactory.java:1930) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1872) ~[spring-beans-5.3.18.jar:5.3.18]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.18.jar:5.3.18]
+	... 21 more

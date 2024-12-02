@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 이력 로그</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+<div class="con-title"><span>이력 로그</span></div>
+<form id="frm" th:action method="post">
+<input type="hidden" name="upOrDown" id="upOrDown" value="U">
+		<div class="sec-grid8">
+			<div class="g-area3">
+				<div class="pannel">
+					<div class="p-head">
+						<div class="p-tit03">접속이력</div>
+						<div class="btn-group06">
+							<button type="button" class="btn btn-secondary btn-s03"
+								onclick="">접속이력 다운로드</button>
+						</div>
+					</div>
+					<div class="contWrap">
+						<div class="gridCont03" id="grid1" style="height:320px;"></div>
+					</div>
+					<!--pagenavigation-->
+					<div class="page-nav-group pageConn"></div>
+				</div>
+			</div>
+
+			<div class="g-area3">
+				<div class="pannel">
+					<div class="p-head">
+						<div class="p-tit03">자료열람이력</div>
+						<div class="btn-group06">
+							<button type="button" class="btn btn-secondary btn-s03"
+								onclick="">이력 다운로드</button>
+						</div>
+					</div>
+					<div class="contWrap">
+						<div class="gridCont03" id="grid2" style="height:320px;"></div>
+					</div>
+					<!--pagenavigation-->
+					<div class="page-nav-group pageView"></div>
+				</div>
+			</div>
+			<div class="g-area4">
+				<div class="pannel">
+					<div class="p-head">
+						<div class="p-tit03">자료업로드/다운로드 이력</div>
+						<div class="btn-group06">
+							<button type="button" class="btn btn-secondary btn-s03"
+								onclick="">이력 다운로드</button>
+						</div>
+					</div>
+					<!--TabMenu-->
+					<div class="tabmenu">
+						<a href="javascript:;" id="upload" class="btn-tab on" title="업로드">Upload</a>
+						<a href="javascript:;" id="download" class="btn-tab" title="다운로드">Download</a>
+					</div>
+
+					<div class="contWrap">
+						<div class="gridCont03" id="grid3"></div>
+					</div>
+					<!--pagenavigation-->
+					<div class="page-nav-group pageUpDown"></div>
+
+				</div>
+			</div>
+		</div>	
+</form>
+</div>
+
+<script th:inline="javascript"> 
+
+       dynimicInit = () => {
+    	   pageInit(document.querySelector(".pageConn"),'searchFunc("CONN")',pagination.rowPerPage);
+    	   pageInit(document.querySelector(".pageView"),'searchFunc("VIEW")',pagination.rowPerPage);
+    	   pageInit(document.querySelector(".pageUpDown"),'searchFunc("UPDOWN")',pagination.rowPerPage);
+   		   const input = document.createElement('input');
+	  	   input.setAttribute("type", "hidden");
+	  	   input.setAttribute("name", "searchType");
+  	       document.getElementById('frm').appendChild(input);
+   		   const headColumns1 = [{id:"idx",width: "50px",label:"NO",isNumber:"Y",data_cellType:"tdCCell",sortable:"Y"}
+					           ,{id:"createUserNm",width: "80px",label:"사용자명",sortable:"Y",resizable:"Y"}
+					           ,{id:"connectIp",width: "70px",label:"IP",resizable:"Y"}
+					           ,{id:"contents",width: "120px",label:"결과",resizable:"Y"}
+					           ,{id:"createTs",width: "100px",label:"접속일시",resizable:"Y", data_cellType:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+					          ];
+		   gridInit(document.getElementById("grid1"),headColumns1);
+		   const headColumns2 = [{id:"idx",width: "50px",label:"NO", isNumber:"Y",data_cellType:"tdCCell",sortable:"Y"}
+					           ,{id:"createUserNm",width: "80px",label:"사용자명",sortable:"Y"}
+					           ,{id:"viewNm",width: "300px",label:"메뉴명"}
+					           ,{id:"contents",width: "300px",label:"열람 자료 정보"}
+					           ,{id:"createTs",width: "120px",label:"열람일시",resizable:"Y", data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+					          ];
+		   gridInit(document.getElementById("grid2"),headColumns2);
+		   
+		   const headColumns3 = [ // {id:"chk",width: "45px"} 
+								 {id:"idx",width: "50px",label:"NO", isNumber:"Y",data_cellType:"tdCCell",sortable:"Y"}
+								,{id:"createUserNm",width: "80px",label:"사용자명"}
+								,{id:"createTs",width: "140px",label:"자료 업/다운로드 일시", data_cellType:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+								,{id:"collectionDt",width: "80px",label:"임무시간",data_cellType:"tdCCell"}  
+								,{id:"collectionPos",width: "80px",label:"탐지구역",data_cellType:"tdCCell"}  
+								,{id:"collectionDeviceCd",width: "80px",label:"탐지수단",data_cellType:"tdCCell",data_grpCd:"006"}  
+							 	,{id:"sourceCd",width: "80px",label:"자료 출처",data_cellType:"tdCCell",data_grpCd:"008"}  
+							 	,{id:"upOrDown" ,width: "80px",label:"자료 구분" ,cellType:"tdCCell"}
+								,{id:"fileType",width: "80px",label:"자료 종류",cellType:"tdCCell" }
+								,{id:"originFileNm",width: "200px",label:"자료 정보",cellType:"tdCCell"}  
+								];
+		   gridInit(document.getElementById("grid3"),headColumns3);
+		   searchFunc();   
+
+
+    	   
+       }
+       
+      
+       searchFunc =  (searchType,invoker) => {
+    	   let _searchType = searchType===undefined?"ALL":searchType;
+    	    
+           if(_searchType === 'ALL'){
+        	   document.getElementsByName('searchType')[0].value = "CONN";
+        	   pageSearch(document.getElementById("frm"),"/logList",document.getElementById("grid1"),document.querySelector('.pageConn'),invoker);
+        	   document.getElementsByName('searchType')[0].value = "VIEW";
+        	   pageSearch(document.getElementById("frm"),"/logList",document.getElementById("grid2"),document.querySelector('.pageView'),invoker); 
+        	   document.getElementsByName('searchType')[0].value = "UPDOWN";
+        	   pageSearch(document.getElementById("frm"),"/logList",document.getElementById("grid3"),document.querySelector('.pageUpDown'),invoker);
+           }
+           else{
+        	   document.getElementsByName('searchType')[0].value = _searchType;
+        	   if(_searchType === 'CONN'){
+        		   pageSearch(document.getElementById("frm"),"/logList",document.getElementById("grid1"),document.querySelector('.pageConn'),invoker);
+        	   }else if(_searchType === 'VIEW'){
+        		   pageSearch(document.getElementById("frm"),"/logList",document.getElementById("grid2"),document.querySelector('.pageView'),invoker); 
+        	   }else if(_searchType === 'UPDOWN'){
+        		   pageSearch(document.getElementById("frm"),"/logList",document.getElementById("grid3"),document.querySelector('.pageUpDown'),invoker);
+        	   }
+        	   else{
+        		   console.error('로그 조회 파라메터 누락...');
+        	   }
+           }
+	   }
+       
+       
+       document.querySelectorAll('.btn-s03').forEach((btnExcel,index) =>{
+    	   btnExcel.addEventListener('click',(e) => {
+    		   let param = {isExcel : 'Y'};
+    		   console.log("index:",index);
+    		   if(index === 0){
+    			   //param.searchType = "CONN";
+    			   document.getElementsByName('searchType')[0].value = "CONN";
+    		   }
+    	        else if(index === 1){
+    			   //param.searchType = "VIEW";
+    			   document.getElementsByName('searchType')[0].value = "VIEW";
+    		   }else{
+    			   document.getElementsByName('searchType')[0].value = 'UPDOWN';
+    			   if(document.querySelectorAll('.btn-tab')[0].classList.contains('on')){
+    				   document.getElementById('upOrDown').value = 'U';
+    			   }else{
+    				   document.getElementById('upOrDown').value = 'D';
+    			   }
+    			   
+    		   }
+    		   //gfn_asyncDown('/fileDownExcel','POST',param);  
+    		   gfn_asyncDownByForm('/fileDownExcel','POST',document.getElementById("frm"));
+    	   });
+       });
+       
+       document.querySelectorAll('.btn-tab').forEach((btnTab,index) =>{
+    	   btnTab.addEventListener('click',(e) => {
+    		   if(index === 0){
+    			   document.getElementById('upOrDown').value = 'U';
+    		   }
+    		   else{
+    			   document.getElementById('upOrDown').value = 'D';
+    		   }
+    		   if(e.target === btnTab){
+    			   if(index === 0){
+    				   document.querySelectorAll('.btn-tab')[0].classList.add('on');
+    				   document.querySelectorAll('.btn-tab')[1].classList.remove('on');
+    			   }
+    			   else{
+    				   document.querySelectorAll('.btn-tab')[0].classList.remove('on');
+    				   document.querySelectorAll('.btn-tab')[1].classList.add('on');
+    			   }
+    		   }
+    		   let compPageNum = document.querySelector('.pageUpDown').querySelector('.compPageNum'); 
+    		   compPageNum.setAttribute("value",1);
+    		   document.getElementsByName('searchType')[0].value = 'UPDOWN';
+    		   pageSearch(document.getElementById("frm"),"/logList",document.getElementById("grid3"),document.querySelector('.pageUpDown'));
+    	   });
+       });
+      
+       
+
+</script>
+</html>
+

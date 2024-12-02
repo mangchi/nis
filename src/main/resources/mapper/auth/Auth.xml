@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="Auth">
+  <select id="selectEquipAuthList" parameterType="HashMap" resultType="CmmnMap">
+     <![CDATA[
+       SELECT ROW_NUMBER() OVER(ORDER BY A.CREATE_TS DESC) AS RN
+     		, B.ID
+     		, A.USER_ID
+     		, USER_NM
+     		, DECODE(B.BLOCK_YN,'Y','차단','정상') BLOCK_STATUS
+     		, LAST_CONNECTED_IP
+     		, B.IP_ADDR
+     		, A.CREATE_TS
+     		, LAST_VISITED_TS
+     		, DECODE(B.BLOCK_YN,'Y',B.UPDATE_TS,NULL) BLOCK_TS
+     	FROM TB_USER A
+     	INNER JOIN TB_USER_CONNECT B
+     	ON A.USER_ID = B.USER_ID
+     ]]>
+     <where>
+     <if test='frDt != null and !frDt.equals("")'>
+     AND A.CREATE_TS <![CDATA[>=]]>  concat(replace(#{frDt},'.','-'),' 00:00:00:0000')
+     </if>
+     <if test='toDt != null and !toDt.equals("")'>
+     AND A.CREATE_TS <![CDATA[<=]]>  concat(replace(#{toDt},'.','-'),' 23:59:59:9999')
+     </if>
+     <if test='blockYn != null and !blockYn.equals("")'>
+     AND  B.BLOCK_YN = #{blockYn}
+     </if>
+     <if test='schUserNm != null and !schUserNm.equals("")'>
+     AND A.USER_NM LIKE CONCAT('%',CONCAT(TRIM(#{schUserNm}),'%'))
+     </if>
+    
+    </where>
+  </select>
+  
+  <select id="selectAuthLogin" parameterType="UserVo" resultType="string">
+       SELECT BLOCK_YN FROM TB_USER_CONNECT
+       WHERE USER_ID = #{userId} 
+       AND IP_ADDR = #{ipAddr} 
+  </select>
+
+   <select id="selectAuthViewList" parameterType="HashMap" resultType="CmmnMap">
+     	SELECT A.ID AS VIEW_ID
+             , VIEW_NM
+             , VIEW_URL
+             , B.ID AUTH_ID
+     	FROM TB_VIEW A
+     	LEFT JOIN TB_AUTH_VIEW B
+     	ON A.ID = B.VIEW_ID
+     	AND B.ID = #{id} 
+     	<if test='!id.equals("ROLE_ADMIN")'>
+     	AND B.UNIT_ID = #{unitId} 
+     	</if>
+        ORDER BY TO_NUMBER(A.ID) 
+  </select>
+  
+  <update id="saveAuthView" parameterType="hashmap">
+      INSERT INTO TB_AUTH_VIEW ( ID    
+					           , VIEW_ID      
+					           , UNIT_ID       
+				               )  
+   <foreach collection="list" item="row" index="index">
+     SELECT #{row.id, jdbcType=VARCHAR} 
+          , #{row.viewId, jdbcType=VARCHAR} 
+          , #{unitId, jdbcType=VARCHAR} 
+	FROM DUAL
+	<if test='list.size > index+1'>
+	UNION ALL
+	</if>
+  </foreach>   
+  </update>
+  
+  <delete id="deleteAuthView" parameterType="hashmap">
+       DELETE FROM TB_AUTH_VIEW
+       <where>
+       AND ID = #{id} 
+       <if test='unitId != null and !unitId.equals("")'>
+       AND UNIT_ID = #{unitId} 
+       </if>
+       </where>
+   </delete>
+   
+   <update id="insertEquip" parameterType="hashmap">
+       INSERT INTO TB_USER_CONNECT(ID
+                                 , USER_ID
+                                 , IP_ADDR
+                                 , BLOCK_YN
+                                 , CREATE_TS
+                                 , CREATE_USER_ID
+                                 , UPDATE_TS 
+                                 , UPDATE_USER_ID)
+                          VALUES(  #{id} 
+                                 , #{userId} 
+                                 , #{ipAddr} 
+                                 , #{blockYn} 
+                                 , SYSDATE
+                                 , #{userId}
+                                 , SYSDATE
+                                 , #{userId} 
+                              )
+  </update>
+  
+  <update id="updateEquip" parameterType="hashmap">
+       UPDATE TB_USER_CONNECT SET BLOCK_YN = #{blockYn} 
+                                , UPDATE_TS = SYSDATE
+                                , UPDATE_USER_ID = #{userId} 
+       <where>
+       AND ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+	   	   <foreach collection="row" item="col" index="key"  >
+	         <if test='key.equals("id")'>
+	            #{col} 
+	         </if>
+		   </foreach> 
+	   	</foreach>     
+       </where>
+  </update>
+  
+  <delete id="deleteEquip" parameterType="hashmap">
+      DELETE FROM TB_USER_CONNECT
+       <where>
+       AND USER_ID IN 
+       <foreach collection="list" item="row" open="(" close=")" separator=",">
+   	   <foreach collection="row" item="col" index="key"  >
+         <if test='key.equals("userId")'>
+            #{col} 
+         </if>
+	   </foreach> 
+   	   </foreach>     
+       </where>
+  </delete>
+  
+</mapper>
+

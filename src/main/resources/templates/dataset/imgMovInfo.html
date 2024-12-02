@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>이미지/영상</title>
+</head>
+<body>
+<div class="content">
+    <form id="frm" th:action method="post" th:object="${imgMov}">
+    <div class="con-title"><span th:if="${imgMov.getStillOrMovie().equals('001')}">데이터 수정(이미지)</span>
+    <span th:if="${imgMov.getStillOrMovie().equals('002')}">데이터 수정(영상)</span>
+    </div>
+    <input type="hidden"  th:field="*{id}" >
+    <input type="hidden"  th:field="*{stillOrMovie}" >
+    <input type="hidden"  th:field="*{sourceType}" >
+    <input type="hidden" id="fileSeq" name="fileSeq" value="1">
+    <input type="hidden" id="imageId" name="imageId" value="">
+    <input type="hidden" id="movieId" name="movieId" value="">
+    <div class="sec-grid1">
+          
+          <!--그래프 영역 시작-->
+          <div class="g-area3 item">
+            <div class="pannel">
+                
+                <div class="searchCont p-head3">
+                  <div class="searchGrp">
+                    <div class="searchItem">
+                      <label style="margin-right:7px;">파일명</label>
+                      <input id="originFileNm" class="basic21"  type="text" value="" readonly>
+                      <label style="margin-left:30px; margin-right:7px;">작업자</label>
+                      <input th:field="*{createUserNm}" class="basic21"  type="text" value=""readonly>
+                      <label style="margin-left:30px; margin-right:7px;">등록일시</label>
+                      <input th:field="*{createTs}" class=" basic21" placeholder="" type="text" value="" readonly>
+                      <label style="margin-left:30px; margin-right:7px;">승인일시</label>
+                      <input th:field="*{approvedTs}" class=" basic21" placeholder="" type="text" value="" readonly>
+                    </div>  
+                    <div class="rightBtnGrp btn-group02">
+                    <button sec:authorize="hasRole('ADMIN')" type="button" class="btn-s03 approveBtn" title="승인">승인</button>
+                    <button type="button" class="btn-s03 backBtn" title="데이타베이스 관리 화면으로 돌아가기">리스트</button>
+                    </div>                  
+                  </div>              
+                </div>              
+                <div class="gridCont03" style="overflow:hidden;">
+                  <div class="sec-grid15">
+                    <!--1열-->
+                    <div class="g-area3 item">
+                      <div class="pannel" style="border:1px solid var(--color-line); box-shadow:none;">
+                        <!-- <div class="graph" style="height:calc(100% - 115px); padding:0px;"> -->
+                        <div class="graph" style="height:868px; padding:0px;">
+                          <!--table-->
+                          <div class="gridCont06" style="overflow-x:hidden;">
+                          </div>                 
+                        </div>
+                        <div class="p-bottom">
+                          <!--pagenavigation-->
+                          <div class="page-nav-group pageImg" style="padding:0px;">
+                          </div>
+                          <!--button-->
+                          <div class="btn-group" style="margin-top:23px;">
+                            <button type="button" id="deleteBtn" name="" class="btn-delete">삭제</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!--2열-->
+                    <div class="g-area3 item">
+                      <div class="pannel" style="border:1px solid var(--color-line); box-shadow:none; background: var(--pure-b); padding:5px;">
+                        <div class="p-head">
+                          <div class="btn-group04" style="top:-6px;">
+   <!--                          <button type="button" id="btnImage" name="btnImage" class="btn-zoomin">확대</button>
+                            <button type="button" id="" name="" class="btn-zoomout">축소</button>  -->
+                           <!--  <button type="button" id="deleteBtn" name="deleteBtn" class="btn-delete">삭제</button> -->
+                          </div> 
+                        </div>
+                        <div class="graph3 dataGraph"><!-- <canvas id="canvasImg">이미지 들어가는 자리</canvas> --></div>
+                      </div>
+                    </div>
+                    
+                    <!--3열-->
+                    <div class="g-area3 item">
+                      <div class="pannel" style="border:1px solid var(--color-line); box-shadow:none;">
+                        <div class="p-head1">
+                          <div class="tabmenu01">
+                            <a  class="btn-tab01 on" style="width:40%;" title="기본/보조정보">기본/보조정보</a>
+                            <a  class="btn-tab01 on" style="width:59%;" title="항공기 수집영상 분석태그">항공기 수집영상 분석태그(Tag)</a>
+                          </div>
+                        </div>
+                        <div class="graph bg" style="padding-top:6px;">
+                          <div class="group-input">
+                            <fieldset>
+                              <ul class="basic tabPane">
+                                <li>
+                                  <div class="input-group">
+                                     <label class="basic" for="collectionDt">임무시간</label>
+			                         <input type="text" class="basic01" th:field="*{collectionDt}" title="임무시간" readonly>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                     <label class="basic" for="collectionPos">탐지구역</label>
+                                     <input type="text" class="basic01" th:field="*{collectionPos}" title="탐지구역" readonly>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="collectionDeviceCd">탐지수단</label>
+                                    <select class="basic basic01" th:field="*{collectionDeviceCd}" disabled>
+			                        <option th:each="val : ${collectionDeviceCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									</select>
+                                  </div>
+                                </li>
+                                <li>
+									<div class="input-group">
+										<label class="basic" for="stillOrMovie">자료구분</label>
+										<div class="btn-group-toggle">
+											<input type="radio" id="stillOrMovie1" name="stillOrMovie" th:checked="${imgMov.getStillOrMovie().equals('001')}"  value='001' disabled> 
+										    <label for="stillOrMovie1">이미지</label> 
+										    <input type="radio" id="stillOrMovie2" name="stillOrMovie" th:checked="${imgMov.getStillOrMovie().equals('002')}" value='002' disabled> 
+											<label for="stillOrMovie2">영상</label>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="input-group">
+										<label class="basic" for="dayOrNight">주/야 구분</label>
+										<div class="btn-group-toggle">
+											<input type="radio" id="dayOrNight1" name="dayOrNight" th:checked="${imgMov.getDayOrNight().equals('001')}"  value='001' disabled> 
+											<label for="dayOrNight1">주간</label> 
+											<input type="radio" id="dayOrNight2" name="dayOrNight" th:checked="${imgMov.getDayOrNight().equals('002')}" value='002' disabled>
+											<label for="dayOrNight2">야간</label>
+										</div>
+									</div>
+								</li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="sourceCd">데이터 출처</label>
+			                        <select id="sourceCd" class="basic basic01" th:field="*{sourceCd}" disabled>
+									<option th:each="val : ${sourceCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									</select>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="dataType">데이터 종류</label>
+                                    <select class="basic basic01" th:field="*{dataType}" disabled>
+			                        <option th:each="val : ${dataTypes}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									</select>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                    <label class="basic" for="">데이터 좌표</label>
+			                        <input type="text" class="basic02 numComma" th:field="*{dataCoordX}" title="데이터 X좌표" readonly>
+									<input type="text" class="basic02 numComma" th:field="*{dataCoordY}" title="데이터 Y좌표" readonly>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="input-group">
+                                     <label class="basic" for="etc">설명</label>
+                                     <textarea style="width:77%; height:110px; margin-bottom: 20px;" th:field="*{etc}" th:value="${etc}" th:text="${etc}"  readonly></textarea>
+                                  </div>
+                                </li>
+                              </ul>
+                              <ul class="basic tabPane">
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="collectionDt">임무시간</label>
+		                            <input type="text" class="basic basic01" th:field="*{collectionDt}" title="임무시간" readonly>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="collectionPos">탐지구역</label>
+		                            <input type="text" class="basic basic01" th:field="*{collectionPos}" title="탐지구역" readonly>
+	
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="dataCd">대상</label>
+		                            <select class="basic basic01" th:field="*{dataCd}" disabled>
+			                         <option th:each="val : ${dataCds}" th:value="${val?.cd}"
+												th:text="${val?.cdNm}"></option>
+									 </select>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="nationCd">국적</label>
+		                            <select class="basic basic01" th:field="*{nationCd}" disabled>
+			                        <option th:each="val : ${nationCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									 </select>
+		                          </div>
+		                        </li>
+		                        <li>
+									<div class="input-group">
+										<label class="basic " for="airStillOrMovie">자료구분</label>
+										<div class="btn-group-toggle">
+											<input type="radio" id="airStillOrMovie1" name="airStillOrMovie" th:checked="${imgMov.getStillOrMovie().equals('001')}"  value='001' disabled> 
+										    <label for="airStillOrMovie1">이미지</label> 
+										    <input type="radio" id="airStillOrMovie2" name="airStillOrMovie"  th:checked="${imgMov.getStillOrMovie().equals('002')}" value='002' disabled> 
+											<label for="airStillOrMovie2">영상</label>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="input-group">
+										<label class="basic" for="airDayOrNight">주/야 구분</label>
+										<div class="btn-group-toggle">
+											<input type="radio" id="airDayOrNight1" name="airDayOrNight" th:checked="${imgMov.getDayOrNight().equals('001')}" value='001' disabled> 
+											<label for="airDayOrNight1">주간</label> 
+											<input type="radio" id="airDayOrNight2" name="airDayOrNight" th:checked="${imgMov.getDayOrNight().equals('002')}" value='002' disabled>
+											<label for="airDayOrNight2">야간</label>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="input-group">
+										<label class="basic" for="sourceCd">데이터 출처</label>
+				                        <select id="sourceCd" class="basic basic01" th:field="*{sourceCd}" disabled>
+										<option th:each="val : ${sourceCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+										</select>
+									</div>
+								</li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="shipClass">함종/선종</label>
+		                            <input type="text" class="basic basic01" th:field="*{shipClass}" title="함종/선종" readonly>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="shipNm">함명/선명</label>
+		                            <input type="text" class="basic basic01" th:field="*{shipNm}" title="함명/선명" readonly>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                             <label class="basic" for="collectionDeviceCd">탐지수단</label>
+			                         <select class="basic basic01" th:field="*{collectionDeviceCd}" disabled>
+			                         <option th:each="val : ${collectionDeviceCds}" th:value="${val?.cd}" th:text="${val?.cdNm}"></option>
+									 </select>
+		                          </div>
+		                        </li>
+		                        <li>
+		                          <div class="input-group">
+		                            <label class="basic" for="etc">기타</label>
+		                            <textarea style="width:77%; height:90px; margin-bottom: 20px;" th:field="*{etc}" th:value="${etc}" th:text="${etc}"  readonly></textarea>
+		                          </div>
+		                        </li>
+		                      </ul>
+                            </fieldset>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!--4열-->
+                    <div class="g-area3 item">
+                      <div class="pannel" style="border:1px solid #e1e1e1; box-shadow:none;">
+                        
+                        <div class="p-head">
+                          <div class="p-tit" style="display:inline-block;">객체리스트</div>
+                          <div class="btn-group" style="display:inline-block; position:relative; top:-6px; float:right;">
+                            <label class="btn-file" for="xmlFile">XML변경</label>
+                            <input type="file" id="xmlFile" title="파일로 찾기" accept="text/xml">
+                            <button type="button" class="btn-make" id="btnDataLabel" title="정보수정">정보수정</button>
+                          </div>
+                        </div>
+                        
+                        <!--table-->
+                        <div class="gridCont03 gridObject" style="height:260px;">
+                        </div>
+                        <!--pagenavigation-->
+                       <div class="page-nav-group pageObject">
+                       </div>
+                      </div>
+                    </div>                 
+                  </div>
+                </div>                
+              </div>
+          </div>          
+        </div>
+      
+  </form>
+</div>
+<script type="text/javascript">
+
+	dynimicInit = () => {
+		document.body.onfocus = fileChk;
+		document.getElementById('createTs').value = gfn_dateFrmt(document.getElementById('createTs').value,'yy-mm-dd hh:mi:ss');
+		document.getElementById('approvedTs').value = gfn_dateFrmt(document.getElementById('approvedTs').value,'yy-mm-dd hh:mi:ss');
+		if(document.getElementById('sourceType').value === '001'){
+        	document.querySelector('.group-input').querySelectorAll('ul')[1].style.display = "none";
+        	document.querySelectorAll('.btn-tab01')[1].style.display = "none";
+		}
+        else{
+        	document.querySelector('.group-input').querySelectorAll('ul')[0].style.display = "none";
+        	document.querySelectorAll('.btn-tab01')[0].style.display = "none";
+        }
+		let fileHeadColumns = null;  //deleteBtn
+		if(document.getElementById('approvedTs').value != ''){
+			let approveBtn = document.querySelector('.approveBtn');
+			if(approveBtn){
+				approveBtn.style.display = "none";
+				fileHeadColumns =  [ {id:"chk",width: "35px"}
+					                ,{id:"idx",width: "40px",label:"NO"}
+							         ,{id:"id",width: "0px"}
+							         ,{id:"seq",width: "0px"}
+							         ,{id:"fileId",width: "0px"}
+							         ,{id:"fileType", width: "0px"}
+							         ,{id:"filePath", width: "0px"}
+							         ,{id:"workFilePath", width: "0px"}
+							         ,{id:"originFileNm",width: "170px",label:"파일명",data_cellType:"tdCCell"}  						        
+							       ];
+			}
+			else{
+				fileHeadColumns =  [ {id:"idx",width: "40px",label:"NO"}
+							         ,{id:"id",width: "0px"}
+							         ,{id:"seq",width: "0px"}
+							         ,{id:"fileId",width: "0px"}
+							         ,{id:"fileType", width: "0px"}
+							         ,{id:"filePath", width: "0px"}
+							         ,{id:"workFilePath", width: "0px"}
+							         ,{id:"originFileNm",width: "170px",label:"파일명",data_cellType:"tdCCell"}  						        
+							       ];
+				document.querySelector('#deleteBtn').style.display = "none";
+			}
+			
+		}
+		else{
+			fileHeadColumns =  [ {id:"chk",width: "35px"}
+					            ,{id:"idx",width: "40px",label:"NO"}
+						         ,{id:"id",width: "0px"}
+						         ,{id:"seq",width: "0px"}
+						         ,{id:"fileId",width: "0px"}
+						         ,{id:"fileType", width: "0px"}
+						         ,{id:"filePath", width: "0px"}
+						         ,{id:"workFilePath", width: "0px"}
+						         ,{id:"originFileNm",width: "170px",label:"파일명",data_cellType:"tdCCell"}  						        
+						       ];
+		}
+
+		pageInit(document.querySelector(".pageObject"),"searchFunc()",pagination.halfRowPerPage);
+		pageInit(document.querySelector(".pageImg"),"searchFunc()",pagination.rowPerPage,null,null,null,true);
+        const imgColumns =  [ {id:"idx",width: "50px",label:"NO"}
+                               ,{id:"id",width: "0px"}
+         	                   ,{id:"classNm",width: "100px",label:"객체명",data_cellType:"tdCCell"}  
+         	                   ,{id:"sx",width: "120px",label:"X1좌표",data_cellType:"tdCCell"}
+         	                   ,{id:"sy",width: "120px",label:"Y1좌표",data_cellType:"tdCCell"}
+         	                   ,{id:"ex",width: "120px",label:"X2좌표",data_cellType:"tdCCell"}
+         	                   ,{id:"ey",width: "120px",label:"Y2좌표",data_cellType:"tdCCell"}         	                  
+				              ];
+        
+        const movColumns =  [ {id:"idx",width: "50px",label:"NO"}
+					         ,{id:"id",width: "0px"}
+					         ,{id:"seq",width: "0px"}
+					         ,{id:"filePath",width: "0px"}
+					         ,{id:"fileNm",width: "0px"}
+					         ,{id:"originFileNm",width: "250px",label:"이미지명",data_celltype:"tdCCell"}  
+					         ,{id:"fileSize",width: "80px",label:"파일사이즈",data_celltype:"tdCCell"}  
+					         ,{id:"imageSize",width: "80px",label:"이미지 크기",data_celltype:"tdCCell",data_grpCd:"024"} 
+					         ,{width: "80px",label:"편집",button:"Y",data_url:"labelInfo",data_btnNm:"정보수정",openType:"new"}
+					       ];
+        
+        
+        if(document.getElementById('stillOrMovie').value === '001'){
+        	let imgId = {id:"imageId",width: "0px"};
+        	fileHeadColumns.push(imgId);
+        	gridInit(document.querySelector(".gridObject"),imgColumns);
+        	document.querySelector('.p-tit').innerText = '객체리스트';
+        }else{
+        	let movId = {id:"movieId",width: "0px"};
+        	fileHeadColumns.push(movId);
+        	gridInit(document.querySelector(".gridObject"),movColumns);
+        	document.querySelector('.p-tit').innerText = '이미지리스트';
+        }
+     	gridInit(document.querySelector(".gridCont06"),fileHeadColumns);
+     	searchFunc();
+	}	
+	
+
+	searchFunc = (invoker) => {
+		if(document.getElementById('stillOrMovie').value === '001'){
+			pageSearch(document.getElementById('frm'),"/imgFileList",document.querySelector('.gridCont06'),document.querySelector('.pageImg'),invoker,null,searchAfterFunc);
+		}
+		else{
+			pageSearch(document.getElementById('frm'),"/movFileList",document.querySelector('.gridCont06'),document.querySelector('.pageImg'),invoker,null,searchAfterFunc);
+		}
+	}
+	
+	searchAfterFunc = (appendData) => {
+		//rowClick(appendData,document.querySelector(".gridCont06"));
+		let overChilds = document.querySelector('.gridCont06').querySelectorAll('.overChild');
+	    	document.querySelector('.gridCont06').querySelectorAll('.overChild').forEach((overChild,index) => {
+ 		   if(index === 0){
+ 			  rowClick(appendData,document.querySelector('.gridCont06'),overChild);
+ 		   }
+ 	    });
+	}
+	
+	rowClick = (row,gridComp,target) => {
+		console.log("row:",row);
+		if(target != undefined ){
+			gridComp.querySelectorAll('.overChild').forEach((overChild,index) => {
+	 		    if(overChild.classList.contains('on')){
+	 			   overChild.classList.remove('on');
+			    }
+	 	    });
+			target.classList.add('on');
+			
+		}
+		
+		if(gridComp === document.querySelector(".gridCont06")){
+			document.getElementById('originFileNm').value = row.originFileNm;
+			document.getElementById('fileSeq').value = row.seq;
+			//document.getElementById('approvedTs').value = gfn_dateFrmt(row.approvedTs,'yy-mm-dd hh:mi:ss');
+			let graph = document.querySelector('.dataGraph');
+			graph.innerHTML = '';
+			if(row.fileType.indexOf('video') > -1){
+				
+				let video = document.createElement('video');
+				document.getElementById("movieId").value = row.movieId;
+				video.setAttribute('src','/fileId/'+row.id+'/'+row.seq+"/N/Y"+gfn_getStorageItem("curUrl")+"/"+new Date().getTime());
+				video.setAttribute('width','100%');
+				video.setAttribute('height','100%');
+				video.setAttribute('cotrols',true);
+				video.setAttribute('preload',"auto");
+				graph.append(video);
+				document.querySelector('.btn-file').style.display = 'none';
+				document.getElementById('btnDataLabel').style.display = 'none';  
+				
+				pageSearch(document.getElementById('frm'),"/movImageList",document.querySelector('.gridObject'),document.querySelector('.pageObject'));
+			}
+			else{
+				if(document.querySelector('.btn-file').style.display == 'none'){
+					document.querySelector('.btn-file').style.display = 'block';
+					document.getElementById('btnDataLabel').style.display = 'block';
+				}
+				
+				
+				let canvas = document.createElement('canvas');
+				canvas.setAttribute("id","canvasImg");
+				graph.appendChild(canvas);
+				let context = canvas.getContext('2d');
+				let img = new Image();
+				img.classList.add("graph3Img");
+				document.getElementById("imageId").value = row.imageId;
+				img.setAttribute("src", "/fileId/"+row.id+"/"+row.seq+"/N/Y"+gfn_getStorageItem("curUrl")+"/"+new Date().getTime());
+				img.addEventListener("load", () => {
+					context.clearRect(0, 0, canvas.width, canvas.height);
+				    canvas.width = img.width;
+				    canvas.height = img.height;
+					context.drawImage(img,0,0,img.width,img.height);
+			    });
+			
+				pageSearch(document.getElementById('frm'),"/imgObjectList",document.querySelector('.gridObject'),document.querySelector('.pageObject'));
+				
+				
+			}
+			
+		}
+		else if(gridComp === document.querySelector(".gridObject")){
+			document.getElementById('originFileNm').value = row.originFileNm;
+			//document.getElementById('approvedTs').value = '';
+			let graph = document.querySelector('.dataGraph');
+			let canvas = document.createElement('canvas');
+			canvas.setAttribute("id","canvasImg");
+			graph.appendChild(canvas);
+			let context = canvas.getContext('2d');
+			let img = new Image();
+			img.classList.add("graph3Img");
+			//document.getElementById("imageId").value = row.imageId;
+			img.setAttribute("src", "/fileId/"+row.movId+"/"+row.seq+"/N/Y"+gfn_getStorageItem("curUrl")+"/"+new Date().getTime());
+			img.addEventListener("load", () => {
+				context.clearRect(0, 0, canvas.width, canvas.height);
+			    canvas.width = img.width;
+			    canvas.height = img.height;
+				context.drawImage(img,0,0,img.width,img.height);
+		    });
+		}
+    }
+	
+	newUrl = (url,item) => {
+		console.log("newUrl item:",item);
+		let param = {id:item.id
+				   , imageId: item.imgId
+			       ,stillOrMovie:document.getElementById('stillOrMovie').value
+			       ,seq:item.seq
+		           };
+		console.log("newUrl param:",param);
+	    dynimicCall({},'GET','/labelInfo', null,param);
+	}
+
+	document.getElementById('btnDataLabel').addEventListener('click',(e) => {
+		e.preventDefault();
+		let param = {id:document.getElementById('id').value
+				   , imageId: document.getElementById('imageId').value
+			       ,stillOrMovie:document.getElementById('stillOrMovie').value
+			       ,seq:document.getElementById('fileSeq').value};
+	    dynimicCall({},'GET','/labelInfo', null,param);
+	
+	});
+	
+	document.getElementById('xmlFile').addEventListener("click",(e) => {
+		filesArr.length = 0;
+		document.querySelector("input[type=file]").value = "";
+		let loadaingLayer = document.querySelector('.loadingLayer');
+		loadaingLayer.style.display = "block";
+	});
+	
+	fileChk = () => {
+		if(filesArr.length === 0){
+			console.log("fileChk...................");
+			let loadaingLayer = document.querySelector('.loadingLayer');
+			loadaingLayer.style.display = "none";
+		}
+	}
+	
+	document.getElementById('xmlFile').addEventListener("change",(e) => {
+		e.preventDefault();
+		filesArr = new Array();
+		fileParam = new Array();
+		let fileCnt = 0;
+		console.log("length:",e.target.files.length);
+		if(e.target.files.length > 1) {
+			msgCallBack("1개의 파일만 선택해야 합니다.",false);
+			return;
+		}
+		let param = {imageId : document.getElementById("imageId").value
+				   , sourceCd : document.getElementById('sourceCd').value
+				   , collectionDt : document.getElementById('collectionDt').value
+				   , collectionPos : document.getElementById('collectionPos').value
+				   , collectionDeviceCd : document.getElementById('collectionDeviceCd').value};
+		for (const file of e.target.files) {
+			fileCnt += 1;
+			if (file.name.lastIndexOf('.') == -1) {
+		    	msgCall(getMsg(msg.fileExt),false);
+		        return false;
+		    } 
+			if (file.type != 'text/xml') {
+				msgCall(getMsg(msg.fileType),false);
+		        return false;
+		    } 
+			// 파일 배열에 담기
+            let reader = new FileReader();
+            reader.onload =  () => {
+                filesArr.push(file);
+                if(e.target.files.length === fileCnt){
+                	for(let i=0;i<filesArr.length;i++){
+            			filesArr[i].isDelete = false;
+            		}
+    
+                	gfn_asyncJsonCallWithFile('/saveXmlFile','POST',document.getElementById('frm'),null,param).then((data) => {
+                     	for(key in data) {
+                     		console.log("data:",data);
+             				if(key.indexOf('success_msg') > -1){
+             					msgCallBack(data[key],true,searchObjetList);
+             					break;
+             				}
+             				if(key.indexOf('fail_msg') > -1){
+             					msgCallBack(data[key],false);
+             					break;
+             				}
+             				
+             			}
+                     }).catch((error) => {
+					   console.error(error);
+					   msgCallBack(data['fail_msg'],false);
+				     });
+                }  
+            };
+            reader.readAsDataURL(file);
+            
+        }
+		
+		
+    });
+                	
+    searchObjetList = () => {
+    	pageSearch(document.getElementById('frm'),"/imgObjectList",document.querySelector('.gridObject'),document.querySelector('.pageObject'));
+    }
+	
+	
+	
+	deleteAfter = () => {
+		if(document.getElementById('stillOrMovie').value === '001'){
+			pageSearch(document.getElementById('frm'),"/imgFileList",document.querySelector('.gridCont06'),document.querySelector('.pageImg'),null,null,deleteSchAfterFunc);
+		}
+		else{
+			pageSearch(document.getElementById('frm'),"/movFileList",document.querySelector('.gridCont06'),document.querySelector('.pageImg'),null,null,deleteSchAfterFunc);
+		}
+	}
+	deleteSchAfterFunc = (appendData) => {
+		if(Object.keys(appendData).length === 0){
+			gfn_goBackUrl();
+		}
+	}
+	document.querySelector('.backBtn').addEventListener('click',(e) => {
+		e.preventDefault();
+		gfn_goBackUrl();
+	
+	});
+	
+	document.querySelectorAll('.btn-tab01').forEach((tabPane,index) => {
+		tabPane.addEventListener('click',(e) => {
+			return false;
+		});
+	});
+	/*
+	document.querySelectorAll('.btn-tab01').forEach((tabPane,index) => {
+		tabPane.addEventListener('click',(e) => {
+			e.preventDefault();
+			if(document.getElementById('sourceType').value === '001'){
+				document.querySelectorAll('.btn-tab01')[0].classList.add('on');
+			    document.querySelectorAll('.btn-tab01')[1].classList.remove('on');
+			}
+			else{
+            	document.querySelectorAll('.btn-tab01')[0].classList.remove('on');
+    		    document.querySelectorAll('.btn-tab01')[1].classList.add('on');
+			}
+			return false;
+		});
+	});
+	*/
+	
+	
+	document.getElementById('deleteBtn').addEventListener('click',(e) => {
+		e.preventDefault();
+		let checkedData = gridCheckedData(document.querySelector('.gridCont06'));
+		console.log("list:",checkedData.list);
+  	    deleteCall = (isExec) => {
+  	    	if(isExec){
+  	    		let param = {list:checkedData.list
+  	    				   , stillOrMovie:document.getElementById('stillOrMovie').value
+  	    		           , id: document.getElementById('id').value}
+  	    		let url = "/deleteImgs";
+  	    		if(document.getElementById('stillOrMovie').value === '002'){
+  	    			url = "/deleteMovs";
+  	    		}
+  	    		gfn_asyncJsonCall(url,'POST',param,'deleteAfter()');
+  	    	}
+  	    	
+  	    }
+  	    if(Object.keys(checkedData).length > 0){
+  	    	confirmCall(msg.del,this.deleteCall);
+  	    }
+  	    else{
+  	    	msgCall(msg.delChk,false);
+  	    }
+	});
+	
+	document.querySelector('.approveBtn').addEventListener('click', (e) => {
+		e.preventDefault();
+		let param = {id:document.getElementById('id').value};
+  	    approveCall = (isExec) => {
+  	    	if(isExec){
+  	    		gfn_asyncJsonCall('/approve','POST',param,'approveAfter()');
+  	    	}
+  	    }
+  	    
+  	    confirmCall(msg.approve,this.approveCall);
+	});
+	
+	approveAfter = () => {
+		
+	}
+	
+
+
+</script>
+</body>
+</html>

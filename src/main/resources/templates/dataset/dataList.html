@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 데이터 검색</title>
+
+</head>
+<div class="content">
+
+<div class="con-title"><span>데이터 검색</span></div>
+  <div class="pop-wrap unitPop">
+    <div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+        <div class="pop-body" style="padding:0px;">
+          <div class="graph4" style="height:360px;">
+            <div class="gridCont05">
+				<div class="treeBox">
+				</div>
+            </div>
+          </div>
+        </div>
+         <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel btnUnitClose" title="취소">취소</button>
+	            <button type="button" class="btn-m-confirm btnUnitOpen" title="확인하기">확인</button>
+	          </div>
+	     </div>
+      </div>
+    </div>
+  </div>
+  
+<div class="pop-wrap imgPop">
+<div class="pop_container ">
+   <div class="pop-bg">
+     <div class="pop-head"><div class="pop-title">이미지</div></div>
+     <div class="pop-body" style="padding:0px;">
+       <!-- <p th:text="*{content}"></p> -->
+     </div>
+     <div class="pop-footer">
+       <div class="pop-btn-group">
+         <button type="button" id="btnClose" name="btnClose" class="btn-m-cancel"  title="닫기">닫기</button>
+       </div>
+     </div>
+   </div>
+ </div>
+ </div>
+<form id="frm" th:action method="post">
+
+<div class="sec-grid1">
+       <div class="g-area3">
+         <div class="pannel">
+           <div class="searchCont p-head3">
+             <div class="searchGrp">
+               <div class="searchItem">
+                 <input name="frDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value=""> ~ <input name="toDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value="">
+               </div>
+               <div class="sel-multi"></div>
+               <div class="rightBtnGrp">
+                 <button type="button" class="btn btn-secondary btn-search01" onclick="qryInit();">초기화</button>
+                 <button type="button" class="btn btn-secondary btn-search01" onclick="searchFunc(this);">조회</button>
+                <!--  <button type="button" class="btn btn-danger btn-delete" onclick="deleteFunc();">삭제</button> -->
+               </div> 
+             </div>
+             <div class="calendarModal kor hidden" tabindex="0">
+             </div>
+
+           </div>
+           <div class="result">
+           </div>
+           <div class="gridCont03 dataGrid">
+           </div>
+           <!--pagenavigation-->
+           <div class="page-nav-group dataPage">
+           </div>
+           
+         </div>
+       </div>
+     </div>
+</form>
+</div>
+<script th:inline="javascript">
+	
+	dynimicInit = () => {
+		searchInit(document.querySelector('.sel-multi'),'5');
+		treeInit(document.querySelector('.unitPop').querySelector('.treeBox'));
+		document.getElementsByName('frDt')[0].value = gfn_getDiffDay(nis.diffDay);
+ 	    document.getElementsByName('toDt')[0].value = gfn_getDay();
+	    pageInit(document.querySelector(".dataPage"),"parentSch()",8);
+	    const headColumns =  [//{id:"chk",width: "45px"}
+	      	                  {id:"idx",width: "50px",label:"NO",sortable:"Y",isNumber:"Y"}
+	      	                 ,{id:"id",width: "0px"}
+	      	                 ,{id:"stillOrMovie",width: "140px",label:"이미지/영상",data_cellType:"tdCCell", mediaCell:"Y"}  
+	      	                 ,{id:"collectionDt",width: "100px",label:"임무시간",sortable:"Y",data_cellType:"tdCCell"}  
+       	                     ,{id:"collectionPos",width: "100px",label:"탐지구역",sortable:"Y",data_cellType:"tdCCell"}  
+	      	                 ,{id:"collectionDeviceCd",width: "80px",label:"탐지수단",sortable:"Y",data_grpCd:"006"}  
+	      	                 ,{id:"stillOrMovie",width: "80px",label:"자료구분",data_cellType:"tdCCell",data_grpCd:"003"}
+	      	                 ,{id:"dayOrNight",width: "100px",label:"주/야 구분", data_cellType:"tdCCell",data_grpCd:"002"}
+	      	                 ,{id:"sourceCd",width: "80px",label:"데이터출처", data_cellType:"tdCCell",data_grpCd:"008"}
+    	                     ,{id:"shipClass",width: "80px",label:"함종/선종", data_cellType:"tdCCell"}
+	      	                 ,{id:"originFileNm",width: "100px",label:"파일명", data_cellType:"tdCCell"}
+	      	                 ,{id:"updateUserNm",width: "80px",label:"작업자",data_cellType:"tdCCell"}
+	      	                 ,{id:"updateUserId",width: "0px"}
+	      	                 ,{id:"createTs",width: "120px",label:"등록일시",sortable:"Y",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+	      	                 ,{id:"approvedTs",width: "120px",label:"승인일시",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+	
+	             ];
+	  	 gridInit(document.querySelector(".dataGrid"),headColumns);
+	  	 searchFunc();
+	}
+	
+	parentSch = () => {
+		searchFunc();
+	}
+	searchFunc = (invoker) => {
+		pageSearch(document.getElementById('frm'),"/dataList",document.querySelector('.dataGrid'),document.querySelector('.dataPage'),invoker,null,searchAfterFunc);
+	}
+
+	searchAfterFunc = (appendData) => {
+		let totCount = document.querySelector('.result');
+	    while (totCount.hasChildNodes()) {
+	    	totCount.removeChild(totCount.firstChild);
+	    }
+	    totCount.append('총 ');
+	    const totCountSpan = document.createElement('span');
+	    totCountSpan.append(appendData.totalCount);
+	    totCount.appendChild(totCountSpan);
+	    totCount.append('건의 작업이 검색 되었습니다.');
+	}
+	  
+	rowClick = (row,gridComp,target) => {
+		gridComp.querySelectorAll('.overChild').forEach((overChild) => {
+ 		   if(overChild.classList.contains('on')){
+ 			   overChild.classList.remove('on');
+			   }
+ 	    });
+ 	    if(target.classList.contains('overChild')){
+ 	    	target.classList.add('on');
+ 	    }else{
+ 	    	target.parentNode.parentNode.classList.add('on');
+ 	    }
+ 	    
+ 	    
+		let param = {id:row["id"]
+			       ,stillOrMovie:row["stillOrMovie"]
+			       ,sourceType: row["sourceType"]
+		           };
+        
+	    dynimicCall(param,'POST','/dataDetail', null,param);
+	}
+    
+
+    document.querySelector('.imgPop').querySelector('.btn-m-cancel').addEventListener('click',(e)=>{
+    	//document.querySelector('.imgPop').style.display='none';
+    });
+       
+</script>
+</html>
+

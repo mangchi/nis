@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 프레임 추출</title>
+<style type="text/css">
+</style>
+</head>
+<div class="content">
+  <div class="pop-wrap unitPop">
+    <div class="pop_container">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+        <div class="pop-body" style="padding:0px;">
+          <div class="graph4" style="height:360px;">
+            <div class="gridCont05">
+				<div class="treeBox">
+				</div>
+            </div>
+          </div>
+        </div>
+         <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel btnUnitClose" title="취소">취소</button>
+	            <button type="button" class="btn-m-confirm btnUnitOpen" title="확인하기">확인</button>
+	          </div>
+	     </div>
+      </div>
+    </div>
+  </div>
+<form id="frm" th:action method="post">
+<input type="hidden" name="extractStatusCd" id="extractStatusCd" value="002">
+<input type="hidden" id="movieId" name="movieId" value="">
+<input type="hidden" sec:authorize="hasRole('ADMIN')" id="isAdmin">
+<div class="con-title"><span>프레임 추출</span></div>
+        <div class="sec-grid1">
+          <div class="g-area3">
+            <div class="pannel">
+                          
+              <div class="searchCont p-head3">
+                
+                <div class="searchGrp">
+                <div class="input-group">
+                    <div class="btn-group-toggle">
+                      <input type="radio" id="extractStat1" name="extractStat" onchange="pageChk(this)" value="01" ><label for="extractStat1">프레임 추출</label>
+                      <input type="radio" id="extractStat2" name="extractStat" onchange="pageChk(this)" value="02" checked><label for="extractStat2">추출 완료</label>
+                    </div>
+                </div>
+                  <div class="searchItem">
+                    <input name="frDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value=""> ~ <input name="toDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value="">
+                  </div>
+                  
+                  <div class="sel-multi"></div>
+                  <div class="rightBtnGrp">
+                    <button type="button" class="btn btn-secondary btn-search01" onclick="qryInit();">초기화</button>
+                    <button type="button" class="btn btn-secondary btn-search01" onclick="searchFunc('ALL',this);">조회</button>
+                    <button type="button" class="btn btn-danger btn-delete" onclick="deleteFunc();">선택 삭제</button>
+                  </div>
+                </div>
+                <div class="calendarModal kor hidden" tabindex="0">
+                </div>                
+              </div>
+              
+           
+              <div class="view">
+                <div class="title">등록 영상</div><!--추가:20220816-->
+                <div class="input-group" style="display:inline-block; text-align:right; float:right;">
+                  <span style="margin-right:10px;">보기방식</span>
+                  <div class="btn-group-toggle">
+                    <input type="radio" id="viewType1" name="viewType"  value="01" checked><label for="viewType1">리스트</label>
+                    <input type="radio" id="viewType2" name="viewType" value="02"><label for="viewType2">이미지</label>
+                  </div>
+                </div>
+              </div>
+              <div class="gridCont03" id="gridFrame" style="height:300px;">
+              </div>
+              <div class="page-nav-group pageFrame">
+              </div>
+              <div class="g-area3">
+              <div class="pannel">
+              <div class="view" style="padding-top:30px;">
+                <div class="title">추출 프레임 목록</div><!--추가:20220816-->
+                <div class="btn_group" style="display:inline-block; float:right;">
+                  <button type="button" class="btn btn-danger btn-delete" onclick="deleteImgaeFunc();">선택 삭제</button>
+                </div>
+              </div>
+              <div class="gridCont03" id="gridImage">
+              </div>
+              <div class="gridCont03" id="gridImageView">
+                 <div class="divTable">
+                  <div class="divBody">
+                    <div class="grid-tb-sub12 imgView">
+                     <!--  <div class="img-group"><div class="item img-box02"></div><div class="txt01">video-001-001.jpg</div></div>
+                      <div class="img-group"><div class="item img-box02"></div><div class="txt01">video-001-001.jpg</div></div> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="page-nav-group pageImage">
+              </div>
+              </div>
+              </div>
+              
+   <!--            <div class="gridCont03" style="height:840px;  ">
+                <div class="divTable">
+                  <div class="divBody">
+                    <div class="grid-tb-sub12">
+                      image리스트
+                      <div class="img-group"><div class="item img-box02"></div><div class="txt01">video-001-001.jpg</div></div>
+                      <div class="img-group"><div class="item img-box02"></div><div class="txt01">video-001-001.jpg</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="page-nav-group">
+              </div> -->
+            </div>
+          </div>
+        </div>
+</form>
+</div>
+<script th:inline="javascript"> 
+       var extractConfigs = new Array();
+       var deleteImgList = new Array();
+       dynimicInit = () => {
+    	   searchInit(document.querySelector('.sel-multi'),'1');
+    	   document.getElementsByName('frDt')[0].value = gfn_getDiffDay(nis.diffDay);
+    	   document.getElementsByName('toDt')[0].value = gfn_getDay();
+    	   treeInit(document.querySelector('.unitPop').querySelector('.treeBox'));
+    	   document.getElementById('gridImageView').style.display = "none";
+    	   pageInit(document.querySelector(".pageFrame"),'searchFunc("ALL")',pagination.halfRowPerPage);
+    	   pageInit(document.querySelector(".pageImage"),'searchFunc("IMAGE")',pagination.rowPerPage);
+
+   		   const headFrameColumns = [{id:"chk",width: "45px"}
+                                  ,{id:"idx",width:"50px",label:"NO"}
+                                  ,{id:"id",width: "0px"}
+                                  ,{id:"movId",width: "0px"}
+                                  ,{id:"originFileNm",width:"250px",label:"영상 이름"}  
+                                  ,{id:"collectionDeviceCd",width: "80px",label:"탐지수단",data_celltype:"tdCCell",data_grpCd:"006"}  
+                                  ,{id:"dayOrNight",width: "100px",label:"주야구분", data_cellType:"tdCCell",data_grpCd:"002"}
+                                  ,{id:"updateUserNm",width: "100px",label:"작업자",data_celltype:"tdCCell"}  
+                                  ,{id:"fileType",width: "80px",label:"이미지형식",data_celltype:"tdCCell",data_grpCd:"023"} 
+                                  ,{id:"imageSize",width: "100px",label:"이미지크기",data_celltype:"tdCCell",data_grpCd:"024"} 
+                                  ,{id:"approvedTs",width: "120px",label:"승인일시",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+                                  ,{id:"extractStartTs",width: "120px",label:"작업시작일",data_celltype:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}  
+                                  ,{id:"extractEndTs",width: "120px",label:"작업종료일",data_celltype:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}  
+					              ];
+		   gridInit(document.getElementById("gridFrame"),headFrameColumns);
+		   const headImageColumns = [ {id:"chk",width: "45px"}
+		                           ,{id:"id",width: "0px"}
+		                           ,{id:"fileId",width: "0px"}
+		                           ,{id:"seq",width: "0px"}
+		                           ,{id:"filePath",width: "0px"}
+		                           ,{id:"fileNm",width: "0px"}
+								   ,{id:"originFileNm",width: "250px",label:"이미지명",data_celltype:"tdCCell"}  
+						           ,{id:"fileSize",width: "80px",label:"파일사이즈",data_celltype:"tdCCell"}  
+						           ,{id:"createUserNm",width: "80px",label:"작업자",data_celltype:"tdCCell"}  
+						           ,{id:"createTs",width: "120px",label:"수집일",data_celltype:"tdCCell", data_dateFrmt:"yy-mm-dd hh:mi:ss"}  
+						           ,{id:"imageSize",width: "80px",label:"이미지 크기",data_celltype:"tdCCell",data_grpCd:"024"} 
+					             ];
+		   gridInit(document.getElementById("gridImage"),headImageColumns);
+       	   searchFunc('ALL');
+       }
+       
+       searchFunc =  (searchType,invoker) => {
+    	   let _searchType = searchType===undefined?"ALL":searchType;
+    	   console.log("_searchType:",_searchType);
+    	   if(_searchType === 'ALL'){
+    		   pageSearch(document.getElementById("frm"),"/extractList",document.getElementById("gridFrame"),document.querySelector(".pageFrame"),invoker,null,searchAfterFunc); 
+    	   }else{
+    		   pageSearch(document.getElementById("frm"),"/extractImageList",document.getElementById("gridImage"),document.querySelector(".pageImage"),invoker,null,drawImgList); 
+    	   }
+	   } 
+       
+       searchAfterFunc = (appendData) => {
+   		   if(appendData.totalCount != '0'){
+   			   let overChilds = document.getElementById("gridFrame").querySelectorAll('.overChild');
+   			   document.getElementById("gridFrame").querySelectorAll('.overChild').forEach((overChild,index) => {
+	     		   if(index === 0){
+	     			  rowClick(appendData,document.getElementById("gridFrame"),overChild);
+	     			  return false;
+	     		   }
+	     	   });
+   			   //document.getElementById('movieId').value = appendData.movId;
+ 		       //pageSearch(document.getElementById("frm"),"/extractImageList",document.getElementById("gridImage"),document.querySelector(".pageImage"),null,null,drawImgList); 
+   		   }
+       }
+       
+       drawImgList = (list) => {
+    	   //console.log("list:",list);
+    	   try{
+    	   let imgView = document.querySelector('.imgView');
+    	   imgView.innerHTML = '';
+           let index = 0;
+		   for(let key in list){
+			   let item = list[key];
+			   let imgGrp = document.createElement('div');
+			   imgGrp.classList.add('img-group');
+        	   let imgDiv = document.createElement('div');
+	   		   imgDiv.classList.add('item','img-box02');
+	   		   let imgItem = document.createElement('img');
+	   		   imgItem.setAttribute("src", "fileId/"+item.id+"/"+item.seq+"/N/N"+gfn_getStorageItem("curUrl")+"/"+new Date().getTime());
+	   		   imgItem.setAttribute("width",200);
+	   		   imgItem.setAttribute("height",135);
+
+	   		   imgDiv.appendChild(imgItem);
+	   		   let imgTxt = document.createElement('div');
+	   		   let imgChk = document.createElement('input');
+	   		   imgChk.setAttribute("type","checkbox");
+	   		   imgChk.addEventListener('click',(e) => {
+	   			   if(e.target.checked){
+	   				   deleteImgList.push(item);
+	   			   }
+	   			   else{
+	   				   deleteImgList.forEach((delImg,index) => {
+	   					   if(delImg.seq === item.seq){
+	   						   deleteImgList.splice(index,1);
+	   						   return false;
+	   					   }
+	   				   });
+	   			   }
+	   		   });
+	   		   imgTxt.classList.add('txt01');
+	   		   imgTxt.appendChild(imgChk);
+	   		   imgTxt.append(" "+item.originFileNm);
+	   		   imgGrp.appendChild(imgDiv);
+	   		   imgGrp.appendChild(imgTxt);
+	   		   imgView.appendChild(imgGrp);
+		   }
+    	   }catch(e){
+    		   console.error("drawImgList :",e);
+    	   }
+       }
+       
+       deleteFunc = () => {
+    	   let checkedData = gridCheckedData(document.getElementById("gridFrame"));
+    	   deleteCall = (isExec) => {
+    		   if(isExec){
+    			   gfn_asyncJsonCall('/deleteFrame','POST',checkedData,'searchFunc()');
+    		   }
+    		   
+    	   }
+    	   if(Object.keys(checkedData).length > 0){
+    		   let list = checkedData['list'];
+    		   console.log("deleteFunc list:",list);
+    		   let isApproveChk = false;
+    		   let isAdmin = document.querySelector('#isAdmin');
+    	   	   for(let itm of list){
+    	   		   if(!isAdmin && gfn_nullValue(itm['approvedTs']) != ''){
+    	   			   isApproveChk = true;
+    	   			   break;
+    	   		   }
+    	   	   }
+    	   	   if(isApproveChk){
+    	   		   msgCall(msg.approveChk,false);
+    	   	   }
+	    	   confirmCall(msg.del,this.deleteCall);
+    	   }
+    	   else{
+    		   msgCall(msg.delChk,false);
+    	   }
+    	   
+
+       }
+       
+  
+       
+       deleteImgaeFunc = () => {
+    	   if(document.getElementById('gridImage').style.display === 'none'){
+    		   deleteCall = (isExec) => {
+        		   if(isExec){
+        			   let param = {id:deleteImgList[0].id, list: deleteImgList};
+        			   console.log("param:",param);
+        			   gfn_asyncJsonCall('/deleteImageByFrame','POST',param,'searchFunc()');
+        		   }
+        		   
+        	   }
+        	   if(deleteImgList.length > 0){
+    	    	   confirmCall(msg.del,this.deleteCall);
+        	   }
+        	   else{
+        		   msgCall('이미지를 선택하세요',false);
+        	   }
+
+    	   }else{
+    		   let checkedData = gridCheckedData(document.getElementById("gridImage"));
+        	   deleteCall = (isExec) => {
+        		   if(isExec){
+        			   let param = {id:checkedData['list']['0'].fileId, list: checkedData['list']};
+        			  
+        			   gfn_asyncJsonCall('/deleteImageByFrame','POST',param,'searchFunc()');
+        		   }
+        		   
+        	   }
+        	   if(Object.keys(checkedData).length > 0){
+    	    	   confirmCall(msg.del,this.deleteCall);
+        	   }
+        	   else{
+        		   msgCall('이미지를 선택하세요',false);
+        	   }
+        	  
+    	   }
+       };
+       
+
+     
+       
+       rowClick = (item,gridComp,target) => {
+    	   if(gridComp.id === 'gridFrame' ){
+    		    gridComp.querySelectorAll('.overChild').forEach((overChild) => {
+    	 		   if(overChild.classList.contains('on')){
+    	 			   overChild.classList.remove('on');
+    				   }
+    	 	    });
+    	 	  
+    	 	    target.classList.add('on');
+    		   document.getElementById('movieId').value = item.movId;
+    		   pageSearch(document.getElementById("frm"),"/extractImageList",document.getElementById("gridImage"),document.querySelector(".pageImage"),null,null,drawImgList); 
+    	   }
+    	   
+       }
+       
+      
+       
+       document.getElementsByName('viewType').forEach((view,index) => {
+    	   view.addEventListener('click',(e) => {
+    		   if(e.target.value === '01'){
+    			   document.getElementById('gridImage').style.display = "";
+    			   document.querySelector('.pageImage').style.display = "";
+    			   document.getElementById('gridImageView').style.display = "none";
+    			   
+    		   }else{
+    			   document.getElementById('gridImageView').style.display = "";
+    			   document.getElementById('gridImage').style.display = "none";
+    			   document.querySelector('.pageImage').style.display = "none";
+    		   }
+    	   });
+       });
+    
+ 
+       pageChk = (radio) => {
+    	   if(radio.value === '01'){
+			   callMenu('/frameList');
+		   }else{
+			   callMenu('/extractList');
+		   }
+       }
+       
+      
+    
+</script>
+</html>
+

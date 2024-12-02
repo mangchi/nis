@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>NIS | 데이터 레이블링</title>
+</head>
+<div class="content">
+	<div class="con-title">
+		<span>데이터 레이블링</span>
+	</div>
+	<div class="pop-wrap unitPop">
+	    <div class="pop_container">
+	      <div class="pop-bg">
+	        <div class="pop-head"><div class="pop-title">부대정보</div></div>
+	        <div class="pop-body" style="padding:0px;">
+	          <div class="graph4" style="height:360px;">
+	            <div class="gridCont05">
+					<div class="treeBox">
+					</div>
+	            </div>
+	          </div>
+	        </div>
+	         <div class="pop-footer">
+		          <div class="pop-btn-group">
+		            <button type="button" class="btn-m-cancel btnUnitClose" title="취소">취소</button>
+		            <button type="button" class="btn-m-confirm btnUnitOpen" title="확인하기">확인</button>
+		          </div>
+		     </div>
+	      </div>
+	    </div>
+	</div>
+  
+	<form id="frm" th:action method="post">
+		<div class="sec-grid12">
+			<div class="pannel">
+			    <div class="searchCont p-head3">
+	             <div class="searchGrp">
+	               <div class="searchItem">
+	                 <input name="frDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value=""> ~ <input name="toDt" class="calendar_input" placeholder="yyyy.mm.dd" type="text" value="">
+	               </div>
+	               <div class="sel-multi"></div>
+	               <div class="rightBtnGrp">
+	                 <button type="button" class="btn btn-secondary btn-search01" onclick="qryInit();">초기화</button>
+	                 <button type="button" class="btn btn-secondary btn-search01" onclick="searchFunc(this);">조회</button>
+	                <!--  <button type="button" class="btn btn-danger btn-delete" onclick="deleteFunc();">삭제</button> -->
+	               </div> 
+	             </div>
+	             <div class="calendarModal kor hidden" tabindex="0">
+	             </div>
+	           </div>
+	           <div class="result">
+	           </div>
+	           <div class="gridCont07">
+	           </div>
+	           <!--pagenavigation-->
+	           <div class="page-nav-group">
+	           </div>
+	           <!--  
+				<div class="graph6">
+					<div class="contWrap">
+						<div class="result">
+                        </div>
+						<div class="gridCont07" ></div>
+						<div class="page-nav-group"></div>
+					</div>
+					
+				</div>-->
+			</div>
+	    	<div class="pannel">
+				<div class="itmGrp p-head">
+					<div class="p-tit02">이미지 목록</div>
+					<div class="tag_num">0</div>
+					<div class="rightBtnGrp btn-group02">
+						<button type="button"  name="" class="btn-s03 labelBtn">레이블링</button>
+					</div>
+				</div>
+				<div class="graph6">
+					<div class="graph">
+					  
+						<div class="gridCont" >
+							<div class="divTable">
+								<div class="divBody grid-tb-sub2 imgBody">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" id="labelId" name="labelId" value="">
+		<input type="hidden" id="stillOrMovie" name="stillOrMovie" value="">
+		<input type="hidden" id="imageId" name="imageId" value="">
+		<input type="hidden" id="seq" name="seq" value="">
+	</form>
+</div>
+<script th:inline="javascript" defer> 
+       dynimicInit = () => {
+    	   searchInit(document.querySelector('.sel-multi'));
+   		   treeInit(document.querySelector('.unitPop').querySelector('.treeBox'));
+   		   document.getElementsByName('frDt')[0].value = gfn_getDiffDay(nis.diffDay);
+    	   document.getElementsByName('toDt')[0].value = gfn_getDay();
+    	   pageInit(document.querySelector(".page-nav-group"),searchFunc,pagination.rowPerPage);
+           const headColumns =  [
+           	                    {id:"idx",width: "50px",label:"NO",data_cellType:"tdCCell",sortable:"Y"}
+           	                   ,{id:"id",width: "0px"}
+           	                   ,{id:"collectionDt",width: "100px",label:"임무시간",sortable:"Y",data_cellType:"tdCCell"}  
+        	                   ,{id:"collectionPos",width: "100px",label:"탐지구역",sortable:"Y",data_cellType:"tdCCell"}  
+           	                   ,{id:"collectionDeviceCd",width: "80px",label:"탐지수단",sortable:"Y",data_cellType:"tdCCell",data_grpCd:"006"}  
+           	                   ,{id:"stillOrMovie",width: "80px",label:"자료구분",data_cellType:"tdCCell", data_grpCd:"003"}
+           	                   ,{id:"dayOrNight",width: "100px",label:"주/야 구분", data_cellType:"tdCCell",data_grpCd:"002"}
+           	                   ,{id:"sourceCd",width: "80px",label:"데이터출처", data_cellType:"tdCCell",data_grpCd:"008"}
+  	                           ,{id:"shipClass",width: "80px",label:"함종/선종", data_cellType:"tdCCell"}
+           	                   ,{id:"updateUserNm",width: "80px",label:"작업자",data_cellType:"tdCCell"}
+           	                   ,{id:"updateUserId",width: "0px"}
+           	                   ,{id:"createTs",width: "120px",label:"등록일시",sortable:"Y",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+           	                   ,{id:"approvedTs",width: "120px",label:"승인일시",data_cellType:"tdCCell",data_dateFrmt:"yy-mm-dd hh:mi:ss"}
+
+				              ];
+       	   gridInit(document.querySelector(".gridCont07"),headColumns); 
+       	   searchFunc();
+       }
+
+       searchFunc = (invoker) => {
+    	   pageSearch(document.getElementById('frm'),"/labelList",document.querySelector('.gridCont07'),document.querySelector('.page-nav-group'),invoker,null,searchAfterFunc) 
+       }
+       
+       searchAfterFunc = (appendData) => {
+	   		let totCount = document.querySelector('.result');
+	   	    while (totCount.hasChildNodes()) {
+	   	    	totCount.removeChild(totCount.firstChild);
+	   	    }
+	   	    totCount.append('총 ');
+	   	    const totCountSpan = document.createElement('span');
+	   	    totCountSpan.append(appendData.totalCount);
+	   	    totCount.appendChild(totCountSpan);
+	   	    totCount.append('건의 작업이 검색 되었습니다.');
+	   	   // drawImgList(appendData.imgList);
+	   	    if(appendData.imgList != undefined){
+	   	    	let overChilds = document.querySelector('.gridCont07').querySelectorAll('.overChild');
+	   	    	document.querySelector('.gridCont07').querySelectorAll('.overChild').forEach((overChild,index) => {
+	     		   if(index === 0){
+	     			  rowClick(appendData.imgList,document.querySelector('.gridCont07'),overChild);
+	     		   }
+	     	   });
+	   	    }  
+	   	}
+       
+       drawImgList = (list) => {
+    	   let gridBody = document.querySelector('.imgBody');
+		   gridBody.innerHTML = '';
+		   if(list && list.length != undefined){
+			   document.querySelector('.tag_num').innerText = list.length;
+			   let index = 0;
+	           let loadingLayer = document.querySelector('.loadingLayer');
+	       	   loadingLayer.style.display = "block";
+			   for(let key in list){
+				   let item = list[key];
+				   if(item.fileType.indexOf('text') === -1){
+					   let imgDiv = document.createElement('div');
+			   		   imgDiv.classList.add('item','img-box');
+			   		   let imgItem = document.createElement('img');
+			   		   imgItem.addEventListener("load", () => {
+			   			   imgItem.setAttribute("width",159);
+				   		   imgItem.setAttribute("height",104);
+				   		   imgItem.addEventListener('click',(e) => {
+				   			   imageClick(e,item);
+				   		   });
+				   		   imgDiv.appendChild(imgItem);
+				   		   gridBody.appendChild(imgDiv);
+				   	   });
+			   		   imgItem.setAttribute("src", "fileId/"+item.fileId+"/"+item.seq+"/T/N"+gfn_getStorageItem("curUrl")+"/"+new Date().getTime());
+			   		  
+				   }
+	        	   
+			   } 
+			   loadingLayer.style.display = "none";
+		   }
+		   
+           
+       }
+       
+       getRowTarget = (target) => {
+    	   return target;
+       }
+       
+       imageClick = (e,item) => {
+    	   e.preventDefault();
+    	   document.querySelector('.imgBody').querySelectorAll('.on').forEach((imgBox) => {
+    		   imgBox.classList.remove('on');
+    	   });
+    	   e.target.classList.add('on');
+    	   document.getElementById('labelId').value = item.id;
+    	   document.getElementById('stillOrMovie').value = item.stillOrMovie;
+    	   document.getElementById('imageId').value = item.imageId;
+    	   document.getElementById('seq').value = item.seq;
+       }
+       
+       
+       document.querySelector('.labelBtn').addEventListener('click',(e) => {
+    	   e.preventDefault();
+    	   if(document.querySelector('.imgBody').querySelectorAll('.on').length === 0){
+    		   msgCall('이미지를 선택하세요',false);
+    		   return;
+    	   }
+    	   let param = {id:document.getElementById('labelId').value
+    			       ,stillOrMovie:document.getElementById('stillOrMovie').value
+    			       ,imageId:document.getElementById('imageId').value
+    			       ,seq:document.getElementById('seq').value};
+    	   dynimicCall({},'GET','/labelInfo', null,param);
+       });
+       
+       rowClick = (row,gridComp,target) => {
+    	   console.log("row:",row);
+    	   gridComp.querySelectorAll('.overChild').forEach((overChild) => {
+    		   if(overChild.classList.contains('on')){
+    			   overChild.classList.remove('on');
+			   }
+    	   });
+    	   target.classList.add('on');
+    	   //target.parentNode.classList.add('on');
+    	   let list = null;
+    	   gfn_asyncJsonCall('/labelImgList','POST',row).then((data) =>{
+    		   for(let key in data) {
+    			   if(key.indexOf('list') > -1){
+    				   list = data[key];
+    			   }  
+    		   }
+    		   if(list != null){drawImgList(list);}
+		   });  
+       }
+     
+
+</script>
+
+</html>
+

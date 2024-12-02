@@ -1,0 +1,126 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json, application/xml,text/html,image/jpeg,image/png,text/css,application/javascript,video/mp4
+    min-response-size: 2048
+  servlet: 
+    session:
+      timeout: 300s
+      persistent: false
+      cookie:
+        http-only: true
+        name: NIS_JSESSIONID
+
+spring.config.import: nis.yml
+         
+#spring:
+#  datasource:
+#    url: jdbc:kairos://localhost:5000/test
+#    username: nis
+#    password: 1234
+#    driverClassName: kr.co.realtimetech.kairos.jdbc.kairosDriver
+
+
+spring:
+  profiles:
+    active: local # 활성화시킬 프로필
+    group:
+      local: "local" 
+      dev: "dev" 
+      prod: "prod"
+   
+---
+
+spring: 
+  config: 
+    activate: 
+      on-profile: local 
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:kairos://cros.iptime.org:5000/test
+    username: root
+    password: root
+    driverClassName: kr.co.realtimetech.kairos.jdbc.kairosDriver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+      connection-init-sql: SELECT 1 FROM DUAL
+      validation-timeout: 2000
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  servlet:
+    multipart:
+      location: /Users/donghokang/eclipse-workspace/nis/upload
+      maxFileSize: 2048MB
+      maxRequestSize: 4096MB
+
+---
+
+spring: 
+  config: 
+    activate: 
+      on-profile: dev
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:kairos://localhost:5000/navidb
+    username: nis
+    password: 1234
+    driverClassName: kr.co.realtimetech.kairos.jdbc.kairosDrver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+      connection-init-sql: SELECT 1 FROM DUAL
+      validation-timeout: 2000
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  servlet:
+    multipart:
+      location: c:\\Temp\\upload
+      maxFileSize: 2048MB
+      maxRequestSize: 4096MB
+    
+--- 
+
+spring: 
+  config: 
+    activate: 
+      on-profile: prod
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:kairos://20.9.2.11:5000/navidb
+    username: root
+    password: root
+    driverClassName: kr.co.realtimetech.kairos.jdbc.kairosDriver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+      connection-init-sql: SELECT 1 FROM DUAL
+      validation-timeout: 2000
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  servlet:
+    multipart:
+      location: /data/was/nis/upload
+      maxFileSize: 2048MB
+      maxRequestSize: 4096MB
+
+---
+
+spring:
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+
+mybatis:
+  mapper-locations: /mapper/**/*.xml
+  type-aliases-package: mil.gdl.nis.cmmn,mil.gdl.nis.**.vo
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: "NULL"
+      
+logging:
+  config: classpath:log4j2.yml

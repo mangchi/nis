@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<title>NIS | 위치정보통계</title>
+</head>
+<div class="content">
+	<div class="popMap_container">
+		<div class="pop-bg">
+			<div class="pop-head">
+				<div class="pop-title">위치정보 통계</div>
+			</div>
+			<div class="pop-body">
+				<div id="map-wrapper" class="map-wrapper" style="width:600px;height:600px;">
+				</div>
+				<div class="ship-info" style="display:flex;margin-top:7px;">
+					<div>임무시간:</div><div class="collectionDt" style="margin-right:25px;"></div>
+					<div>탐지구역:</div><div class="collectionPos" style="margin-right:25px;"></div>
+					<div>위도:</div><div class="lat" style="margin-right:25px;"></div>
+					<div>경도:</div><div class="lon" style="margin-right:25px;"	></div>
+					</div>
+			    </div>
+			<div class="pop-footer">
+				<div class="pop-btn-group">
+					<button type="button" class="btn-m-cancel mapClose" title="닫기">닫기</button>
+					<!-- 			<button type="submit" class="btn-m-confirm" title="확인">확인</button> -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<script th:inline="javascript"> 
+    modalInit = (postParam) => {
+    	let xyList = new Array();
+    	gfn_asyncJsonCall("/xyList",'POST',postParam).then((data) => {
+			let list = data['list'];
+			for(let item of list){
+				//console.log("dataCoordX:",item['dataCoordX']);
+				if(gfn_nullValue(item['dataCoordX']) != '' && gfn_nullValue(item['dataCoordY']) != ''){
+					let xy = { id : 'xy'+item['idx']
+						   , dayOrNight: gfn_getCodeVal('003',item['dayOrNight'])
+						   , collectionDt: item['collectionDt']
+				           , collectionPos: item['collectionPos']
+					       , lat : item['dataCoordX']
+					       , lon : item['dataCoordY']	
+					};
+					xyList.push(xy);
+					
+				}
+			}
+			return xyList;
+			
+		}).then((data) => {
+			fetch("/json/map.geo.json")
+	    	.then(response => {
+	    	   return response.json();
+	    	})
+	    	.then(jsondata => {
+	    		console.log("xyList:",xyList);
+	    	
+	    		drawMap(jsondata,xyList);
+	    	});
+		});
+    	
+
+    	
+    }
+    drawMap = (geojson,obj) => {
+    	
+        // 지도정보
+        // 지도의 중심점 찾기
+        const center = d3.geoCentroid(geojson);
+
+        let centered = undefined;
+
+        // 현재의 브라우저의 크기 계산
+        const divWidth = document.getElementById("map-wrapper").clientWidth;
+        //const width = (divWidth < 1000) ? divWidth * 0.9 : 1000;
+        const width = divWidth;
+        const height = width * 1;
+
+        // 지도를 그리기 위한 svg 생성
+        const svg = d3
+          .select('.map-wrapper')
+          .append('svg')
+          .attr('width', width)
+          .attr('height', height)
+          .style("font", "14px times")
+          
+
+        // 배경 그리기
+        const background11 = svg.append('image')
+          .attr('width', 1000)
+          .attr('height', 1000)
+          .attr('xlink:href', '/img/bluelight.svg');
+          // .enter()  
+         // .append("image")
+         // .attr('xlink:href', '/img/bluelight.svg');
+        //.style("fill","rgb(0,0,255)")
+        //.attr("fill-opacity","0.2")
+        
+        /*
+            배경 그리기
+        
+    */
+    const background = svg.append('rect')
+    .attr('width', width)
+    .attr('height', height)
+    .attr("fill-opacity","0");
+
+        // 지도가 그려지는 그래픽 노드(g) 생성
+        const g = svg.append('g');
+        
+        const effectLayer = g.append('g').classed('effect-layer', true);
+        // 지도가 그려지는 그래픽 노드
+        const mapLayer = g.append('g').classed('map-layer', true);
+        // 선박이 그려지는 그래픽 노드
+        const shipLayer = g.append('g').classed('ship-layer', true);
+        
+        
+
+        // 지도의 출력 방법을 선택(메로카토르)
+        let projection = d3.geoMercator()
+          .scale(1)
+          .translate([0, 0]); 
+       // d3.geoMercator() .translate([width / 2], height / 2) .scale(100)
+
+        // svg 그림의 크기에 따라 출력될 지도의 크기를 다시 계산
+        const path = d3.geoPath().projection(projection);
+        const bounds = path.bounds(geojson);
+        const widthScale = (bounds[1][0] - bounds[0][0]) / width; 
+        const heightScale = (bounds[1][1] - bounds[0][1]) / height; 
+        const scale = 0.95 / Math.max(widthScale, heightScale);
+        const xoffset = width/2 - scale * (bounds[1][0] + bounds[0][0]) /2 + 0; 
+        const yoffset = height/2 - scale * (bounds[1][1] + bounds[0][1])/2 + 0; 
+        const offset = [xoffset, yoffset];
+        projection.scale(scale).translate(offset);
+
+
+        const color = d3.scaleLinear()
+          .domain([1, 20])
+          .clamp(true)
+          .range(['#E5F0E6', '#E5F0E6']); 
+          //.range(['#595959', '#595959']); 
+          
+        function nameLength(d){
+           const n = nameFn(d);
+           return n ? n.length : 0;
+         }
+
+        function nameFn(d){
+        	 //console.log("properties:",d.properties);
+             return d && d.properties ? d.properties.name : null;
+        }
+         
+        function fillFn(d){
+        	//console.log("fillnf:",nameLength(d));
+            return color(nameLength(d));
+        }
+
+        function clicked(d) {
+        	console.log("clicked d:",d);
+            var x, y, k;
+            if (d && centered !== d) {
+              var centroid = path.centroid(d);
+              x = centroid[0];
+              y = centroid[1];
+              k = 4;
+              centered = d;
+            } else {
+              x = width / 2;
+              y = height / 2;
+              k = 1;
+              centered = null;
+              //_this.closeInfo();
+            }
+
+            // Highlight the clicked province
+            mapLayer.selectAll('path')
+              .style('fill', function(d){
+                return centered && d===centered ? '#D5708B' : fillFn(d);
+            });
+
+            // Zoom
+            
+            g.transition()
+              .duration(750)
+              .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')'); 
+          }
+
+          function mouseover(d){
+            // Highlight hovered province
+            //d3.select(this).style('fill', '#1483ce');
+            // d3.select(this).style('fill', '#004EA2');
+            if(d) {
+              // console.log(d.properties);
+              //selectProvince(d.properties);
+            }
+          }
+
+          function mouseout(d){
+            selectProvince(undefined);
+            // Reset province color
+            mapLayer.selectAll('path')
+              .style('fill', (d) => {
+                //return centered && d===centered ? '#D5708B' : fillFn(d);
+              });
+          }
+
+
+          // Add background
+          background
+            .on('click', clicked);
+
+        // 지도 그리기
+        //var features = topojson.feature(geojson, geojson.objects["municipalities-geo"]).features;
+        mapLayer
+          .selectAll('path')
+         /// .data(features) 
+          .data(geojson.features)  //data.objects["municipalities-geo"]).features
+          .enter().append('path') 
+          //.attr("class", function(d) { return "municipality " + d.properties.quantized; })
+          .attr('d', path)
+          .attr("id", function(d) { return d.properties.name; })
+          .attr('vector-effect', 'non-scaling-stroke')
+          .style('fill', fillFn);
+          //.on('mouseover', mouseover)
+          //.on('mouseout', mouseout)
+          //.on('click', clicked);
+          
+          // create a tooltip
+          var tooltip = mapLayer.selectAll("svg")
+           .append("div")
+           .style("position", "absolute")
+           .text("I'm a circle!");
+
+   
+          function wrap(text, width) {
+        	  text.each(function() {
+        	    var text = d3.select(this),
+        	        words = text.text().split(/\s+/).reverse(),
+        	        Word,
+        	        line = [],
+        	        lineNumber = 0,
+        	        lineHeight = 1.1, // ems
+        	        y = text.attr("y"),
+        	        dy = parseFloat(text.attr("dy")),
+        	        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+        	    while (word = words.pop()) {
+        	    	console.log("word:",word);
+        	      line.push(word);
+        	      tspan.text(line.join(" "));
+        	      if (tspan.node().getComputedTextLength() > width) {
+        	        line.pop();
+        	        tspan.text(line.join(" "));
+        	        line = [Word];
+        	        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(Word);
+        	      }
+        	    }
+        	  });
+        	}
+        
+        shipLayer
+        .selectAll('svg')
+        .data(obj)
+        .enter()  
+        .append("circle")
+        .attr("cx", (d)=> projection([d.lon, d.lat])[0])
+        .attr("cy", (d)=> { let cy = projection([d.lon, d.lat])[1];  if(isNaN(cy)){cy = 0}; console.log("cy:",cy); return cy;})
+        .attr("r", (d)=> '0.02em')
+	    .on('mouseover', (d,i) => {
+	    	console.log("collect:",i);
+	    	document.querySelector('.ship-info').querySelector(".collectionDt").innerHTML = i.collectionDt;
+	    	document.querySelector('.ship-info').querySelector(".collectionPos").innerHTML = i.collectionPos;
+	    	document.querySelector('.ship-info').querySelector(".lon").innerHTML = i.lon;
+	    	document.querySelector('.ship-info').querySelector(".lat").innerHTML = i.lat;
+  
+	     })
+	     .on('mouseout', (d,i) => {
+	    	 document.querySelector('.ship-info').querySelector(".collectionDt").innerHTML = "";
+	    	 document.querySelector('.ship-info').querySelector(".collectionPos").innerHTML = "";
+	    	 document.querySelector('.ship-info').querySelector(".lon").innerHTML = "";
+	    	 document.querySelector('.ship-info').querySelector(".lat").innerHTML = "";
+	     })
+         .attr("fill-opacity","0.9")
+	     .style("fill","orange")
+         .style("opacity", 0.9);
+        
+         svg.call(d3.zoom().on("zoom", function (e) {
+        	 if(e.transform.k < 0.4){
+        		 return;
+        	 }
+        	mapLayer.attr("transform", d3.zoomTransform(this));
+        	console.log("x:",e.transform.x);
+        	console.log("y:",e.transform.y);
+        	console.log("k:",e.transform.k);
+        	//console.log("0:",this.translate);
+        	//console.log("1:",e.translate[1]);
+        	if(e.transform.k > 1){
+        		//d3.selectAll('circle').attr('transform', 'translate('+ e.transform.x + ',' + e.transform.y + ')'); 
+        	}else if(e.transform.k < 1){
+        		//d3.selectAll('circle').attr('transform', 'translate('+ -e.transform.x + ',' + -e.transform.y + ')'); 
+        	}
+        	
+        	//d3.selectAll('circle').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + e.transform.k + ')translate(' + -e.transform.x + ',' + -e.transform.y + ')'); 
+        	//d3.selectAll('circle').translate(e.transform.x, e.transform.y).scale(e.transform.k);
+        	shipLayer.attr("transform", d3.zoomTransform(this));
+        	//shipLayer.attr('transform', 'scale(1)');
+        	//shipLayer.selectAll('circle').attr('transform', 'translate(' + e.transform.x/e.transform.k + ',' + e.transform.y/e.transform.k + ')');
+        	//console.log("e:",this.scale);
+        	//shipLayer.selectAll('circle')
+        	//.attr('transform', (d)=> 'translate(' + projection([d.lon, d.lat])[0] + ',' + isNaN(projection([d.lon, d.lat])[1])?0:projection([d.lon, d.lat])[1] + ')');
+        	//shipLayer.attr('transform', d3.translate(e.transform.x,e.transform.y));
+        	//shipLayer.attr('transform', 'translate(' + e.transform.x + ',' + e.transform.y + ') scale(' + e.scale + ')');
+        	//shipLayer.attr('transform', d3.translate(d3.event.transform.x,d3.event.transform.y));
+        	//shipLayer.attr("transform", d3.zoomTransform(this));
+        	
+        	
+		  }))
+		  .on("wheel", event => event.preventDefault());
+      
+      
+      }
+    
+    
+    document.querySelector('.mapClose').addEventListener('click', (e) => {
+		e.preventDefault();
+		let popLayer = document.querySelector('.layer');
+		popLayer.style.display = "none";
+	});
+</script>
+</div>
+</html>

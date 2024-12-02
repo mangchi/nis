@@ -1,0 +1,24 @@
+rememberMe:
+  parameter: rememberMe
+  tokenValiditySeconds: 86400
+  alwaysRemember: No
+
+user:
+  pwFailKey: pwFailCnt
+  pwFaileCnt: 5
+  pwFaileLockMin: 30
+  
+code:
+  codeKey: code
+  
+work:
+  local: /Users/donghokang/eclipse-workspace/nis/work
+  dev: C:\\nis\\work
+  prod: /data/was/nis/work
+    
+learning:
+  local:  /Users/donghokang/eclipse-workspace/nis/learning
+  dev: C:\\nis\\learning
+  prod: /data/was/nis/learning
+  depth: 3
+  segmented: 0

@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8">
+<title>데이터 레이블링</title>
+</head>
+<div class="content">
+<!-- <script type="text/javascript" th:src="@{/js/tree.js}"></script> -->
+  <div class="pop-wrap classInfoPop">
+    <div class="pop_container04">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">분류정보</div></div>
+        <div class="pop-body" style="padding:0px;">
+          <div class="graph4" style="height:500px;">
+            <div class="gridCont05">
+              <!--트리메뉴 들어가는 자리 시작-->
+				<div class="treeBox">
+				</div>
+			  <!--트리메뉴 들어가는 자리 끝-->
+            </div>
+          </div>
+        </div>
+         <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel classInfoPopBtn" title="취소">취소</button>
+	            <button type="button" class="btn-m-confirm classInfoPopBtn" title="확인하기">확인</button>
+	          </div>
+	     </div>
+      </div>
+    </div>
+  </div>
+<form id="weaponFrm" th:action method="post">
+<div class="pop-wrap weaponInfoPop">
+   <div class="pop-wrap weaponListPop">
+   
+	<div class="pop-wrap weaponCodePop">
+	    <div class="pop_container04">
+	      <div class="pop-bg">
+	        <div class="pop-head"><div class="pop-title">무장정보 추가</div></div>
+	        <div class="pop-body">
+	          <div class="input-group">
+	            <select class="basic basic10" id="weaponGrpId" name="weaponGrpId">
+	            </select>
+ 	            <input type="text" id="weaponNm" name="weaponNm" autocomplete="off" class="basic11" title="무장 정보" readOnly> 
+ 	            <input type="hidden" id="weaponId" name="weaponId"> 
+ 	            <span id="valid_weaponNm" class="inform3 valid"></span>
+	          </div>
+	              
+	        </div>
+	        <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel weaponCodePopBtn" title="취소">취소</button>
+	            <button type="button" class="btn-m-confirm weaponCodePopBtn" title="확인하기">확인</button>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	</div>
+
+	<div class="pop_container03">
+	      <div class="pop-bg">
+	        <div class="pop-head"><div class="pop-title">무장정보 추가</div></div>
+	        <div class="pop-body">
+	          <div class="p-head2">
+	            <div class="input-group">
+	              <!-- <button type="button" class="btn-cal" title="기간입력"></button> -->
+	              <input type="text" id="schWeaponNm" name="schWeaponNm" class="txt-search" title="검색" placeholder="무장이름 검색">
+	              <button type="button" class="btn-search" title="검색버튼"></button>
+	            </div>
+	            <div class="btn-group">
+	              <button type="button" class="btn-upload" title="추가">추가</button>
+	              <button type="button" class="btn-delete" title="선택삭제">선택삭제</button>
+	            </div>
+	          </div>
+	          <!--TabMenu-->
+	          <div class="tabmenu02">
+	          </div>
+	          <div class="sec-grid7">
+	            <!--table-->
+	            <div class="gridCont02">
+	            </div>
+	          </div>
+	        </div>
+	        <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel weaponListPopBtn" title="닫기">닫기</button>
+	          <!--   <button type="button" class="btn-m-confirm weaponListPopBtn" title="확인하기">확인</button> -->
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	 </div>
+ 
+ <div class="pop_container01">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">무장정보 추가</div></div>
+        <div class="pop-body">
+          <div class="p-head2">
+            <div class="btn-group">
+              <button type="button" class="btn-add" title="무장정보 사전등록">무장정보 사전등록</button>
+            </div>
+          </div>
+          <div class="sec-grid7 weaponGrid">
+          </div>
+        </div>       
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel weaponInfoPopBtn" title="닫기">닫기</button>             
+            <button type="button" class="btn-m-confirm weaponInfoPopBtn" title="확인하기">확인</button> 
+          </div>
+        </div>
+        
+      </div>      
+    </div>
+ </div>  
+ </form>
+<form id="aisFrm" th:action method="post">
+<input type="hidden" id="aisId" name="aisId" value = "">
+<div class="pop-wrap aisInfoPop">
+	<div class="pop-wrap aisInfoAddPop">
+	<div class="pop_container02">
+	      <div class="pop-bg">
+	        <div class="pop-head"><div class="pop-title">AIS정보 추가</div></div>
+	        <div class="pop-body">
+	          <div class="search-area02">
+	            <div class="sec-grid7">
+	              <ul class="basic">
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02 icon" for="">MMSI</label>
+	                    <input type="text" id="mmsi" name="mmsi" class="basic12" title="MMSI" placeholder="">
+	                    <span id="valid_mmsi" class="inform3 valid"></span>
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02 icon" for="">IMO No.</label>
+	                    <input type="text" id="imoNo" name="imoNo" class="basic12" title="IMO No." placeholder="">
+	                    <span id="valid_imoNo" class="inform3 valid"></span>
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02 icon" for="">Call sign</label>
+	                    <input type="text" id="callSign" name="callSign" class="basic12" title="call Sign" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">선박명</label>
+	                    <input type="text" id="vesselNm" name="vesselNm" class="basic12" title="선박명" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">국적</label>
+	                    <input type="text" id="national" name="national" class="basic12" title="선박명" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">속력(kts)</label>
+	                    <input type="text" id="speedKts" name="speedKts" class="basic12" title="속력" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">등록회사</label>
+	                    <input type="text" id="company" name="company" class="basic12" title="등록회사" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">건조국</label>
+	                    <input type="text" id="manufactureCountry" name="manufactureCountry" class="basic12" title="건조국" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">선명/국적변경 이력</label>
+	                    <input type="text" id="changeHistory" name="changeHistory" class="basic12" title="선명/국적변경 이력" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">대지침로</label>
+	                    <input type="text" id="" name="" class="basic12" title="대지침로" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">선박홀수</label>
+	                    <input type="text" id="" name="" class="basic12" title="선박홀수" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">목적지</label>
+	                    <input type="text" id="" name="" class="basic12" title="목적지" placeholder="">
+	                  </div>
+	                </li>
+	              </ul>             
+	              <ul class="basic">
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="shipType">선종</label>
+	                    <input type="text" id="shipType" name="shipType" class="basic12" title="선종" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="lengthOverAll">전장(m)</label>
+	                    <input type="text" id="lengthOverAll" name="lengthOverAll" class="basic12" title="전장" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="extremeBreadth">전폭(m)</label>
+	                    <input type="text" id="extremeBreadth" name="extremeBreadth" class="basic12" title="전폭" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="shipWeight">총톤수</label>
+	                    <input type="text" id="shipWeight" name="shipWeight" class="basic12" title="총톤수" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="registeredPort">등록항</label>
+	                    <input type="text" id="registeredPort" name="registeredPort" class="basic12" title="등록항" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="weightTonnage">중량톤수</label>
+	                    <input type="text" id="weightTonnage" name="weightTonnage" class="basic12" title="중량톤수" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="constructionYear">건조년도</label>
+	                    <input type="text" id="constructionYear" name="constructionYear" class="basic12" title="건조년도" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="operatingCompany">운용회사</label>
+	                    <input type="text" id="operatingCompany" name="operatingCompany" class="basic12" title="운용회사" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">선박위치</label>
+	                    <input type="text" id="" name="" class="basic12" title="선박위치" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">시간</label>
+	                    <input type="text" id="" name="" class="basic12" title="시간" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">승조원수</label>
+	                    <input type="text" id="" name="" class="basic12" title="승조원수" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">화물 적재 종류</label>
+	                    <input type="text" id="" name="" class="basic12" title="화물 적재 종류" placeholder="">
+	                  </div>
+	                </li>
+	                <li>
+	                  <div class="input-group">
+	                    <label class="la_basic02" for="">도착 예정 시간</label>
+	                    <input type="text" id="" name="" class="basic12" title="도착 예정 시간" placeholder="">
+	                  </div>
+	                </li>
+	              </ul>
+	              <input type="hidden" id="id" name="id" value="">
+	            </div>
+	          </div>
+	          
+	        </div>
+	        <div class="pop-footer">
+	          <div class="pop-btn-group">
+	            <button type="button" class="btn-m-cancel aisInfoAddPopBtn" title="닫기">닫기</button>
+	            <button type="button" class="btn-m-confirm aisInfoAddPopBtn" title="확인하기">확인</button>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	</div>
+	
+ <div class="pop_container02">
+      <div class="pop-bg">
+        <div class="pop-head"><div class="pop-title">AIS정보 선택</div></div>
+        <div class="pop-body">
+          
+          <div class="p-head2">
+            <div class="input-group">
+              <!--<button type="button" class="btn-cal" title="기간입력"></button>--><!--삭제:20220816-->
+              <input type="text" id="schStr" name="schStr" class="txt-search" title="검색" placeholder="함명/선명 검색">
+              <button type="button" class="btn-search" title="검색버튼"></button>
+            </div>
+            <div class="btn-group">
+              <button type="button" class="btn-upload01" id="addAis" title="등록하기">등록하기</button>
+             <!--  <label class="btn-file" for="aisFile">파일로 찾기</label>
+              <input type="file" id="aisFile" title="파일로 찾기"> -->
+              <button type="button" class="btn-delete" id="deleteAis" title="삭제하기">삭제하기</button>
+            </div>
+          </div>
+          <!--table-->
+          <div class="gridCont01">
+          </div>
+          <!--pagenavigation--><!--추가:20220901-->
+          <div class="page-nav-group" style="padding:10px 0px 0px 0px;">
+          </div>
+        </div>
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel aisInfoPopBtn" title="닫기">닫기</button>
+            <button type="button" class="btn-m-confirm aisInfoPopBtn" title="선택하기">선택</button>
+          </div>
+        </div>  
+      </div>
+    </div>
+    
+</div>
+ </form>
+    <div class="pop_container07">
+      <div class="pop-bg" style="background:var(--bg-panh);">
+        <div class="pop-head"><div class="pop-title">데이터 레이블링</div></div>
+        <div class="pop-body" style="padding:0px 30px;">
+          <div class="sec-grid13" style="margin-top:0px;">
+            <!--그래프 영역 시작-->
+            <div class="g-area3 item">
+              <div class="pannel">
+                <div class="itmGrp p-head">
+                  <div class="btn-group03">
+	                  <button type="button" class="btn-func01 on selectBtn" title="선택"><i class="select"></i></button>
+	                  <button type="button" class="btn-func01 moveBtn" title="이동"><i class="move"></i></button>
+	                  <button type="button" class="btn-func01 zoominBtn" title="확대"><i class="zoomin"></i></button>
+	                  <button type="button" class="btn-func01 zoomoutBtn" title="축소"><i class="zoomout"></i></button>
+	                  <button type="button" class="btn-func01 drawBtn" title="선택드래그"><i class="drag"></i></button>
+	                  <button type="button" class="btn-func01 aiBtn" title="인공지능"><i class="ai"></i></button>
+	                  <button type="button" class="btn-func01 deleteBtn" title="삭제"><i class="delete"></i></button>
+                  </div>
+                </div>
+                <div class="graph3 labelingGraph" style="float: left; position: absolute; width: 1010px; height: 600px;">
+	              <canvas id="imgLayer"  style="z-index: 0; position: absolute; width: 1010px; height: 600px;"></canvas>
+	              <canvas id="drawLayer" style="z-index: 1; position: absolute; width: 1010px; height: 600px;"> </canvas>
+                </div>
+              </div>
+            </div>
+            
+            <div class="g-area3 item grid-tb-sub13">
+            <!--1열-->
+            <div class="pannel1">
+              <div class="itmGrp p-head">
+                <div class="p-tit02">데이터 정보</div>
+              </div>
+              <div class="graph bg" style="padding:10px;">
+                <ul class="list01">
+                  <li>
+                    <label class="basic">데이터</label>
+                    <span class="originFileNm"></span>
+                  </li>
+                  <li>
+                    <label class="basic">탐지수단</label>
+                    <span class="collectionDeviceCd"></span>
+                  </li>
+                  <li>
+                    <label class="basic">주야구분</label>
+                    <span class="dayOrNight"></span>
+                  </li>
+                  <li>
+                    <label class="basic">등록자</label>
+                    <span><i class="createUserNm"></i></span>
+                  </li>
+                  <li>
+                    <label class="basic">등록일시</label>
+                    <span class="createTs"></span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!--2열-->
+            <div class="pannel1">
+              <div class="itmGrp p-head">
+                <div class="p-tit02">태깅 정보</div>
+                <div class="rightBtnGrp btn-group02">
+                    <button type="button" class="btn-s04 objectBtn">설정</button>
+                  </div>
+              </div>
+              <div class="graph bg" style="padding:10px;">
+                <ul class="basic">
+                  <li>
+                    <div class="input-group">
+                      <label class="basic icon" for="classInfoId">Object</label>
+                      <input type="text" id="classInfoId" name="classInfoId" readonly class="basic05" placeholder="">
+                    </div>
+                  </li>
+                  <li>
+                    <div class="input-group">
+                      <label class="basic icon" for="pose">Pose</label>
+                      <select class="basic basic05" id=pose>
+                      </select>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="input-group">
+                      <label class="basic icon" for="truncated">Truncated</label>
+                      <select class="basic basic05" id="truncated">
+                      </select>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="input-group">
+                      <label class="basic icon" for="difficult">Difficult</label>
+                      <select class="basic basic05" id=difficult>
+                      </select>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <!--3열-->
+            <div class="pannel1">
+              <div class="itmGrp p-head">
+                <div class="p-tit02">Tags</div>
+                <div class="rightBtnGrp btn-group05">
+                  <div class="tag_num objCnt"></div>
+                </div>
+              </div>
+              <div class="graph bg" style="padding:10px 20px; height:122px; overflow: auto;"><!--height추가, overflow속성 추가:20220831-->
+                <ul class="list02">
+           <!--        <li><span>어선</span> - 168,482,200,652,</li>
+                  <li><span>컨테이너선</span> - 168,482,200,652,</li>
+                  <li><span>New rectangle</span> - 168,482,200,652,</li> -->
+                </ul>
+              </div>
+            </div>   
+            </div>
+            <div class="g-area3 item grid-tb-sub14">
+
+              <!--1행-->
+              <div class="pannel">
+                <div class="itmGrp p-head">
+                  <div class="p-tit02">좌표 정보</div>
+                </div>
+                <div class="graph bg" style="padding:10px;">
+                  <ul class="list01">
+                    <li>
+                      <label class="basic">Object</label>
+                      <span>컨테이너선</span>
+                    </li>
+                    <li>
+                      <label class="basic">Left</label>
+                      <span class="x1"></span>
+                    </li>
+                    <li>
+                      <label class="basic">Top</label>
+                      <span class="y1"></span>
+                    </li>
+                    <li>
+                      <label class="basic">Right</label>
+                      <span class="x2"></span>
+                    </li>
+                    <li>
+                      <label class="basic">Bottom</label>
+                      <span class="y2"></span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!--2행-->
+              <div class="pannel">
+                <div class="itmGrp p-head" style="padding-right:10px;">
+                  <div class="p-tit02">AIS 정보</div>
+                  <div class="rightBtnGrp btn-group02">
+                    <button type="button" id="aisBtn" name="" class="btn-s03">AIS정보 관리</button>
+                  </div>
+                </div>
+                <div class="graph bg" style="padding:10px;">
+                  <div style="display:inline-block; width:49%; margin-bottom:10px; float:left;">
+                    <ul class="list01">
+                      <li>
+                        <label class="basic">IMO</label>
+                        <span class="imoNo"></span>
+                      </li>
+                      <li>
+                        <label class="basic">MMSI</label>
+                        <span class="mmsi"></span>
+                      </li>
+                      <li>
+                        <label class="basic">함선/함종</label>
+                        <span class="shipType"></span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div style="display:inline-block; width:50%; margin-bottom:10px; float:right;">
+                    <ul class="list01">
+                      <li>
+                        <label class="basic">국적</label>
+                        <span class="national"></span>
+                      </li>
+                      <li>
+                        <label class="basic">호출부호</label>
+                        <span class="callSign"></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!--3행-->
+              <div class="pannel">
+                <div class="itmGrp p-head" style="padding-right:10px;">
+                  <div class="p-tit02">무장정보</div>
+                  <div class="rightBtnGrp btn-group02">
+                    <button type="button" id="weaponBtn" name="" class="btn-s03">무장정보 관리</button>
+                  </div>
+                  <input type="hidden" id="weaponId">
+                </div>
+                <div class="graph bg" style="padding:10px;">
+                  <div style="display:inline-block; width:49%; margin-bottom:10px; float:left;">
+                    <ul class="list01">
+                      <li>
+                        <label class="basic">레이더</label>
+                        <span class="w001"></span>
+                      </li>
+                      <li>
+                        <label class="basic">대공무기</label>
+                        <span class="w003"></span>
+                      </li>
+                      <li>
+                        <label class="basic">대함무기</label>
+                        <span class="w005"></span>
+                      </li>
+                      <li>
+                        <label class="basic">마력</label>
+                        <span class="w007"></span>
+                      </li>
+                      <li>
+                        <label class="basic">추진기</label>
+                        <span class="w009"></span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div style="display:inline-block; width:50%; margin-bottom:10px; float:right;">
+                    <ul class="list01">
+                      <li>
+                        <label class="basic">소나</label>
+                        <span class="w002"></span>
+                      </li>
+                      <li>
+                        <label class="basic">함대지</label>
+                        <span class="w004"></span>
+                      </li>
+                      <li>
+                        <label class="basic">대잠무기</label>
+                        <span class="w006"></span>
+                      </li>
+                      <li>
+                        <label class="basic">주기</label>
+                        <span class="w008"></span>
+                      </li>
+                      <li>
+                        <label class="basic">전원</label>
+                        <span class="w010"></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>  
+            </div>
+          </div>
+        </div>
+       
+        <div class="pop-footer">
+          <div class="pop-btn-group">
+            <button type="button" class="btn-m-cancel labelBtn" title="닫기">닫기</button>
+            <button type="button" class="btn-m-confirm labelBtn" title="확인">확인</button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+<script type="text/javascript">
+  
+    
+	modalInit = (param) => {
+		console.log("modalInit param:",param);
+		labelInit();
+		gfn_setCodeGrpObj('028',document.querySelector('#pose'),true);
+		gfn_setCodeGrpObj('029',document.querySelector('#truncated'),true);
+		gfn_setCodeGrpObj('030',document.querySelector('#difficult'),true);
+		treeInit(document.querySelector('.classInfoPop').querySelector('.treeBox'));
+		if(param != undefined &&  param != null){
+			searchFunc(param);
+		}
+		
+		const labelBtn = document.querySelector('.btn-group03');
+		if(labelBtn){
+			labelBtn.querySelector('.selectBtn').addEventListener('click',selectImg,false);
+		    labelBtn.querySelector('.moveBtn').addEventListener('click',moveImg,false);
+		    labelBtn.querySelector('.zoominBtn').addEventListener('click',zoominImg,false);
+		    labelBtn.querySelector('.zoomoutBtn').addEventListener('click',zoomoutImg,false);
+		    labelBtn.querySelector('.drawBtn').addEventListener('click',drawRect,false);
+		    labelBtn.querySelector('.ai').addEventListener('click',callAi,false);
+		    labelBtn.querySelector('.deleteBtn').addEventListener('click',deleteRect,false);
+		}
+	}	
+
+	
+	searchFunc = (param) => {
+		//let param = {};
+		labeling.arRectangle = new Array();
+		let objUl = document.querySelector('.list02');
+		objUl.innerHTML = '';
+		let aisId = '';
+		let classId = '';
+		let wList = new Array();
+		gfn_asyncJsonCall("/labelInfo",'POST',param).then((data) => {
+			for(let key in data) {
+				if(key.indexOf('fail_msg') > -1){
+					msgCall(data[key],false);
+					break;
+				}
+				if(key.indexOf('list') > -1){
+					let list = data[key];
+					labeling.objCnt =  list.length;
+		        	document.querySelector('.objCnt').innerHTML = list.length;
+		        	for(let idx in list){
+						idx = parseInt(idx);
+						let itm = list[idx];
+						let color = labeling.otherColor;
+			        	if(idx === 0){
+			        		color = labeling.choosedColor;
+			        	}
+			        	
+			        	if(gfn_nullValue(itm.aisId) != '' && aisId != gfn_nullValue(itm.aisId) ){
+			        		aisId = gfn_nullValue(itm.aisId);
+			        		let aisInfo = {id:aisId,mmsi:gfn_nullValue(itm.mmsi),imoNo: gfn_nullValue(itm.imoNo)
+			        				      ,callSign : gfn_nullValue(itm.callSign), national: gfn_nullValue(itm.national),shipType: gfn_nullValue(itm.shipType)};
+			        		aisAry.push(aisInfo);
+			        	}
+			        	
+			        	let rect = new Rectangle(parseFloat(itm.sx), parseFloat(itm.sy), parseFloat(itm.ex),parseFloat(itm.ey),color,idx
+			        			                ,gfn_nullValue(itm.classId),gfn_nullValue(itm.classNm),gfn_nullValue(itm.pose)
+			        			                ,gfn_nullValue(itm.truncated),gfn_nullValue(itm.difficult),gfn_nullValue(itm.aisId));
+			        	labeling.arRectangle.push(rect);
+			        	let objLi = document.createElement('li');
+			        	objLi.classList.add('li_link');
+			        	objLi.setAttribute("value",idx);
+			        	objLi.append(' - '+(parseFloat(itm.sx)).toFixed(0)+','+(parseFloat(itm.ey)).toFixed(0));
+			        	let anch = document.createElement('a');
+	    	    		anch.addEventListener('click',(e) => {
+	    	    			e.preventDefault();
+	    	    			removeObject(e.target);
+	    	    		});
+	    	    		anch.classList.add('btn-del-s')
+	    	    		objLi.appendChild(anch);
+			        	objLi.addEventListener('click',(e) => {
+			        		e.preventDefault();
+			        		setInfo(rect);
+			        	});
+			        	if(gfn_nullValue(itm.classId) != '' && classId != gfn_nullValue(itm.classId) ){
+			        		classId = gfn_nullValue(itm.classId);
+			        		let clsWeapon = {classId : classId,classNm : gfn_nullValue(itm.classNm)  ,on : 'N'};
+	        				if(idx === 0){clsWeapon.on = 'Y';}	
+			        		clsWeaponAry.push(clsWeapon);
+			        	}
+			        	
+			        	if(idx === 0){
+			        		objLi.classList.add('on');
+			        		labeling.rectIndex = idx;
+			        		document.querySelector('.x1').innerHTML = itm.sx;
+					    	document.querySelector('.y1').innerHTML = itm.sy;
+					    	document.querySelector('.x2').innerHTML = itm.ex;
+					    	document.querySelector('.y2').innerHTML = itm.ey;
+					    	document.getElementById('classInfoId').value = gfn_nullValue(itm.classNm);
+					    	document.getElementById('pose').value = itm.pose;
+					    	document.getElementById('truncated').value = itm.truncated;
+					    	document.getElementById('difficult').value = itm.difficult;
+					    	if(gfn_nullValue(itm.aisId) != ''){
+					    		document.querySelector('.mmsi').innerHTML = gfn_nullValue(itm.mmsi);
+	    						document.querySelector('.imoNo').innerHTML = gfn_nullValue(itm.imoNo);
+	    						document.querySelector('.national').innerHTML = gfn_nullValue(itm.national);
+	    						document.querySelector('.shipType').innerHTML = gfn_nullValue(itm.shipType);
+	    						document.querySelector('.callSign').innerHTML = gfn_nullValue(itm.callSign);
+					    	}
+			        	}
+			        	objUl.appendChild(objLi);
+					}
+		 		}
+				
+				if(key.indexOf('info') > -1){
+					let info = data[key];
+					labeling.imageId = info.imageId;
+					document.querySelector('.originFileNm').innerHTML = info.originFileNm;
+					document.querySelector('.collectionDeviceCd').innerHTML = gfn_getCodeVal('006',info.collectionDeviceCd);
+					document.querySelector('.dayOrNight').innerHTML = gfn_getCodeVal('002',info.dayOrNight);
+					document.querySelector('.createUserNm').innerHTML = info.createUserNm;
+					document.querySelector('.createTs').innerHTML = gfn_dateFrmt(info.createTs,'yy-mm-dd hh:mi:ss');
+					drawImg(info,drawDbRect);
+		 		}
+				if(key.indexOf('weaponList') > -1){
+					wList = data[key]; 
+				}
+			}
+		}).then(() => {
+			clsWeaponAry.forEach((clsWeapon,index) => {
+				let weaponGrps = new Array();	
+				let weaponGrpId = '';
+				let weapons = new Array();
+				for(let idx in wList){
+					if(clsWeapon.classId === wList[idx].classId){
+						if(weaponGrpId != wList[idx].weaponGrpId){
+							weaponGrpId = wList[idx].weaponGrpId;
+						    let weaponGrp = {weaponGrpId:wList[idx].weaponGrpId};
+						    let weapon = {weaponId : wList[idx].weaponId , nm :  wList[idx].weaponNm};
+						    weapons = new Array();
+							weapons.push(weapon);
+							weaponGrp.weapons = weapons;
+							weaponGrps.push(weaponGrp);
+						}
+						else{
+							let weapon = {weaponId : wList[idx].weaponId , nm :  wList[idx].weaponNm};
+							weapons.push(weapon);
+						}
+					}
+				}
+				clsWeapon.weaponGrps = weaponGrps;
+			});
+			clsWeaponAry.forEach((clsWItem,index) =>{
+	    		if(clsWItem.on === 'Y'){
+	    			let weaponGrps = clsWItem.weaponGrps;
+	    			if(weaponGrps != undefined && weaponGrps.length > 0){
+	    				weaponGrps.forEach((weaponGrp,index) =>{
+		    				let weaponItem = weaponGrp.weapons[0];
+		    				document.querySelector('.w'+weaponGrp.weaponGrpId).innerHTML = gfn_nullValue(weaponItem.nm);
+		    			});
+	    			}
+	    		}
+	    		
+	    	});
+			
+		});
+    }
+	
+	drawDbRect = () => {
+		//console.log("labeling.arRectangle:",labeling.arRectangle);
+		let imgCvs = document.getElementById('imgLayer');
+    	let imgCtx = imgCvs.getContext('2d');	
+    	// 좌표 정규화해서 새로운 도형을 배열에 추가
+    	imgCvs.width = labeling.img.width;
+    	imgCvs.height = labeling.img.height;
+    	imgCtx.scale(labeling.scaleX,labeling.scaleY);
+    	imgCtx.clearRect(0,0, imgCvs.width, imgCvs.height);
+    	imgCtx.drawImage(labeling.img,labeling.currentX,labeling.currentY,labeling.img.width,labeling.img.height);
+	    
+	    let drawCvs = document.getElementById('drawLayer');
+	    let drawCtx = drawCvs.getContext('2d');
+	    drawCvs.width = labeling.img.width;
+	    drawCvs.height = labeling.img.height;
+	    drawCtx.strokeStyle = "black";
+	    drawCtx.lineWidth = labeling.lineWidth;
+	    drawCtx.scale(labeling.scaleX,labeling.scaleY);
+	    let x = 0;
+	    let y = 0;
+	    for (let i = 0;i < labeling.arRectangle.length;i++) {
+    		let r = labeling.arRectangle[i];
+    		if(r.color === labeling.choosedColor){
+    			x = r.sx+0.5;
+    			y = r.ey-0.5;
+    			break;
+    		}	 
+    		
+	    }
+    	drawRects(x,y,true);
+	}
+	
+    
+    setInfo = (obj)  => {
+    	let objUl = document.querySelector('.list02');
+    	if(objUl.children.length > 0){
+    		objUl.querySelectorAll('li').forEach((li,index) =>{
+    			if(li.value === obj.objIdx){
+    				li.classList.add('on');
+    				labeling.arRectangle.forEach((rect,idx) => {
+    	    			if(index === idx){
+    	    				document.querySelector('.x1').innerHTML = rect.sx;
+    	    		    	document.querySelector('.y1').innerHTML = rect.sy;
+    	    		    	document.querySelector('.x2').innerHTML = rect.ex;
+    	    		    	document.querySelector('.y2').innerHTML = rect.ey;
+    	    		    	document.getElementById('classInfoId').value = gfn_nullValue(rect.classNm);
+    	    		    	document.getElementById('pose').value = gfn_nullValue(rect.pose);
+    	    		    	document.getElementById('truncated').value = gfn_nullValue(rect.truncated);
+    	    		    	document.getElementById('difficult').value = gfn_nullValue(rect.difficult);
+    	    		    	initAis();
+    						initWeapon();
+    	    		    	aisAry.forEach((aisItem,index) =>{
+    	    		    		if(rect.aisId === aisItem.id){
+    	    		    			document.querySelector('.mmsi').innerHTML = gfn_nullValue(aisItem.mmsi);
+    	    						document.querySelector('.imoNo').innerHTML = gfn_nullValue(aisItem.imoNo);
+    	    						document.querySelector('.national').innerHTML = gfn_nullValue(aisItem.national);
+    	    						document.querySelector('.shipType').innerHTML = gfn_nullValue(aisItem.shipType);
+    	    						document.querySelector('.callSign').innerHTML = gfn_nullValue(aisItem.callSign);
+    	    		    		}
+    	    		    	});
+    	    		    	
+    	    		    	console.log("clsWeaponAry:",clsWeaponAry);
+    	    		    	clsWeaponAry.forEach((clsWItem,index) =>{
+    	    		    		if(rect.classId === clsWItem.classId){
+    	    		    			clsWItem.on = 'Y';
+    	    		    			let weaponGrps = clsWItem.weaponGrps;
+    	    		    			if(weaponGrps != undefined && weaponGrps.length > 0){
+    	    		    				weaponGrps.forEach((weaponGrp,index) =>{
+        	    		    				let weaponItem = weaponGrp.weapons[0];
+        	    		    				document.querySelector('.w'+weaponGrp.weaponGrpId).innerHTML = gfn_nullValue(weaponItem.nm);
+        	    		    			});
+    	    		    			}
+    	    		    			
+    	    		    		}
+    	    		    		else{
+    	    		    			clsWItem.on = 'N';
+    	    		    		}
+    	    		    	});
+    	    		    	drawRects(rect.sx+0.5,rect.ey-0.5,true);
+    	    			}
+    	    		});
+    			}
+    			else{
+    				li.classList.remove('on');
+    			}
+    		});
+    	}
+    }
+
+    
+    document.querySelector('.labelingGraph').addEventListener('click',(e) => {
+    	e.preventDefault();
+    	if(labeling.mode === 'zoomin' || labeling.mode === 'zoomout'){
+	    	if(labeling.mode === 'zoomin'){
+	    		if(labeling.scaleX.toFixed(1) ==  2.0){
+	    			labeling.mode = 'zoomout';
+	    			changeOn(document.querySelector('.zoomoutBtn'));
+	    			document.querySelector('.labelingGraph').style.cssText = '';
+	    			document.querySelector('.labelingGraph').style.cssText = 'cursor:zoom-out;';
+	    			labeling.scaleX -= 0.1;
+	    			labeling.scaleY -= 0.1;
+	        	}
+	    		else{
+	    			labeling.scaleX += 0.1;
+	    			labeling.scaleY += 0.1;
+	    		}
+	        	
+	    	}
+	    	else if(labeling.mode === 'zoomout'){
+	    		if(labeling.scaleX.toFixed(1) ==  0.3){
+	    			labeling.mode = 'zoomin';
+	    			changeOn(document.querySelector('.zoominBtn'));
+	    			document.querySelector('.labelingGraph').style.cssText = '';
+	    			document.querySelector('.labelingGraph').style.cssText = 'cursor:zoom-in;';
+	    			labeling.scaleX += 0.1;
+	    			labeling.scaleY += 0.1;
+	        	}
+	    		else{
+	    			labeling.scaleX -= 0.1;
+	    			labeling.scaleY -= 0.1;
+	    		}	
+	    	}
+	    	
+	    	let imgCvs = document.getElementById('imgLayer');
+	    	let imgCtx = imgCvs.getContext('2d');	
+	    	// 좌표 정규화해서 새로운 도형을 배열에 추가
+	    	imgCvs.width = labeling.img.width;
+	    	imgCvs.height = labeling.img.height;
+	    	imgCtx.scale(labeling.scaleX,labeling.scaleY);
+	    	imgCtx.clearRect(0,0, imgCvs.width, imgCvs.height);
+	    	imgCtx.drawImage(labeling.img,labeling.currentX,labeling.currentY,labeling.img.width,labeling.img.height);
+		    
+		    let drawCvs = document.getElementById('drawLayer');
+		    let drawCtx = drawCvs.getContext('2d');
+		    drawCvs.width = labeling.img.width;
+		    drawCvs.height = labeling.img.height;
+		    drawCtx.strokeStyle = "black";
+		    drawCtx.lineWidth = labeling.lineWidth;
+		    drawCtx.scale(labeling.scaleX,labeling.scaleY);
+		    let x = 0;
+		    let y = 0;
+		    for (let i = 0;i < labeling.arRectangle.length;i++) {
+	    		let r = labeling.arRectangle[i];
+	    		if(r.color === labeling.choosedColor){
+	    			x = r.sx+0.5;
+	    			y = r.ey-0.5;
+	    			break;
+	    		}	    		
+		    }
+	    	drawRects(x,y,true);
+    	}
+      
+    });  
+
+    document.querySelector('.labelingGraph').addEventListener('mousemove',(e) => {
+    	e.preventDefault();
+    	let imgCtx = document.getElementById('imgLayer').getContext('2d');
+    	let drawCtx = document.getElementById('drawLayer').getContext('2d');
+    	drawCtx.strokeStyle = "black";
+    	drawCtx.lineWidth = labeling.lineWidth;
+        color = labeling.choosedColor;
+        drawCtx.fillStyle = color;
+        labeling.ex = canvasX(e.clientX)/labeling.scaleX;
+        labeling.ey = canvasY(e.clientY)/labeling.scaleY;
+        labeling.ex = (labeling.ex-labeling.currentX);
+        labeling.ey = (labeling.ey-labeling.currentY);
+     
+        if(labeling.mode === 'move'){
+        	if (labeling.rectIndex != -1) {
+        		// 상대적인 마우스 이동 거리만큼 도형 이동
+ 	        	var r = labeling.arRectangle[labeling.rectIndex];
+ 	        	r.sx += (labeling.ex - labeling.sx);
+ 	            r.sy += (labeling.ey - labeling.sy);
+ 	            r.ex += (labeling.ex - labeling.sx);
+ 	            r.ey += (labeling.ey - labeling.sy);
+ 	            labeling.sx = labeling.ex;
+ 	            labeling.sy = labeling.ey;
+ 	            drawRects(labeling.ex,labeling.ey,true);
+ 	        }
+        	else{
+        		if(labeling.active) {
+        			labeling.currentX = canvasX(e.clientX)/labeling.scaleX - labeling.initialX;
+        			labeling.currentY = canvasX(e.clientY)/labeling.scaleY - labeling.initialY;
+    		        labeling.xOffset = labeling.currentX;
+    		        labeling.yOffset = labeling.currentY;   
+    			    imgCtx.clearRect(0,0, labeling.img.width+1000, labeling.img.height+1000);
+    			    imgCtx.drawImage(labeling.img,labeling.currentX,labeling.currentY,labeling.img.width,labeling.img.height);
+    			    let x = 0;
+    			    let y = 0;
+    			    let objUl = document.querySelector('.list02');
+    			    if(objUl.children.length > 0){
+    			    	objUl.querySelectorAll('li').forEach((li,index) =>{
+    			    		if(li.classList.contains('on')){
+    			    			let r = labeling.arRectangle[li.value];
+    			    			x = r.sx+0.5;
+        		    			y = r.ey-0.5;
+        		    			return false;      		    			
+    			    		}
+		        		});
+    			    }
+    			    drawRects(x,y,true);
+    		        //setTranslate(currentX, currentY, img);
+            	}
+        	}
+        	
+    	}
+    	if(labeling.mode === 'draw'){
+	        // 화면 다시 그리고 현재 도형 그림
+	        if (labeling.drawing) {
+	        	if(labeling.sx > 0 && labeling.sx < labeling.img.width){
+	        		let x1 = Math.min(labeling.sx, labeling.ex);
+		        	let y1 = Math.min(labeling.sy, labeling.ey);
+		        	let x2 = Math.max(labeling.sx, labeling.ex);
+		        	let y2 = Math.max(labeling.sy, labeling.ey);
+		        	let isDelete = false;
+		        	/*
+		        	if(collisionDetection()){
+		        		alert("기존 선택영역과 겹칩니다.");
+		        		isDelete = true;
+		        	}*/
+		        	if (x1 < 1 || y1 < 1 || x2+10 > labeling.img.width || y2+10 > labeling.img.height){
+		        		alert("역역을 벗어났습니다.");
+		        		isDelete = true;
+		        	}
+	        	
+	        	    if(isDelete){
+	        	    	labeling.drawing = false;
+		        		labeling.rectIndex = -1;
+		        		let x = 0;
+	    			    let y = 0;
+	    			    let objUl = document.querySelector('.list02');
+	    			    if(objUl.children.length > 0){
+	    			    	objUl.querySelectorAll('li').forEach((li,index) =>{
+	    			    		if(li.classList.contains('on')){
+	    			    			let r = labeling.arRectangle[li.value];
+	    			    			x = r.sx+0.5;
+	        		    			y = r.ey-0.5;
+	        		    			return false;      		    			
+	    			    		}
+			        		});
+	    			    }
+	    			    drawRects(x,y,true);
+		        		return false;
+	        	    }
+	        	}
+	        	
+	            drawRects(labeling.ex,labeling.ey,false);
+	            drawCtx.fillStyle = color;
+	            drawCtx.fillRect(labeling.sx+labeling.currentX, labeling.sy+labeling.currentY, labeling.ex-labeling.sx, labeling.ey-labeling.sy);
+	            drawCtx.strokeRect(labeling.sx+labeling.currentX, labeling.sy+labeling.currentY, labeling.ex-labeling.sx, labeling.ey-labeling.sy);
+	        }
+    	}
+    });
+    
+    document.querySelector('.labelingGraph').addEventListener('mousedown',(e) => {
+      	e.preventDefault();
+        // 클릭한 좌표 구하고 그 위치에 도형이 있는지 조사
+      	labeling.sx = canvasX(e.clientX)/labeling.scaleX;
+      	labeling.sy = canvasY(e.clientY)/labeling.scaleY;
+      	labeling.sx = (labeling.sx-labeling.currentX);
+      	labeling.sy = (labeling.sy-labeling.currentY);
+        labeling.rectIndex = getRectangle(labeling.sx, labeling.sy);
+      	if(labeling.mode === 'draw'){
+	        // 도형을 클릭한 것이 아니면 그리기 시작
+	        if (labeling.rectIndex === -1 && labeling.sx >= 0 && labeling.sy >= 0 && labeling.sx <= labeling.img.width && labeling.sy <= labeling.img.height) {
+	        	labeling.drawing = true;
+	        }    
+      	}
+      	if(labeling.mode === 'delete'){
+	        if (labeling.rectIndex > -1) {
+	        	let objUl = document.querySelector('.list02');
+	        	if(objUl.children.length > 0){
+	        		labeling.objCnt -= 1;
+	        		document.querySelector('.objCnt').innerText = labeling.objCnt;
+	        		objUl.querySelectorAll('li').forEach((li) => {
+	        			if(li.value === labeling.rectIndex){
+	        				objUl.removeChild(li);
+    	    		    	document.querySelector('.x1').innerHTML = '';
+    	    		    	document.querySelector('.y1').innerHTML = '';
+    	    		    	document.querySelector('.x2').innerHTML = '';
+    	    		    	document.querySelector('.y2').innerHTML = '';
+	        			}
+	        		});
+	        		
+	        	}
+	        	let drawCvs = document.getElementById('drawLayer');
+	        	let drawCtx = drawCvs.getContext('2d');
+	        	for (let i = 0;i < labeling.arRectangle.length;i++) {
+	        		let rect = labeling.arRectangle[i];
+	        		if(rect.objIdx === labeling.rectIndex){
+	        			let lineWidth1 = 0.6;
+	        			drawCtx.clearRect(rect.sx-lineWidth1+labeling.currentX , rect.sy+labeling.lineWidth+labeling.currentY,  (rect.ex+lineWidth1) - (rect.sx-lineWidth1) , (rect.ey+lineWidth1) - (rect.sy-lineWidth1));
+	        			labeling.arRectangle.splice(i, 1);
+	        			break;
+	        		}	        		
+	        	}	        	
+	        }	
+	        labeling.drawing = false;
+	        labeling.rectIndex = -1;
+      	}
+    	if(labeling.mode === 'move'){
+    		labeling.initialX = canvasX(e.clientX)/labeling.scaleX - labeling.xOffset;
+    		labeling.initialY = canvasY(e.clientY)/labeling.scaleY - labeling.yOffset;
+		    if (labeling.rectIndex === -1) {
+		    	labeling.active = true;
+	        }
+	        else{
+	        	let objUl = document.querySelector('.list02');
+	        	if(objUl.children.length > 0){
+	        		objUl.querySelectorAll('li').forEach((li,index) =>{
+	        			if(li.value === labeling.rectIndex){
+	        				li.classList.add('on');
+	        				drawRects(labeling.sx,labeling.sy,false);
+	        			}
+	        			else{
+	        				li.classList.remove('on');
+	        			}
+	        		});
+	        	}
+	        }
+      	}
+  
+    });
+    
+    removeObject = (obj) => {
+    	let li = obj.parentNode;
+    	labeling.objCnt -= 1;
+    	let objUl = document.querySelector('.list02');
+
+   		let drawCvs = document.getElementById('drawLayer');
+       	let drawCtx = drawCvs.getContext('2d');
+       	for (let i = 0;i < labeling.arRectangle.length;i++) {
+       		let rect = labeling.arRectangle[i];
+       		if(rect.objIdx === li.value){
+       			let lineWidth1 = 0.6;
+       			drawCtx.clearRect(rect.sx-lineWidth1+labeling.currentX , rect.sy+labeling.lineWidth+labeling.currentY,  (rect.ex+lineWidth1) - (rect.sx-lineWidth1) , (rect.ey+lineWidth1) - (rect.sy-lineWidth1));
+       			labeling.arRectangle.splice(i, 1);
+       			break;
+       		}	        		
+       	}
+        objUl.removeChild(li);
+    	
+    }
+    
+    document.querySelector('.labelingGraph').addEventListener('mouseup',(e) => {
+    	e.preventDefault();
+    	console.log(labeling.mode);
+    	if(labeling.mode === 'select'){
+		    if (labeling.rectIndex > -1) {
+	        	let objUl = document.querySelector('.list02');
+	        	if(objUl.children.length > 0){
+	        		objUl.querySelectorAll('li').forEach((li,index) =>{
+	        			if(li.value === labeling.rectIndex){
+	        				li.classList.add('on');
+	        				let rect = labeling.arRectangle[labeling.rectIndex];
+	        				document.querySelector('.x1').innerHTML = rect.sx;
+    	    		    	document.querySelector('.y1').innerHTML = rect.sy;
+    	    		    	document.querySelector('.x2').innerHTML = rect.ex;
+    	    		    	document.querySelector('.y2').innerHTML = rect.ey;
+    	    		    	document.getElementById('classInfoId').value = gfn_nullValue(rect.classNm);
+    	    		    	document.getElementById('pose').value = gfn_nullValue(rect.pose);
+    	    		    	document.getElementById('truncated').value = gfn_nullValue(rect.truncated);
+    	    		    	document.getElementById('difficult').value = gfn_nullValue(rect.difficult);
+    	    		    	initAis();
+    						initWeapon();
+    	    		    	aisAry.forEach((aisItem,index) =>{
+    	    		    		if(rect.aisId === aisItem.id){
+    	    		    			document.querySelector('.mmsi').innerHTML = gfn_nullValue(aisItem.mmsi);
+    	    						document.querySelector('.imoNo').innerHTML = gfn_nullValue(aisItem.imoNo);
+    	    						document.querySelector('.national').innerHTML = gfn_nullValue(aisItem.national);
+    	    						document.querySelector('.shipType').innerHTML = gfn_nullValue(aisItem.shipType);
+    	    						document.querySelector('.callSign').innerHTML = gfn_nullValue(aisItem.callSign);
+    	    		    		}
+    	    		    	});
+    	
+    	    		    	clsWeaponAry.forEach((clsWItem,index) =>{
+    	    		    		
+    	    		    		if(rect.classId === clsWItem.classId){
+    	    		    			console.log("rect.classId:",rect.classId);
+        	    		    		console.log("clsWItem.classId:",clsWItem.classId);
+    	    		    			clsWItem.on = 'Y';
+    	    		    			let weaponGrps = clsWItem.weaponGrps;
+    	    		    			if(weaponGrps != undefined && weaponGrps.length > 0){
+    	    		    				weaponGrps.forEach((weaponGrp,index) =>{
+        	    		    				let weaponItem = weaponGrp.weapons[0];
+        	    		    				document.querySelector('.w'+weaponGrp.weaponGrpId).innerHTML = gfn_nullValue(weaponItem.nm);
+        	    		    			});
+    	    		    			}
+    	    		    			
+    	    		    		}
+    	    		    		else{
+    	    		    			clsWItem.on = 'N';
+    	    		    		}
+    	    		    	});
+    	    		    	console.log("clsWeaponAry:",clsWeaponAry);
+    	    		    	console.log("labeling.rectIndex:",labeling.rectIndex);
+    	    		    	console.log("rect.sx:",rect.sx);
+    	    		    	let liTxt = ' - '+rect.sx.toFixed(3)+','+rect.ey.toFixed(3);
+    	    		    	if(li.children.length === 1){
+    	    		    		let liSpan = li.children[0];
+    	    		    		li.innerHTML = '';
+    	    		    		li.append(liSpan);
+    	    				}
+    	    		    	else{
+    	    		    		li.innerHTML = '';
+    	    		    	}
+    	    	    		li.append(liTxt);
+	        				drawRects(labeling.sx,labeling.sy,false);
+	        			}
+	        			else{
+	        				li.classList.remove('on');
+	        			}
+
+	        		});
+	        	}
+	        }
+		  
+    	}
+    	
+    	// 좌표 정규화해서 새로운 도형을 배열에 추가
+    	if(labeling.mode === 'draw'){
+	        if (labeling.drawing){
+	        	let x1 = Math.min(labeling.sx, labeling.ex);
+	        	let y1 = Math.min(labeling.sy, labeling.ey);
+	        	let x2 = Math.max(labeling.sx, labeling.ex);
+	        	let y2 = Math.max(labeling.sy, labeling.ey);
+	        	let drawCvs = document.getElementById('drawLayer');
+	        	let drawCtx = drawCvs.getContext('2d');
+	        	let lineWidth1 = 0.6;
+	        	if (x2 - x1 < 6/labeling.scaleX || y2 - y1 < 6/labeling.scaleY){      		
+	        		labeling.drawing = false;
+	        		labeling.rectIndex = -1;
+	        		let x = 0;
+    			    let y = 0;
+                    let objUl = document.querySelector('.list02');
+    			    if(objUl.children.length > 0){
+    			    	objUl.querySelectorAll('li').forEach((li,index) =>{
+    			    		if(li.classList.contains('on')){
+    			    			let r = labeling.arRectangle[li.value];
+    			    			x = r.sx+0.5;
+        		    			y = r.ey-0.5;
+        		    			return false;      		    			
+    			    		}
+		        		});
+    			    }
+    			    drawRects(x,y,true);
+	        		return false;
+		        }    
+	        	let objIdx = labeling.objCnt;
+	        	labeling.arRectangle.push(new Rectangle(x1, y1, x2, y2,color,objIdx,'blank',''));
+	        	document.querySelector('.x1').innerHTML = x1;
+		    	document.querySelector('.y1').innerHTML = y1;
+		    	document.querySelector('.x2').innerHTML = x2;
+		    	document.querySelector('.y2').innerHTML = y2;
+		    	document.getElementById('classInfoId').value = '';
+		    	document.getElementById('pose').value = '';
+		    	document.getElementById('truncated').value = '';
+		    	document.getElementById('difficult').value = '';
+		    	initAis();
+				initWeapon();
+	        	let objUl = document.querySelector('.list02');
+	        	let objLi = document.createElement('li');
+	        	objLi.classList.add('li_link');
+	        	if(objUl.children.length > 0){
+	        		objUl.querySelectorAll('.on').forEach((li) =>{
+	        			li.classList.remove('on');
+	        		});
+	        	}
+	        	objLi.classList.add('on');
+	        	objLi.setAttribute("value",objIdx);
+	        	objLi.addEventListener('click',(e) => {
+	        		e.preventDefault();
+	        		setInfo(new Rectangle(x1, y1, x2, y2,color,objIdx));
+	        	});
+	        	objLi.append(' - '+(x1).toFixed(3)+','+(y2).toFixed(3));
+	        	let anch = document.createElement('a');
+	    		anch.addEventListener('click',(e) => {
+	    			removeObject(e.target);
+	    		});
+	    		anch.classList.add('btn-del-s')
+	    		objLi.appendChild(anch);
+	        	objUl.appendChild(objLi);
+	        	labeling.objCnt += 1;
+	        	document.querySelector('.objCnt').innerHTML = labeling.objCnt;
+	        }
+	        
+	       
+    	}
+    	if(labeling.mode === 'move'){
+    		labeling.initialX = labeling.currentX;
+    		labeling.initialY = labeling.currentY;
+	        labeling.active = false;
+	        if(labeling.rectIndex > -1){
+	        	let objUl = document.querySelector('.list02');
+	        	if(objUl.children.length > 0){
+	        		objUl.querySelectorAll('li').forEach((li,index) =>{
+	        			if(li.value === labeling.rectIndex){
+	        				let rect = labeling.arRectangle[labeling.rectIndex];
+	        				document.querySelector('.x1').innerHTML = rect.sx;
+    	    		    	document.querySelector('.y1').innerHTML = rect.sy;
+    	    		    	document.querySelector('.x2').innerHTML = rect.ex;
+    	    		    	document.querySelector('.y2').innerHTML = rect.ey;
+    	    		    	document.getElementById('classInfoId').value = gfn_nullValue(rect.classNm);
+    	    		    	document.getElementById('pose').value = gfn_nullValue(rect.pose);
+    	    		    	document.getElementById('truncated').value = gfn_nullValue(rect.truncated);
+    	    		    	document.getElementById('difficult').value = gfn_nullValue(rect.difficult);
+    	    		    	initAis();
+    						initWeapon();
+    	    		    	aisAry.forEach((aisItem,index) =>{
+    	    		    		if(rect.aisId === aisItem.id){
+    	    		    			document.querySelector('.mmsi').innerHTML = gfn_nullValue(aisItem.mmsi);
+    	    						document.querySelector('.imoNo').innerHTML = gfn_nullValue(aisItem.imoNo);
+    	    						document.querySelector('.national').innerHTML = gfn_nullValue(aisItem.national);
+    	    						document.querySelector('.shipType').innerHTML = gfn_nullValue(aisItem.shipType);
+    	    						document.querySelector('.callSign').innerHTML = gfn_nullValue(aisItem.callSign);
+    	    		    		}
+    	    		    	});
+    	    		    	
+    	    		    	clsWeaponAry.forEach((clsWItem,index) =>{
+    	    		    		if(rect.classId === clsWItem.classId){
+    	    		    			clsWItem.on = 'Y';
+    	    		    			let weaponGrps = clsWItem.weaponGrps;
+    	    		    			console.log("weaponGrps:",weaponGrps);
+    	    		    			if(weaponGrps != undefined && weaponGrps.length > 0){
+    	    		    				weaponGrps.forEach((weaponGrp,index) =>{
+        	    		    				let weaponItem = weaponGrp.weapons[0];
+        	    		    				document.querySelector('.w'+weaponGrp.weaponGrpId).innerHTML = gfn_nullValue(weaponItem.nm);
+        	    		    			});
+    	    		    			}
+    	    		    		}
+    	    		    		else{
+    	    		    			clsWItem.on = 'N';
+    	    		    		}
+    	    		    	});
+    	    		    	
+    	    		    	let liTxt = ' - '+rect.sx.toFixed(3)+','+rect.ey.toFixed(3);
+    	    		    	if(li.children.length === 1){
+    	    		    		let liSpan = li.children[0];
+    	    		    		li.innerHTML = '';
+    	    		    		li.append(liSpan);
+    	    				}
+    	    		    	else{
+    	    		    		li.innerHTML = '';
+    	    		    	}
+    	    	    		li.append(liTxt);
+	        			}	        		
+	        		});
+	        	}
+	        }	     
+    	}
+    	labeling.drawing = false;
+    	labeling.rectIndex = -1;
+    });  
+    
+    document.querySelector('.objectBtn').addEventListener('click',(e) => {
+    	e.preventDefault();
+    	let objUl = document.querySelector('.list02');
+    	if(objUl.children.length > 0){
+    		objUl.querySelectorAll('li').forEach((li,index) =>{
+    			if(li.classList.contains('on')){
+    				selectedObjIndex = index;
+    				return false;
+    			}
+    		});
+    	}
+		labeling.arRectangle.forEach((rectanle,index) => {
+			if(selectedObjIndex === index){
+				rectanle.pose = document.getElementById('pose').value;
+				rectanle.truncated = document.getElementById('truncated').value;
+				rectanle.difficult = document.getElementById('difficult').value;
+				return false;
+			}
+		});
+    });
+	
+
+    document.querySelector('.layer').querySelectorAll('.btn-m-cancel').forEach((btnCancel) => {
+    	btnCancel.addEventListener('click', (e) => {
+    		e.preventDefault();
+    		let popLayer = document.querySelector('.layer');
+    		if(e.target.classList.contains('weaponCodePopBtn')){
+    			gfn_removeValidHtml(document.getElementById('weaponFrm'),'span');
+    			popLayer = document.querySelector('.weaponCodePop');
+    		}
+    		if(e.target.classList.contains('weaponListPopBtn')){
+    			popLayer = document.querySelector('.weaponListPop');
+    			//document.getElementById('weaponBtn').click();
+    		}
+    		if(e.target.classList.contains('weaponInfoPopBtn')){
+    			popLayer = document.querySelector('.weaponInfoPop');
+    		}
+    		if(e.target.classList.contains('aisInfoPopBtn')){
+    			popLayer = document.querySelector('.aisInfoPop');
+    		}
+    		if(e.target.classList.contains('aisInfoAddPopBtn')){
+    			popLayer = document.querySelector('.aisInfoAddPop');
+    		}
+    		if(e.target.classList.contains('classInfoPopBtn')){
+    			popLayer = document.querySelector('.classInfoPop');
+    		}
+    		popLayer.style.display = "none";
+    	});
+    });
+    
+    initAis = () => {
+    	document.querySelector('.mmsi').innerHTML = '';
+		document.querySelector('.imoNo').innerHTML = '';
+		document.querySelector('.national').innerHTML = '';
+		document.querySelector('.shipType').innerHTML = '';
+		document.querySelector('.callSign').innerHTML = '';
+    }
+    
+    initWeapon = () => {
+    	document.querySelector('.w001').innerHTML = '';
+		document.querySelector('.w002').innerHTML = '';
+		document.querySelector('.w003').innerHTML = '';
+		document.querySelector('.w004').innerHTML = '';
+		document.querySelector('.w005').innerHTML = '';
+		document.querySelector('.w006').innerHTML = '';
+		document.querySelector('.w007').innerHTML = '';
+		document.querySelector('.w008').innerHTML = '';
+		document.querySelector('.w009').innerHTML = '';
+		document.querySelector('.w010').innerHTML = '';
+    }
+    
+    saveLabelAfter = () => {
+    	let popLayer = document.querySelector('.layer'); 
+    	popLayer.style.display = "none";
+    }
+    
+    document.querySelector('.layer').querySelectorAll('.btn-m-confirm').forEach((confirmCancel) => {
+    	confirmCancel.addEventListener('click', (e) => {
+    		e.preventDefault();
+    		let popLayer = document.querySelector('.layer'); 
+    		if(e.target.classList.contains('labelBtn')){
+    			if(labeling.arRectangle.length === 0){
+    				msgCall('레이블링 정보가 누락되었습니다.',false);
+    			}
+    			let existClassInfo = true;
+    			labeling.arRectangle.forEach((rectanle,index) => {
+    				rectanle.sx += '';
+    				rectanle.sy += '';
+    				rectanle.ex += '';
+    				rectanle.ey += '';
+    				console.log("classId:",gfn_nullValue(rectanle.classId));
+    				if(gfn_nullValue(rectanle.classId)  === '' || gfn_nullValue(rectanle.classId)  === 'blank'){
+    					existClassInfo = false;
+    				}
+    				if(gfn_nullValue(rectanle.pose)  === '' || gfn_nullValue(rectanle.pose)  === 'blank'){
+    					existClassInfo = false;
+    				}
+    				if(gfn_nullValue(rectanle.truncated)  === '' || gfn_nullValue(rectanle.truncated)  === 'blank'){
+    					existClassInfo = false;
+    				}
+    				if(gfn_nullValue(rectanle.difficult)  === '' || gfn_nullValue(rectanle.difficult)  === 'blank'){
+    					existClassInfo = false;
+    				}
+	    		});
+    			if(!existClassInfo){
+    				msgCall('태킹정보가 누락되었습니다.',false);
+    				return;
+    			}
+    			let weaponList = new Array();
+    			let idx = 0;
+    			clsWeaponAry.forEach((clsWeapon) => {
+    				if(clsWeapon.hasOwnProperty('weaponGrps')){
+    					clsWeapon.weaponGrps.forEach((weaponGrp) => {
+    						weaponGrp.weapons.forEach((weapon) => {
+    							idx += 1;
+    							let weaponItem = weapon;
+    							weaponItem.classId = clsWeapon.classId;
+    							weaponItem.idx = idx;
+    							weaponItem.weaponGrpId = weaponGrp.weaponGrpId;
+    							weaponList.push(weaponItem);
+        					});
+    					});
+    				}
+    			});
+    			console.log("objectList:",labeling.arRectangle);
+    			console.log("clsWeaponAry:",clsWeaponAry);
+    			console.log("weaponList:",weaponList);
+    			let param = {imageId : labeling.imageId
+    					   , objectList : labeling.arRectangle
+    					   , weaponList : weaponList};
+    			gfn_asyncJsonCall("/labelSave",'POST',param,'saveLabelAfter()');
+    		}
+    		else if(e.target.classList.contains('weaponCodePopBtn')){
+    			popLayer = document.querySelector('.weaponCodePop');
+    			popLayer.querySelector('#weaponNm').value = popLayer.querySelector('#weaponNm').value.trim();
+    			const weaponGrpId = document.getElementById('weaponGrpId');
+                
+    			gfn_removeValidHtml(document.getElementById('weaponFrm'),'span');
+    			let requiredParams = {weaponNm: "무장정보이름"
+                                     };
+    			gfn_asyncCall('/saveWeapon','POST',document.getElementById('weaponFrm'),requiredParams,popLayer,"weaponAfterFunc('"+weaponGrpId.value+"')");
+    		}
+    		else if(e.target.classList.contains('weaponListPopBtn')){
+    			popLayer = document.querySelector('.weaponListPop');
+    			popLayer.style.display = "none";
+    		}
+    		else if(e.target.classList.contains('weaponInfoPopBtn')){
+    			console.log("weaponInfoPopBtn....................");
+    			popLayer = document.querySelector('.weaponInfoPop');
+    			let selectAreas =  document.querySelectorAll('.select-area');
+    			let hasChild = false;
+    			let isWeapon = false;
+    			if(document.getElementById('classInfoId').value === ''){
+    				msgCall('선박종류를 먼저 설정하세요.',false);
+    				popLayer.style.display = "none";
+    				return;
+    			}
+    			let weaponGrps = new Array();
+    			selectAreas.forEach((selectArea) => {
+    				hasChild = false;
+    				let weapons = new Array();
+    				for(let ele of selectArea.childNodes){
+    					if(ele.tagName === 'DIV'){
+    						hasChild = true;
+    						isWeapon = true;
+    						let weapon = {weaponId: ele.getAttribute('data-id')
+				                          ,nm : ele.innerText
+				                          };
+    						weapons.push(weapon);
+    					}
+    				}
+    				if(hasChild){
+    					let weaponGrp = {weaponGrpId : selectArea.getAttribute('data-id'), weapons : weapons};
+    					weaponGrps.push(weaponGrp);  					
+    				}   				
+    			});
+    			if(!isWeapon){
+    				msgCall('무장정보를 설정하세요.',false);
+                    return;
+    			}
+    			else{
+    				initWeapon();
+    				console.log("clsWeaponAry:",clsWeaponAry);
+    				clsWeaponAry.forEach((clsWeaponItem,index) => {
+    	    			if(clsWeaponItem.on === 'Y'){
+    	    				clsWeaponItem.weaponGrps = weaponGrps;
+    	    				weaponGrps.forEach((weaponGrp,index) =>{
+    	    					let weaponItem = weaponGrp.weapons[0];
+    	    					document.querySelector('.w'+weaponGrp.weaponGrpId).innerHTML = gfn_nullValue(weaponItem.nm);
+    	    				});   	    				
+    	    				return false;
+    	    			}
+    	    		});
+    				
+        			popLayer.style.display = "none";
+    			}
+    			
+    		}
+    		else if(e.target.classList.contains('aisInfoPopBtn')){
+    			console.log("aisInfoPopBtn....................");
+    			popLayer = document.querySelector('.aisInfoPop');
+    			let checkedData = gridCheckedData(popLayer.querySelector('.gridCont01'));
+    			if(labeling.arRectangle.length === 0){
+    				msgCall('설정할 개체가 없습니다.',false);
+    				popLayer.style.display = "none";
+    				return;
+    			}
+    			if(Object.keys(checkedData).length === 0 ){
+    				msgCall(msg.aisChk,false);
+    			}
+    			else if(Object.keys(checkedData['list']).length != 1){
+    				msgCall(msg.aisChk,false);
+    			}
+    			else{
+    				/* document.getElementById('aisId').innerHTML = checkedData.list[0]['id']; */
+    				document.querySelector('.mmsi').innerHTML = checkedData.list[0]['mmsi'];
+					document.querySelector('.imoNo').innerHTML = gfn_nullValue(checkedData.list[0]['imoNo']);
+					document.querySelector('.national').innerHTML = gfn_nullValue(checkedData.list[0]['national']);
+					document.querySelector('.shipType').innerHTML = gfn_nullValue(checkedData.list[0]['shipType']);
+					document.querySelector('.callSign').innerHTML = gfn_nullValue(checkedData.list[0]['callSign']);
+					let isDup = false;
+					aisAry.forEach((aisItem,index) => {
+    	    			if(aisItem.id === checkedData.list[0]['id']){
+    	    				isDup = true;
+    	    				aisItem.mmsi = checkedData.list[0]['mmsi'];
+    	    				aisItem.imoNo = checkedData.list[0]['imoNo'];
+    	    				aisItem.national = checkedData.list[0]['national'];
+    	    				aisItem.shipType = checkedData.list[0]['shipType'];
+    	    				aisItem.callSign = checkedData.list[0]['callSign'];
+    	    				return false;
+    	    			}
+    	    		});
+					if(!isDup){
+						let aisData = {id: checkedData.list[0]['id']
+						             , mmsi :checkedData.list[0]['mmsi']
+						             , imoNo : checkedData.list[0]['imoNo']
+						             , national : checkedData.list[0]['national']
+						             , shipType : checkedData.list[0]['shipType']
+						             , callSign : checkedData.list[0]['callSign']
+						              };
+						aisAry.push(aisData);
+					}
+					let selectedObjIndex = 0;
+    				let objUl = document.querySelector('.list02');
+        	    	if(objUl.children.length > 0){
+        	    		objUl.querySelectorAll('li').forEach((li,index) =>{
+        	    			if(li.classList.contains('on')){
+        	    				selectedObjIndex = index;
+        	    				return false;
+        	    			}
+        	    		});
+        	    	}
+					labeling.arRectangle.forEach((rectanle,index) => {
+    	    			if(selectedObjIndex === index){
+    	    				rectanle.aisId = checkedData.list[0]['id'];
+    	    				return false;
+    	    			}
+    	    		});
+    				popLayer.style.display = "none";
+    			}
+    		}
+    		else if(e.target.classList.contains('aisInfoAddPopBtn')){
+    			popLayer = document.querySelector('.aisInfoAddPopBtn');
+    			let requiredParams = {mmsi: "mmsi"
+		                            , imoNo: "imoNo"
+		                             };
+		        gfn_asyncCall('/saveAis','POST',document.getElementById('aisFrm'),requiredParams,popLayer,'saveAisAfter()');
+            }
+    		else if(e.target.classList.contains('classInfoPopBtn')){
+    			popLayer = document.querySelector('.classInfoPop');
+    			if(labeling.arRectangle.length === 0){
+    				msgCall('설정할 개체가 없습니다.',false);
+    				popLayer.style.display = "none";
+    				return;
+    			}
+    			
+    			let chkObj = false;
+    			let classId = null;
+    			let classNm = '';
+    			document.querySelectorAll('.treejs-label').forEach((label) => {
+    				if(label.classList.contains('on')){
+    					chkObj = true;
+    					classId = label.parentNode.getAttribute('data-id');
+    					classNm = label.innerText;
+    					return false;
+		    		}
+    				
+    			});  	
+    			if(!chkObj){
+    				msgCall('선박종류를 선택하세요.',false);
+    				return;
+    			}
+    			let objUl = document.querySelector('.list02');
+    			let selectObject = false;
+    			let selectedObjIndex = 0;
+    	    	if(objUl.children.length > 0){
+    	    		objUl.querySelectorAll('li').forEach((li,index) =>{
+    	    			if(li.classList.contains('on')){
+    	    				selectObject = true;
+    	    				selectedObjIndex = index;
+    	    				document.getElementById('classInfoId').value = classNm;
+    	    				return false;
+    	    			}
+    	    			
+    	    		});
+    	    	}
+    	    	labeling.arRectangle.forEach((rectanle,index) => {
+	    			if(selectedObjIndex === index){
+	    				rectanle.classId = classId;
+	    				rectanle.classNm = classNm;
+	    				return false;
+	    			}
+	    		});
+    	    	let isDup = false;
+            	clsWeaponAry.forEach((clsWeaponItem,index) => {
+	    			if(clsWeaponItem.classId === classId){
+	    				isDup = true;
+	    				clsWeaponItem.on = 'Y';
+	    			}
+	    			else{
+	    				clsWeaponItem.on = 'N';
+	    			}
+	    		});
+            	if(!isDup){
+            		let clsWeapon = {classId : classId ,classNm : classNm ,on : 'Y'};
+                	clsWeaponAry.push(clsWeapon);
+            	}
+    			
+    			popLayer.style.display = "none";
+    		}
+        });
+    });  	
+    
+    layerRowClick = (row) => {
+    	console.log("ais layerRowClick");
+    	document.getElementById('aisId').value = row.id;
+    	if(document.querySelector('.aisInfoPop').style.display === 'block'){
+    		gfn_removeValidHtml(document.getElementById('aisFrm'),'span')
+    		let popLayer = document.querySelector('.aisInfoAddPop');
+    		popLayer.querySelector('.pop-title').innerText = 'AIS정보 수정';
+    		popLayer.style.display = "block";
+    		gfn_asyncJsonCall("/aisInfo",'POST',row).then((data) => {
+    			for(let key in data) {
+    				if(key.indexOf('info') > -1){
+    					let item = data[key];
+    					if(item != null){
+    						let inputs = popLayer.getElementsByTagName('input');
+    						for (let input of inputs) {
+    							if(input.id != ''){
+    								input.value = gfn_nullValue(item[input.id]);
+    							}
+    						}
+    					}
+    		 		}			
+    			}
+    		}); 
+    	}
+    }
+    
+    layerRowDblClick = (row) => {
+    	
+    }
+///////////////////////////////////////////////////////////AIS////////////////////////////
+    saveAisAfter = () => {
+    	//document.querySelector('.aisInfoAddPop').style.display = "none";
+    	if(document.getElementById('aisId').value != ''){
+    		aisAry.forEach((ais,aisIdx) => {
+				if(document.getElementById('aisId').value === ais.id ){
+					ais.mmsi = document.getElementById('mmsi').value;
+					ais.imoNo = document.getElementById('imoNo').value;
+					ais.callSign = document.getElementById('callSign').value;
+					ais.shipType = document.getElementById('shipType').value;
+					ais.national = document.getElementById('national').value;
+				}
+			});
+    		let objUl = document.querySelector('.list02');
+    	    if(objUl.children.length > 0){
+    	    	objUl.querySelectorAll('li').forEach((li,index) =>{
+    	    		if(li.classList.contains('on')){
+    	    			let r = labeling.arRectangle[li.value];
+    	    		    if(r.aisId === document.getElementById('aisId').value){
+    	    		    	document.querySelector('.mmsi').innerHTML = document.getElementById('mmsi').value;
+    						document.querySelector('.imoNo').innerHTML = document.getElementById('imoNo').value;
+    						document.querySelector('.national').innerHTML = document.getElementById('national').value;
+    						document.querySelector('.shipType').innerHTML = document.getElementById('shipType').value;
+    						document.querySelector('.callSign').innerHTML = document.getElementById('callSign').value;
+    	    		    }	    			
+    	    		}
+        		});
+    	    }
+    		
+    	}
+    	gfn_initObj(document.querySelector('.aisInfoAddPop'));
+    	gfn_removeValidHtml(document.getElementById('aisFrm'),'span')
+    	searchAisFunc();
+    }
+
+	document.getElementById('aisBtn').addEventListener('click', (e) => {
+		e.preventDefault();
+		//document.body.onfocus = fileChk;
+		let popLayer = document.querySelector('.aisInfoPop');
+		popLayer.querySelector('#schStr').value = '';
+		popLayer.querySelector('.page-nav-group').innerHTML = '';
+		pageInit(popLayer.querySelector('.page-nav-group'),searchAisFunc,pagination.rowPerPage);
+		const headColumns =  [{id:"chk",width: "45px"}
+  			                 ,{id:"id",width: "0px"}
+			                 ,{id:"imoNo",width: "80px",label:"IMO",sortable:"Y",data_cellType:"tdCCell"}  
+			                 ,{id:"mmsi",width: "80px",label:"MMSI",sortable:"Y",data_cellType:"tdCCell"}
+			                 ,{id:"shipType",width: "100px",label:"함종/선종",data_cellType:"tdCCell"}
+			                 ,{id:"vesselNm",width: "140px",label:"함명/선명(HULL No)"}
+			                 ,{id:"national",width: "80px",label:"국적",data_cellType:"tdCCell"}
+			                 ,{id:"callSign",width: "80px",label:"호출부호",data_cellType:"tdCCell"}
+			                 ];
+		popLayer.querySelector(".gridCont01").innerHTML = "";
+        gridInit(document.querySelector('.aisInfoPop').querySelector(".gridCont01"),headColumns);
+        searchAisFunc();
+		popLayer.style.display = "block";
+	});
+	searchAisFunc = (invoker,isId) => {
+		console.log("searchAisFunc");
+		const aisInfoPop = document.querySelector('.aisInfoPop');
+		document.getElementById('aisId').value = '';
+		if(isId != undefined){
+			let selectedObjIndex = 0;
+			let objUl = document.querySelector('.list02');
+	    	if(objUl.children.length > 0){
+	    		objUl.querySelectorAll('li').forEach((li,index) =>{
+	    			if(li.classList.contains('on')){
+	    				selectedObjIndex = index;
+	    				return false;
+	    			}
+	    		});
+	    	}
+	    	labeling.arRectangle.forEach((rectanle,index) => {
+				if(selectedObjIndex === index){
+					document.getElementById('aisId').value = gfn_nullValue(rectanle.aisId);
+					return false;
+				}
+			});
+		}
+		pageSearch(document.getElementById('aisFrm'),"/aisList",aisInfoPop.querySelector('.gridCont01'),aisInfoPop.querySelector('.page-nav-group'),invoker); 
+    }
+	
+	document.querySelector('.aisInfoPop').querySelector('.btn-search').addEventListener('click', (e) => {
+		searchAisFunc();
+	});
+	
+	document.getElementById('addAis').addEventListener('click', (e) => {
+		console.log("ais 추가");
+		e.preventDefault();
+		gfn_initObj(document.querySelector('.aisInfoAddPop'));
+		gfn_removeValidHtml(document.getElementById('aisFrm'),'span')
+		let popLayer = document.querySelector('.aisInfoAddPop');
+		popLayer.querySelector('.pop-title').innerText = 'AIS정보 추가';
+		popLayer.style.display = "block";
+
+	});
+	
+	deleteAisAfter = () => {
+		const aisInfoPop = document.querySelector('.aisInfoPop');
+		let checkedData = gridCheckedData(aisInfoPop.querySelector('.gridCont01'));  
+		for(let key in checkedData){
+			let chkItems = checkedData[key];
+			for(let itmKey in chkItems){
+				labeling.arRectangle.forEach((obj,idx) => {
+					if(chkItems[itmKey].id === obj.aisId ){
+						obj.aisId = '';
+						return false;
+					}
+				});
+				aisAry.forEach((ais,aisIdx) => {
+					if(chkItems[itmKey].id === ais.id ){
+						aisAry.splice(aisIdx, 1); 
+						aisIdx--; 
+						return false;
+					}
+				});
+			}
+		}
+		let objUl = document.querySelector('.list02');
+	    if(objUl.children.length > 0){
+	    	objUl.querySelectorAll('li').forEach((li,index) =>{
+	    		if(li.classList.contains('on')){
+	    			let r = labeling.arRectangle[li.value];
+	    		    if(r.aisId === ''){
+	    		    	initAis();
+	    		    	return false;
+	    		    }	    			
+	    		}
+    		});
+	    }
+		
+		searchAisFunc();
+	}
+	
+	document.getElementById('deleteAis').addEventListener('click', (e) => {
+		e.preventDefault();
+		const aisInfoPop = document.querySelector('.aisInfoPop');
+		let checkedData = gridCheckedData(aisInfoPop.querySelector('.gridCont01'));
+  	    deleteCall = (isExec) => {
+  	    	if(isExec){
+  	    		gfn_asyncJsonCall('/deleteAis','POST',checkedData,'deleteAisAfter()');
+  	    	}
+  	    	
+  	    }
+  	    if(Object.keys(checkedData).length > 0){
+  	    	confirmCall(msg.delAis,this.deleteCall);
+  	    }
+  	    else{
+  	    	msgCall('삭제할 건을 선택하세요.',false);
+  	    }
+	});
+	/*
+	document.getElementById('aisFile').addEventListener("click",(e) => {
+		document.querySelector("input[type=file]").value = "";
+		let loadaingLayer = document.querySelector('.loadingLayer');
+		loadaingLayer.style.display = "block";
+	});
+	
+	
+	fileChk = () => {
+		if(filesArr.length === 0){
+			let loadaingLayer = document.querySelector('.loadingLayer');
+			loadaingLayer.style.display = "none";
+		}
+	}
+	
+	/*
+	document.getElementById('aisFile').addEventListener("change",(e) => {
+		e.preventDefault();
+		filesArr = new Array();
+		fileParam = new Array();
+		let fileCnt = 0;
+		let param = {aisId:document.getElementById("aisIdd").value};
+		for (const file of e.target.files) {
+			fileCnt += 1;
+			if (file.name.lastIndexOf('.') === -1) {
+		    	msgCall(getMsg(msg.fileExt),false);
+		        return false;
+		    } 
+			if (file.type != 'text/xml') {
+				msgCall(getMsg(msg.fileType),false);
+		        return false;
+		    } 
+			// 파일 배열에 담기
+            let reader = new FileReader();
+            reader.onload =  () => {
+                filesArr.push(file);
+                if(e.target.files.length === fileCnt){
+                	for(let i=0;i<filesArr.length;i++){
+            			filesArr[i].isDelete = false;
+            		}
+                	gfn_asyncJsonCallWithFile('/saveAisFile','POST',document.getElementById('aisFrm'),null,param).then((data) => {
+                     	for(key in data) {
+             				if(key.indexOf('success_msg') > -1){
+             					msgCallBack(data[key],true,searchAisFunc);
+             					break;
+             				}
+             				if(key.indexOf('fail_msg') > -1){
+             					msgCallBack(data[key],false);
+             					break;
+             				}
+             				
+             			}
+                     });
+                }  
+            }
+            reader.readAsDataURL(file);
+        }
+		
+    });
+    */
+	
+	
+///////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////WEAPON///////////////////////////////////////////////////////
+
+    document.querySelector('.weaponListPop').querySelector('.btn-search').addEventListener('click', (e) => {
+    	
+    	let tabMenu = document.querySelector('.weaponListPop').querySelector('.tabmenu02');
+		tabMenu.querySelectorAll('.btn-tab02').forEach((tabAnch) => {
+			if(tabAnch.classList.contains('on')){
+				tabAnch.click();
+			}
+
+		});
+	});
+	
+    document.querySelector('.weaponListPop').querySelector('#weaponGrpId').addEventListener('change',(e) => {
+    	if(e.target.value != ''){
+    		document.querySelector('.weaponListPop').querySelector('#weaponNm').readOnly = false;
+    	}
+    	else{
+    		document.querySelector('.weaponListPop').querySelector('#weaponNm').readOnly = true;
+    	}
+    });
+	
+    weaponAfterFunc = (grpId) => {
+    
+    	let popLayer = document.querySelector('.weaponListPop');
+    	let tabMenu = popLayer.querySelector('.tabmenu02');
+		tabMenu.innerHTML = '';
+		gfn_removeValidHtml(document.getElementById('weaponFrm'),'span');
+		const weaponGrpId = document.getElementById('weaponGrpId');
+		weaponGrpId.innerHTML = '';
+		weaponGrpId.innerHTML += "<option value=''> 선택해 주세요.</option>";
+		gfn_asyncJsonCall("/weaponCntList",'GET',{}).then((data) => {
+			for(let key in data) {
+				if(key.indexOf('list') > -1){
+					for(let item in data[key]){
+						let tabAnch = document.createElement('a');
+						tabAnch.classList.add('btn-tab02');
+
+						if(grpId == data[key][item].id){
+							tabAnch.classList.add('on');
+						}
+						tabAnch.setAttribute('href','javascript:;');
+						tabAnch.setAttribute('onClick',"schWeaponList('"+data[key][item].id+"',this)");
+						tabAnch.setAttribute('title',data[key][item].grpNm);
+						let anchSpan = document.createElement('span');
+						anchSpan.append(data[key][item].cnt);
+						tabAnch.append(data[key][item].grpNm+'(');
+						tabAnch.append(anchSpan);
+						tabAnch.append(')');
+						tabMenu.appendChild(tabAnch);
+	
+						if(grpId == data[key][item].id){
+							schWeaponList(data[key][item].id,tabAnch);
+						}
+						weaponGrpId.innerHTML += "<option value='"+data[key][item].id+"'>"+data[key][item].grpNm+"</option>";
+					}
+		 		}	
+					
+			}
+		}).then(() => {
+			document.getElementById('weaponBtn').click();
+		});
+		
+		document.getElementById('weaponNm').value = '';
+		if(document.getElementById('weaponId').value != ''){
+			popLayer = document.querySelector('.weaponCodePop');
+			popLayer.style.display = "none";
+		}
+    }
+    
+    
+	document.getElementById('weaponBtn').addEventListener('click', (e) => {
+		console.log("무장정보 관리");
+		e.preventDefault();
+		document.getElementById('schWeaponNm').value = '';
+		let popLayer = document.querySelector('.weaponInfoPop');
+		let param = {classId : ""};
+		clsWeaponAry.forEach((clsWeaponItem,index) => {
+			if(clsWeaponItem.on === 'Y'){
+				param.classId = clsWeaponItem.classId;
+			}
+		});
+		
+		let secGrid7 = popLayer.querySelector('.weaponGrid');
+		secGrid7.innerHTML = '';
+		gfn_asyncJsonCall("/weaponInfo",'POST',param).then((data) => {
+			for(let key in data) {
+				if(key.indexOf('weaponList') > -1){
+					let weaponList = data[key];	
+					let grpId = '';
+					for(let item in weaponList){
+						if(grpId != weaponList[item].grpId){
+							let dataRow = document.createElement('div');
+							dataRow.classList.add('dataRow','area');
+							dataRow.setAttribute('data-id',weaponList[item].grpId);
+							let basicUl = document.createElement('ul');
+							basicUl.classList.add('basic');
+							let basicLi = document.createElement('li');
+							let selectLi = document.createElement('li');
+							let inputGrp = document.createElement('div');
+							inputGrp.classList.add('input-group');
+							inputGrp.setAttribute('data-id',weaponList[item].grpId);
+							let basicLabel = document.createElement('label');
+							basicLabel.classList.add('basic', 'icon');
+							basicLabel.setAttribute('for','');
+							basicLabel.append(weaponList[item].grpNm);
+							let selectWeapon = document.createElement('select');
+							selectWeapon.addEventListener('change',addWeaponFunc);
+							selectWeapon.classList.add('basic', 'basic09');
+							selectWeapon.setAttribute('id','grpId'+weaponList[item].grpId);
+							let opt = document.createElement('option');
+							opt.setAttribute('value','');
+							opt.append('선택하세요.');
+							selectWeapon.appendChild(opt);
+							inputGrp.appendChild(basicLabel);
+							inputGrp.appendChild(selectWeapon);
+							basicLi.appendChild(inputGrp);
+							basicUl.appendChild(basicLi);
+							let areaDiv = document.createElement('div');
+							areaDiv.setAttribute('data-id',weaponList[item].grpId);
+							areaDiv.classList.add('select-area');
+							selectLi.appendChild(areaDiv);
+							basicUl.appendChild(selectLi);
+							dataRow.appendChild(basicUl);
+							secGrid7.appendChild(dataRow);		
+						}
+						grpId = weaponList[item].grpId;
+						
+					}
+					for(let item in weaponList){
+						if(weaponList[item].weaponId != undefined && weaponList[item].weaponId != 'undefined'){
+							let selectWeapon = document.getElementById('grpId'+weaponList[item].grpId);
+							let opt = document.createElement('option');
+							opt.setAttribute('value',weaponList[item].weaponId);
+							opt.append(weaponList[item].weaponNm);
+							selectWeapon.appendChild(opt);
+						}
+					}
+		 		}	
+				if(key.indexOf('list') > -1){
+					let list = data[key];
+					for(let idx in list){
+						let selectAreas =  document.querySelectorAll('.select-area');
+						selectAreas.forEach((selectArea) => {
+							if(list[idx].weaponGrpId === selectArea.getAttribute('data-id')){
+								let tag = document.createElement('DIV');
+								tag.setAttribute('data-id',list[idx].weaponId);
+								let tagAnch = document.createElement('a');
+								tagAnch.setAttribute('href','javascript:;');
+								tagAnch.setAttribute('onclick','clearWeapon(this);return false;');
+								tagAnch.classList.add('btn-close-link');
+						        tag.classList.add('tag-op');
+						        tag.append(list[idx].weaponNm);
+						        tag.appendChild(tagAnch);
+						        selectArea.appendChild(tag);
+							}
+							
+						});
+					}					
+		 		}		
+			}
+		}); 
+		popLayer.style.display = "block";
+	});
+	
+	schWeaponList = (val,obj) => {
+		let tabMenu = document.querySelector('.weaponListPop').querySelector('.tabmenu02');
+		if(obj != undefined){
+			tabMenu.querySelectorAll('.btn-tab02').forEach((tabDiv) => {
+				if(obj === tabDiv){
+					tabDiv.classList.add('on');
+				}else{
+					if(tabDiv.classList.contains('on')){
+						tabDiv.classList.remove('on');
+					}
+				}
+			});
+		}
+
+		let param = {grpId: val
+				   , weaponNm: document.getElementById('schWeaponNm').value};
+		gfn_asyncJsonCall("/weaponList",'POST',param).then((data) => {
+			for(let key in data) {
+				if(key.indexOf('list') > -1){
+					console.log("list:",data[key]);
+					gridBind(data[key],document.querySelector('.weaponListPop').querySelector(".gridCont02"));
+		 		}		
+			}
+		}); 
+
+		
+	}
+	
+	addWeaponFunc = (e) => {
+		console.log("addWeaponFunc");
+	    if(e.target.value != ''){
+	    	let dup = false;
+			let selectAreas =  document.querySelectorAll('.select-area');
+			selectAreas.forEach((selectArea) => {
+				if(e.target.parentNode.getAttribute('data-id') === selectArea.getAttribute('data-id')){
+					for(let item of selectArea.children){
+						if(item.innerText === e.target.options[e.target.selectedIndex].text){
+							dup = true;break;
+						}
+					}
+					if(dup){ return false;}
+					let tag = document.createElement('DIV');
+					tag.setAttribute('data-id',e.target.value);
+					let tagAnch = document.createElement('a');
+					tagAnch.setAttribute('href','javascript:;');
+					tagAnch.setAttribute('onclick','clearWeapon(this);return false;');
+					tagAnch.classList.add('btn-close-link');
+			        tag.classList.add('tag-op');
+			        tag.append(e.target.options[e.target.selectedIndex].text);
+			        tag.appendChild(tagAnch);
+			        selectArea.appendChild(tag);
+				}
+				
+			});
+	    }
+		
+	}
+	
+	clearWeapon = (obj) => {
+		console.log("clearWeapon");
+		document.querySelectorAll('.dataRow').forEach((dataRow) => {
+			if(obj.parentNode.parentNode.getAttribute('data-id') === dataRow.getAttribute('data-id')){
+				dataRow.querySelector('select').value = '';
+			}
+			
+		});
+		obj.parentNode.remove(obj);
+	}
+
+	document.querySelector('.btn-add').addEventListener('click', (e) => {
+		console.log("무장정보 사전등록");
+		e.preventDefault();
+		document.getElementById('schWeaponNm').value = '';
+		let popLayer = document.querySelector('.weaponListPop');
+		const headColumns =  [{id:"chk",width: "45px"}
+		                    ,{id:"grpId",width: "0px"}
+		                    ,{id:"weaponId",width: "0px"}
+		                    ,{id:"grpNm",width: "100px",label:"무장종류",data_cellType:"tdCCell"}  
+		                    ,{id:"weaponNm",width: "150px", label:"무장이름",data_cellType:"tdCCell"}
+		                    ,{width: "80px",label:"편집",button:"Y",data_url:'modifyWeapon',data_btnNm:"수정",openType:"callBack"}
+		                    ];
+
+		popLayer.querySelector(".gridCont02").innerHTML = "";
+		gridInit(popLayer.querySelector(".gridCont02"),headColumns);
+		let tabMenu = popLayer.querySelector('.tabmenu02');
+		tabMenu.innerHTML = '';
+
+		gfn_asyncJsonCall("/weaponCntList",'GET',{}).then((data) => {
+			for(let key in data) {
+				if(key.indexOf('list') > -1){
+					for(let item in data[key]){
+						let tabAnch = document.createElement('a');
+						tabAnch.classList.add('btn-tab02');
+						if(item === '0'){
+							tabAnch.classList.add('on');
+						}
+						tabAnch.setAttribute('href','javascript:;');
+						tabAnch.setAttribute('onClick',"schWeaponList('"+data[key][item].id+"',this)");
+						tabAnch.setAttribute('title',data[key][item].grpNm);
+						let anchSpan = document.createElement('span');
+						anchSpan.append(data[key][item].cnt);
+						tabAnch.append(data[key][item].grpNm+'(');
+						tabAnch.append(anchSpan);
+						tabAnch.append(')');
+						tabMenu.appendChild(tabAnch);
+						if(item === '0'){
+							schWeaponList(data[key][item].id,tabAnch);
+						}
+					}
+		 		}	
+					
+			}
+		});
+		popLayer.style.display = "block";
+		
+	});
+	
+	modifyWeapon = (data) => {
+		console.log("무장정보 수정");
+		const weaponGrpId = document.getElementById('weaponGrpId');
+		weaponGrpId.innerHTML = '';
+		weaponGrpId.innerHTML += "<option value='"+data.grpId+"'>"+data.grpNm+"</option>"
+		
+		document.getElementById('weaponNm').value = data.weaponNm;
+		document.getElementById('weaponNm').readOnly = false;
+		document.getElementById('weaponId').value = data.weaponId;
+		let popLayer = document.querySelector('.weaponCodePop');
+		popLayer.querySelector('.pop-title').innerText = '무장정보 수정';
+		popLayer.style.display = "block";
+	}
+	
+	document.querySelector('.weaponListPop').querySelector('.btn-upload').addEventListener('click',(e) => {
+		console.log("무장정보 추가");
+		e.preventDefault();
+		const weaponGrpId = document.getElementById('weaponGrpId');
+		weaponGrpId.innerHTML = '';
+		weaponGrpId.innerHTML += "<option value=''> 선택해 주세요.</option>";
+		gfn_asyncJsonCall("/weaponCntList",'GET',{}).then((data) => {
+			for(let key in data) {
+				if(key.indexOf('list') > -1){
+					for(let item in data[key]){
+						
+						weaponGrpId.innerHTML += "<option value='"+data[key][item].id+"'>"+data[key][item].grpNm+"</option>";
+					}
+		 		}	
+					
+			}
+		});
+		document.getElementById('weaponNm').value = '';
+		document.getElementById('weaponId').value = '';
+		let popLayer = document.querySelector('.weaponCodePop');
+		popLayer.querySelector('.pop-title').innerText = '무장정보 추가';
+		popLayer.style.display = "block";
+	});
+	
+    document.querySelector('.weaponListPop').querySelector('.btn-delete').addEventListener('click',(e) => {
+    	e.preventDefault();
+    	let checkedData = gridCheckedData(document.querySelector('.weaponListPop').querySelector('.gridCont02'));
+    	deleteCall = (isExec) => {
+    		if(isExec){
+    			gfn_asyncJsonCall('/deleteWeapon','POST',checkedData,"weaponAfterFunc('"+checkedData['list'][0].grpId+"')");
+    		}
+   	    	
+   	    }
+   	    if(Object.keys(checkedData).length > 0){
+   	    	confirmCall(msg.del,this.deleteCall);
+   	    }
+   	    else{
+   	    	msgCall('삭제할 건을 선택하세요.',false);
+   	    }
+    	
+	});
+    
+    document.getElementById('weaponGrpId').addEventListener('change',(e) => {
+    	e.preventDefault();
+    	document.getElementById('weaponNm').value = '';
+	});
+	
+	
+	setWeapon = (weaponData) => {
+		document.getElementById('weaponId').innerHTML = weaponData.id;
+		document.querySelector('.mmsi').innerHTML = weaponData.mmsi;
+		document.querySelector('.imoNo').innerHTML = weaponData.imoNo;
+		document.querySelector('.national').innerHTML = weaponData.national;
+		document.querySelector('.shipType').innerHTML = weaponData.shipType;
+		document.querySelector('.callSign').innerHTML = weaponData.callSign;
+	}
+	
+	document.getElementById('classInfoId').addEventListener('click',(e) => {
+		e.preventDefault();
+		
+		if(labeling.arRectangle.length === 0){
+			msgCall('설정할 개체가 없습니다.',false);
+			return;
+		}
+		
+		if(labeling.mode != 'select'){
+			labeling.mode = 'select';
+			changeOn(document.querySelector('.selectBtn'));
+		}
+		
+		let param = {id:""};
+		gfn_asyncJsonCall("/clsInfo",'POST',param).then((data) => {
+			for(key in data) {
+				if(key.indexOf('fail_msg') > -1){
+					msgCall(data[key],false);
+					break;
+				}
+                if(key.indexOf('list') > -1){
+                   	list = data[key];
+				}
+			}
+			const treeBox = document.querySelector('.classInfoPop').querySelector('.treeBox');
+			treeBox.innerHTML = '';
+			let treejs = createInitTree(treeBox,list,false);
+			if(list != null && list.length > 0){
+				createTreeNoChk(list,treejs);
+			}
+
+		}).then(() => {
+			let objUl = document.querySelector('.list02');
+			let chkClassId = '';
+			if(objUl.children.length > 0){
+		    	objUl.querySelectorAll('li').forEach((li,index) =>{
+		    		if(li.classList.contains('on')){
+		    			let r = labeling.arRectangle[li.value];
+		    			console.log("classId:",r.classId);
+		    			chkClassId = r.classId;
+		    			return false;      		    			
+		    		}
+	    		});
+		    }
+			document.querySelector('.treeBox').querySelectorAll('.treejs-label').forEach((label) => {
+				let li = label.parentNode;
+				if(!li.classList.contains('rootLi')){
+					if(li.getAttribute('data-id') === chkClassId){
+						label.classList.add('on');
+						return false;
+		    		}
+				}
+			});  	
+			
+		});
+
+		let popLayer = document.querySelector('.classInfoPop');
+		popLayer.style.display = "block";
+		
+	});
+	
+
+    
+	
+</script>
+</div>
+</html>

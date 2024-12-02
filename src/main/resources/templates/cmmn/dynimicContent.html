@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{cmmn/layout}">
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head> 
+<th:block layout:fragment="content">
+	<div class="contentBody"></div>
+
+	<script th:inline="javascript"> 
+	 let contentData = '';
+     window.addEventListener('DOMContentLoaded', function(){
+    	 let params = {};
+    	 gfn_asyncUrlCall("/main",'GET',params).then((data) => {
+    		 let parser = new DOMParser();
+    	     let doc = parser.parseFromString(data, "text/html");
+    	     document.title =  doc.getElementsByTagName("title")[0].innerHTML;
+    	     dynimicContentCall(data);
+    	 });
+
+	 });
+     
+     const contentlInit = () => {
+		 const content = document.querySelector(".content");
+		 content.innerHTML = '';
+		 let parser = new DOMParser();
+		 let doc = parser.parseFromString(contentData, "text/html")
+		 const contentInitHtml = doc.querySelector('.content');
+		 content.appendChild(contentInitHtml);
+		 const fileBox = html.querySelector('.fileBox');
+  	     if(fileBox){
+  	    	 fileInit('1');
+  	     }
+		 const tabmenu = contentInitHtml.querySelector('.tabmenu01');
+	  	 if(tabmenu){
+	  		tabInit();
+	  	 }
+		 
+	 }
+     
+     const dynimicContentCall = (data) => {
+    	 try{
+    		 contentData = data;
+	    	 let parser = new DOMParser();
+		     let doc = parser.parseFromString(data, "text/html");
+		     document.title =  doc.getElementsByTagName("title")[0].innerHTML;
+		     const html = doc.querySelector('.content');
+		     if(!html){
+		    	 //세션 만료
+		    	 msgCall(msg.expired,false,"/login");
+		    	 return;
+		     }
+		     //사용자 등록 및 수정 제어
+		     /*
+		     if(html.classList.contains('contentFull')){
+		    	 html.classList.remove("contentFull");
+		    	 if(html.querySelector('.userCont')){
+		    		 html.querySelector('.userCont').classList.remove("userContWidth");
+		    	 }
+		    	 
+		     }
+		     */
+	         document.querySelector('.contentBody').appendChild(html);
+	         let scriptList = document.querySelectorAll("script[type='text/javascript']");
+	         let convertedNodeList = Array.from(scriptList);
+	         for (let i = 0; i < convertedNodeList.length; i++) {
+	        	 if(convertedNodeList[i].id === 'dynimicScript'){
+	        		 //convertedNodeList[i].innerHTML = '';
+	        		 //convertedNodeList[i].parentNode.removeChild(convertedNodeList[i]);
+		            document.head.removeChild(convertedNodeList[i]);
+	        	 }
+	         }
+
+	        
+	         let scripts = doc.getElementsByTagName("script");
+	         for (let i = 0; i < scripts.length; i++) {
+        		 let script = document.createElement('script');
+	        	 script.setAttribute('id', 'dynimicScript');
+	             script.type = scripts[i].type || 'text/javascript';
+	             if( scripts[i].hasAttribute('src') ) script.src = scripts[i].src;
+	             script.innerHTML = scripts[i].innerHTML;
+	             if(script.innerHTML.indexOf('rowClick') == -1){
+	            	 script.innerHTML += " rowClick = (row) => {} \n" 
+	             }
+	             if(script.innerHTML.indexOf('rowDblClick') == -1){
+	            	 script.innerHTML += " rowDblClick = (row) => {}\n" 
+	             }
+	             if(script.innerHTML.indexOf('unitAfterFunc') == -1){
+	            	 script.innerHTML += " unitAfterFunc = () => {} " 
+	             }
+	        	 document.head.appendChild(script);
+	         } 
+	         
+	         dynimicInit();
+	         const calendar_input = html.querySelector('.calendar_input');
+	         if(calendar_input){
+	     	     calInit();
+	         }
+	         
+	    	 inputInit();
+		  	 const tabmenu = html.querySelector('.tabmenu01');
+		  	 if(tabmenu){
+		  		tabInit();
+		  	 }
+		  	 
+			 gfn_asyncJsonCall("/bbsCount",'GET',{},null,null,true).then((countData) => {
+				 noticeDisplay(countData);
+			 });
+
+		  
+				
+    	 }catch(e){
+    		 console.error("dynimicContentCall error:",e);
+    	 }
+
+     }
+  
+     
+</script>
+</th:block>
+</html>
+
